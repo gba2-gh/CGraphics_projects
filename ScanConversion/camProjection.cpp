@@ -1,5 +1,5 @@
 #include "camProjection.h"
-
+#include<QDebug>
 
 void   CamProjection::projectPoint(double point[], bool ortho,  double xdmax ,double xdmin,
                                                                  double ydmax, double ydmin)
@@ -35,11 +35,10 @@ void   CamProjection::projectPoint(double point[], bool ortho,  double xdmax ,do
 
         canvSc=1;
     }
-
+    //qDebug()<<pProy[0];
     int xd, yd;
     double xpmax=2*canvSc, xpmin=-2*canvSc;
     double ypmax=2*canvSc, ypmin=-2*canvSc;
-    //double xdmax=300, xdmin=100, ydmax=-200, ydmin=0;
     double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
     double ox = sx*(-xpmin)+ xdmin, oy = sx*(-ypmin)+ ydmin;
 
@@ -48,12 +47,6 @@ void   CamProjection::projectPoint(double point[], bool ortho,  double xdmax ,do
 
     rasterPoint.append(xd);
     rasterPoint.append(yd);
-
-   // rasterPoint.append(((pProy[0] + canvasS/2)/canvasS)*imageWidth);
-   // rasterPoint.append(((1-(pProy[1] + canvasS/2)/canvasS))*imageHeight);
-
-
-
 }
 
 
