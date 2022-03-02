@@ -34,59 +34,113 @@ void renderWindow::paintEvent(QPaintEvent *event)
         points.drawPoint(pointsList[k],pointsList[k+1]);
 }
 
-
-    //cara 1
-    for(int k=0; k<6;k=k+2) {
-        lineDDA(points,pointsList.value(k), pointsList.value(k+1),
-                pointsList.value(k+2), pointsList.value(k+3));
-        //points.drawPoint(pp[0],pp[1]);
-    }
-    lineDDA(points,pointsList.value(0), pointsList.value(1),
-             pointsList.value(2), pointsList.value(3));
-    lineDDA(points,pointsList.value(2), pointsList.value(3),
-             pointsList.value(4), pointsList.value(5));
-    lineDDA(points,pointsList.value(4), pointsList.value(5),
-             pointsList.value(6), pointsList.value(7));
-   lineDDA(points,pointsList.value(6), pointsList.value(7),
-            pointsList.value(0), pointsList.value(1));
-
-
-   // qDebug()<<"pointlist"<<pointsList;
-   lineDDA(points,pointsList.value(8), pointsList.value(9),
-            pointsList.value(10), pointsList.value(11));
-   lineDDA(points,pointsList.value(10), pointsList.value(11),
-            pointsList.value(12), pointsList.value(13));
-   lineDDA(points,pointsList.value(12), pointsList.value(13),
-            pointsList.value(14), pointsList.value(15));
-  lineDDA(points,pointsList.value(14), pointsList.value(15),
-           pointsList.value(8), pointsList.value(9));
-
-
-
-  lineDDA(points,pointsList.value(0), pointsList.value(1),
-           pointsList.value(14), pointsList.value(15));
-
-  lineDDA(points,pointsList.value(2), pointsList.value(3),
-           pointsList.value(12), pointsList.value(13));
-
-  lineDDA(points,pointsList.value(4), pointsList.value(5),
-           pointsList.value(10), pointsList.value(11));
-
- lineDDA(points,pointsList.value(6), pointsList.value(7),
-          pointsList.value(8), pointsList.value(9));
-
-
-
+    drawCubeEdges(points, pointsList);
     pointsList.clear();
+
+
+}
+
+
+
+
+
+void renderWindow::drawCubeEdges(QPainter &points, QList<int> pointsList)
+{
+
+    /////////////////////////////////// CUBO 1 ///////////////////////
+
+
+        lineDDA(points,pointsList.value(0), pointsList.value(1),
+                 pointsList.value(14), pointsList.value(15));
+
+        lineDDA(points,pointsList.value(2), pointsList.value(3),
+                 pointsList.value(12), pointsList.value(13));
+
+        lineDDA(points,pointsList.value(4), pointsList.value(5),
+                 pointsList.value(10), pointsList.value(11));
+
+       lineDDA(points,pointsList.value(6), pointsList.value(7),
+                pointsList.value(8), pointsList.value(9));
+
+
+       lineDDA(points,pointsList.value(6), pointsList.value(7),
+                pointsList.value(0), pointsList.value(1));
+
+
+    //    lineDDA(points,pointsList.value(0), pointsList.value(1),
+    //             pointsList.value(2), pointsList.value(3));
+    //    lineDDA(points,pointsList.value(2), pointsList.value(3),
+    //             pointsList.value(4), pointsList.value(5));
+    //    lineDDA(points,pointsList.value(4), pointsList.value(5),
+    //             pointsList.value(6), pointsList.value(7));
+           for(int k=0; k<6;k=k+2) {
+               lineDDA(points,pointsList.value(k), pointsList.value(k+1),
+                       pointsList.value(k+2), pointsList.value(k+3));
+               //points.drawPoint(pp[0],pp[1]);
+           }
+
+
+       // qDebug()<<"pointlist"<<pointsList;
+       lineDDA(points,pointsList.value(14), pointsList.value(15),
+                 pointsList.value(8), pointsList.value(9));
+       for(int k=8; k<14;k=k+2) {
+           lineDDA(points,pointsList.value(k), pointsList.value(k+1),
+                   pointsList.value(k+2), pointsList.value(k+3));
+           //points.drawPoint(pp[0],pp[1]);
+       }
+    //   lineDDA(points,pointsList.value(8), pointsList.value(9),
+    //            pointsList.value(10), pointsList.value(11));
+    //   lineDDA(points,pointsList.value(10), pointsList.value(11),
+    //            pointsList.value(12), pointsList.value(13));
+    //   lineDDA(points,pointsList.value(12), pointsList.value(13),
+    //            pointsList.value(14), pointsList.value(15));
+
+
+
+
+    ///////////////////////////////// CUBO 2 ////////////////////////////77
+    ///
+
+       lineDDA(points,pointsList.value(0+16), pointsList.value(1+16),
+                pointsList.value(14+16), pointsList.value(15+16));
+
+       lineDDA(points,pointsList.value(2+16), pointsList.value(3+16),
+                pointsList.value(12+16), pointsList.value(13+16));
+
+       lineDDA(points,pointsList.value(4+16), pointsList.value(5+16),
+                pointsList.value(10+16), pointsList.value(11+16));
+
+      lineDDA(points,pointsList.value(6+16), pointsList.value(7+16),
+               pointsList.value(8+16), pointsList.value(9+16));
+
+
+      lineDDA(points,pointsList.value(6+16), pointsList.value(7+16),
+               pointsList.value(0+16), pointsList.value(1+16));
+
+
+          for(int k=0+16; k<6+16;k=k+2) {
+              lineDDA(points,pointsList.value(k), pointsList.value(k+1),
+                      pointsList.value(k+2), pointsList.value(k+3));
+              //points.drawPoint(pp[0],pp[1]);
+          }
+
+
+      // qDebug()<<"pointlist"<<pointsList;
+      lineDDA(points,pointsList.value(14+16), pointsList.value(15+16),
+                pointsList.value(8+16), pointsList.value(9+16));
+      for(int k=8+16; k<14+16;k=k+2) {
+          lineDDA(points,pointsList.value(k), pointsList.value(k+1),
+                  pointsList.value(k+2), pointsList.value(k+3));
+          //points.drawPoint(pp[0],pp[1]);
+      }
+
 
 
 }
 
 void renderWindow::lineDDA(QPainter & points, double p1x, double p1y, double p2x, double p2y)
 {
-    qDebug()<<"p1 "<<p1x<<p1y<<"p2 "<<p2x<<p2y;
-    //double p1[]={pointsList.value(k), pointsList.value(k+1)};
-    //double p2[]={pointsList.value(k+2), pointsList.value(k+3)};
+    //qDebug()<<"p1 "<<p1x<<p1y<<"p2 "<<p2x<<p2y;
     double mx=p2x-p1x;
     double my=p2y-p1y;
 
@@ -104,10 +158,8 @@ void renderWindow::lineDDA(QPainter & points, double p1x, double p1y, double p2x
     for(int i=0; i<s; i++){
         x=int(p1x+dx*i);
         y=int(p1y+dy*i);
-        qDebug()<<"linepoint:"<<x<<", "<<y;
+        //qDebug()<<"linepoint:"<<x<<", "<<y;
         points.drawPoint(x,y);
-        //pp.push_back(x);
-        //pp.push_back(y);
     }
 }
 

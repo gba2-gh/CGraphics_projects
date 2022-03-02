@@ -6,7 +6,7 @@ class CubeObject
 {
 public:
     CubeObject();
-    std::vector<std::vector<double> > coord={{0,0,0,1},
+    std::vector<std::vector<double> > vertices={{0,0,0,1},
                               {0,10,0,1},
                               {20,10,0,1},
                               {20,0,0,1},

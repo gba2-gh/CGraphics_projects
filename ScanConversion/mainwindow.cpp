@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer= new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawObject()));
-    timer->start(500);
+    timer->start(30);
 
 
     setWindowTitle(tr("3d Projection CG"));
@@ -103,19 +103,19 @@ void MainWindow::drawObject(){
 
     //Cámara 1
     //Enviar a cada vértice a la proyección con la cámara 1
-        double punto[4];
-        for(int k=0; k<8;++k){
-            for(int j=0;j<4;++j){
-                punto[j]=cubeObject->coord[k][j];
-                }
+//        double punto[4];
+//        for(int k=0; k<8;++k){
+//            for(int j=0;j<4;++j){
+//                punto[j]=cubeObject->coord[k][j];
+//                }
 
-            camProj->projectPoint(punto, orthoProy, 300, 100, 200, 0);
-        }
+            camProj->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 200, 0);
+//        }
 
         renderwindow->pointsList.append(camProj->rasterPoint);
         camProj->rasterPoint.clear();
 
-    //Cámara 2
+//    //Cámara 2
 //    double punto2[4];
 //    for(int k=0; k<8;++k){
 //        for(int j=0;j<4;++j){
@@ -126,14 +126,13 @@ void MainWindow::drawObject(){
 //    }
 
 //    renderwindow->pointsList.append(camProj2->rasterPoint);
-//   // qDebug()<< renderwindow->pointsList;
-//    camProj2->rasterPoint.clear();
+//// qDebug()<< renderwindow->pointsList;
+//   camProj2->rasterPoint.clear();
 
 //    //Rotar objeto en +1 grado
-//    if(rotateBool){
-//        currentAngle +=1;
-//        cubeObject->rotateObject(currentAngle);
-//    }
+    if(rotateBool){
+        cubeObject->rotateObject(1);
+    }
 
     update();
 

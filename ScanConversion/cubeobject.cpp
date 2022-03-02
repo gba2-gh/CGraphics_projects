@@ -18,6 +18,6 @@ void CubeObject::rotateObject(double angleD)
                           0,0,0,1};
 
 
-    this->coord= rotateEuler(this->coord,rotMatX);
+    this->vertices= rotateEuler(this->vertices,rotMatX);
 
 }
