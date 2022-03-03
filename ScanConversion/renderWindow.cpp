@@ -34,7 +34,7 @@ void renderWindow::paintEvent(QPaintEvent *event)
         points.drawPoint(pointsList[k],pointsList[k+1]);
 }
     if(drawEdgesBool){
-    drawCubeEdges(points, pointsList);
+        drawCubeEdges(points, pointsList);
     }
 
 
@@ -62,36 +62,19 @@ void renderWindow::drawCubeEdges(QPainter &points, QList<int> pointsList)
        lineDDA(points,pointsList.value(6), pointsList.value(7),
                 pointsList.value(0), pointsList.value(1));
 
-
-    //    lineDDA(points,pointsList.value(0), pointsList.value(1),
-    //             pointsList.value(2), pointsList.value(3));
-    //    lineDDA(points,pointsList.value(2), pointsList.value(3),
-    //             pointsList.value(4), pointsList.value(5));
-    //    lineDDA(points,pointsList.value(4), pointsList.value(5),
-    //             pointsList.value(6), pointsList.value(7));
            for(int k=0; k<6;k=k+2) {
                lineDDA(points,pointsList.value(k), pointsList.value(k+1),
                        pointsList.value(k+2), pointsList.value(k+3));
-               //points.drawPoint(pp[0],pp[1]);
            }
 
 
-       // qDebug()<<"pointlist"<<pointsList;
        lineDDA(points,pointsList.value(14), pointsList.value(15),
                  pointsList.value(8), pointsList.value(9));
        for(int k=8; k<14;k=k+2) {
            lineDDA(points,pointsList.value(k), pointsList.value(k+1),
                    pointsList.value(k+2), pointsList.value(k+3));
-           //points.drawPoint(pp[0],pp[1]);
+
        }
-    //   lineDDA(points,pointsList.value(8), pointsList.value(9),
-    //            pointsList.value(10), pointsList.value(11));
-    //   lineDDA(points,pointsList.value(10), pointsList.value(11),
-    //            pointsList.value(12), pointsList.value(13));
-    //   lineDDA(points,pointsList.value(12), pointsList.value(13),
-    //            pointsList.value(14), pointsList.value(15));
-
-
 
 
     ///////////////////////////////// CUBO 2 ////////////////////////////77
@@ -117,17 +100,14 @@ void renderWindow::drawCubeEdges(QPainter &points, QList<int> pointsList)
           for(int k=0+16; k<6+16;k=k+2) {
               lineDDA(points,pointsList.value(k), pointsList.value(k+1),
                       pointsList.value(k+2), pointsList.value(k+3));
-              //points.drawPoint(pp[0],pp[1]);
           }
 
 
-      // qDebug()<<"pointlist"<<pointsList;
       lineDDA(points,pointsList.value(14+16), pointsList.value(15+16),
                 pointsList.value(8+16), pointsList.value(9+16));
       for(int k=8+16; k<14+16;k=k+2) {
           lineDDA(points,pointsList.value(k), pointsList.value(k+1),
                   pointsList.value(k+2), pointsList.value(k+3));
-          //points.drawPoint(pp[0],pp[1]);
       }
 
 

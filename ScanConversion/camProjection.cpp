@@ -189,7 +189,7 @@ void CamProjection::scanFillPoly(double x1, double y1, double x2, double y2)
 {
     int up=0;
 
-    if(y1>y2)
+    if(y1>y2)//cambiar coordenadas
     {
         up=1;
         double temp=x1;
@@ -201,19 +201,16 @@ void CamProjection::scanFillPoly(double x1, double y1, double x2, double y2)
     double dy= y2-y1;
     double m = dx/dy;
 
-    double ey=int(y1+1) - y1;
-    double ex= m*ey;
+    double yd=y1+1 - y1;
+    double x= x1+ m*yd ;
 
-    double Ax= x1+ex ;
-    int Ay=int(y1+1);
-    int By= int(y2);
+    int y1p=int(y1+1);
+    int y2p= int(y2);
 
-    double x=Ax;
-    for(int y=Ay; y<=By ;y++){
+    for(int y=y1p ;y<=y2p ;y++){
            yBuffer[y][up]=int(x);
             x+=m;
            }
-
 }
 
 
