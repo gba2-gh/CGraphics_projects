@@ -30,6 +30,7 @@ public slots:
     void setPers();
     void setRotation();
     void drawObject();
+    void fillPoly();
 
 
 private:
@@ -38,12 +39,15 @@ private:
     QPushButton *orthoProyBtn;
     QPushButton *persProyBtn;
     QPushButton *setRotationBtn;
+    QPushButton *fillPolyBtn;
     renderWindow *renderwindow;
     CamProjection *camProj;
     CamProjection *camProj2;
     CubeObject *cubeObject;
+
     QTimer *timer ;
     bool orthoProy= false;
     bool rotateBool=false;
+    bool fillPolyBool=false;
 };
 #endif // MAINWINDOW_H

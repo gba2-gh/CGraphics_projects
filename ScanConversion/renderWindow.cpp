@@ -34,7 +34,12 @@ void renderWindow::paintEvent(QPaintEvent *event)
         points.drawPoint(pointsList[k],pointsList[k+1]);
 }
 
-    drawCubeEdges(points, pointsList);
+    //drawCubeEdges(points, pointsList);
+//    lineDDA(points,pointsList.value(0), pointsList.value(1),
+//             pointsList.value(2), pointsList.value(3));
+
+
+
     pointsList.clear();
 
 

@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
     setRotationBtn->setText("Rotate Cube");
     connect(setRotationBtn, SIGNAL(clicked()),this, SLOT(setRotation()));
 
+    fillPolyBtn= new QPushButton(this);
+    fillPolyBtn->setText("Fill poly");
+    connect(fillPolyBtn, SIGNAL(clicked()),this, SLOT(fillPoly()));
+
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
@@ -40,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(persProyBtn);
     mainLayout->addWidget(orthoProyBtn);
     mainLayout->addWidget(setRotationBtn);
+    mainLayout->addWidget(fillPolyBtn);
     centralWidget()->setLayout(mainLayout);
 
 
@@ -65,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer= new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawObject()));
-    timer->start(30);
+    timer->start(1000);
 
 
     setWindowTitle(tr("3d Projection CG"));
@@ -109,7 +114,7 @@ void MainWindow::drawObject(){
 //                punto[j]=cubeObject->coord[k][j];
 //                }
 
-            camProj->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 200, 0);
+            camProj->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 300, 100, fillPolyBool);
 //        }
 
         renderwindow->pointsList.append(camProj->rasterPoint);
@@ -131,11 +136,16 @@ void MainWindow::drawObject(){
 
 //    //Rotar objeto en +1 grado
     if(rotateBool){
-        cubeObject->rotateObject(1);
+        cubeObject->rotateObject(20);
     }
 
     update();
 
+}
+
+void MainWindow::fillPoly()
+{
+    fillPolyBool = !fillPolyBool;
 }
 
 
