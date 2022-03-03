@@ -2,7 +2,7 @@
 #include<QDebug>
 #include<vector>
 void   CamProjection::projectPoint(std::vector<std::vector<double> > vertices, bool ortho,  double xdmax ,double xdmin,
-                                                                 double ydmax, double ydmin, bool fillPolyBool)
+                                                                 double ydmax, double ydmin)
 {
     std::vector<double> vProy;
  for(int k=0; k<vertices.size();++k){
@@ -58,51 +58,114 @@ void   CamProjection::projectPoint(std::vector<std::vector<double> > vertices, b
         rasterPoint.append(yd);
 
        }
-    qDebug()<< "RASTER: "<<rasterPoint;
-
-    //todo CALCULAR CARAS
-    scanFillPoly(rasterPoint[2], rasterPoint[3], rasterPoint[0], rasterPoint[1]);
-    scanFillPoly(rasterPoint[0], rasterPoint[1], rasterPoint[6], rasterPoint[7]);
-    scanFillPoly(rasterPoint[6], rasterPoint[7], rasterPoint[4], rasterPoint[5]);
-    scanFillPoly(rasterPoint[4], rasterPoint[5], rasterPoint[2], rasterPoint[3]);
-    //scanDDA();
-
-    //MAXIMOS Y
-    for(int i=1;i<8;i=i+2){
-        if(rasterPoint[i]>yMax){
-            yMax=rasterPoint[i];
-        }
-        if(rasterPoint[i]<yMin){
-            yMin=rasterPoint[i];
-        }
-    }
-    qDebug()<<yMax<<yMin;
-    qDebug() << "BUFFER 0/////////////////////////////////";
-    for(int y=0;y<400;y++){
-        if(yBuffer[y][0] != 0){
-            qDebug() << "ybuffer0"<< y <<","<<yBuffer[y][0];
-        }
-
-    }
-
-    qDebug() << "BUFFER 1/////////////////////////////////";
-    for(int y=0;y<400;y++){
-        if(yBuffer[y][1] != 0){
-            qDebug() << "ybuffer1"<< y <<","<<yBuffer[y][1];
-        }
-
-    }
+    //qDebug()<< "RASTER: "<<rasterPoint;
 
 
     if(fillPolyBool){
+    //////////////////////DRAW FACES
+        std::vector<int> face;
+        //CARA1
+        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                           rasterPoint[2], rasterPoint[3],
+                        rasterPoint[4], rasterPoint[5],
+                        rasterPoint[6], rasterPoint[7]});
+        fillCubeFace(face);
+        face.clear();
+
+        //CARA2
+        face.insert(face.end(), {rasterPoint[8], rasterPoint[9],
+                           rasterPoint[10], rasterPoint[11],
+                        rasterPoint[12], rasterPoint[13],
+                        rasterPoint[14], rasterPoint[15]});
+        fillCubeFace(face);
+
+        fillCubeFace(face);
+        face.clear();
+
+        //CARA3
+        face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
+                           rasterPoint[10], rasterPoint[11],
+                        rasterPoint[12], rasterPoint[13],
+                        rasterPoint[2], rasterPoint[3]});
+        fillCubeFace(face);
+        face.clear();
+
+        //CARA4
+        face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
+                           rasterPoint[10], rasterPoint[11],
+                        rasterPoint[8], rasterPoint[9],
+                        rasterPoint[6], rasterPoint[7]});
+        fillCubeFace(face);
+        face.clear();
+
+        //CARA5
+        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                           rasterPoint[14], rasterPoint[15],
+                        rasterPoint[12], rasterPoint[13],
+                        rasterPoint[2], rasterPoint[3]});
+        fillCubeFace(face);
+        face.clear();
+
+        //CARA6
+        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                           rasterPoint[14], rasterPoint[15],
+                        rasterPoint[8], rasterPoint[9],
+                        rasterPoint[6], rasterPoint[7
+                                 ]});
+        fillCubeFace(face);
+        face.clear();
+
+    }
+   // scanDDA();
+
+
+    vProy.clear();
+
+}
+
+
+void CamProjection::fillCubeFace(std::vector<int> face){
+    for(int i=0; i<5; i+=2){
+         scanFillPoly(face[i], face[i+1], face[i+2], face[i+3]);
+    }
+
+    scanFillPoly(face[6], face[7], face[0], face[1]);
+
+//    qDebug() << "BUFFER 0/////////////////////////////////";
+//    for(int y=0;y<400;y++){
+//        if(yBuffer[y][0] != 0){
+//            qDebug() << "ybuffer0"<< y <<","<<yBuffer[y][0];
+//        }
+
+//    }
+
+//    qDebug() << "BUFFER 1/////////////////////////////////";
+//    for(int y=0;y<400;y++){
+//        if(yBuffer[y][1] != 0){
+//            qDebug() << "ybuffer1"<< y <<","<<yBuffer[y][1];
+//        }
+
+//    }
+
+    int xmin=0,xmax=0;
+
+
         for(int y=0;y<400;++y){
-            for(int x=yBuffer[y][0]; x<= yBuffer[y][1]; ++x){
+            if(yBuffer[y][0]<yBuffer[y][1]){
+                xmin= yBuffer[y][0];
+                xmax= yBuffer[y][1];
+            } else{
+                xmin= yBuffer[y][1];
+                xmax= yBuffer[y][0];
+            }
+
+            for(int x=xmin; x<=xmax; ++x){
                 rasterPoint.append(x);
                 rasterPoint.append(y);
             }
 
         }
-    }
+
 
 
     //borrar
@@ -117,36 +180,7 @@ void   CamProjection::projectPoint(std::vector<std::vector<double> > vertices, b
     }
 
 
-//sizeof(yBuffer)/sizeof(yBuffer[0][0])
-
-
-//    int it=0;
-//    int xmin=0,xmax=0;
-//    for(int y=yMin; y<yMax; ++y){
-//        if(yBufferD[it]>yBufferU[it]){
-//            xmax=yBufferD[it];
-//            xmin=yBufferU[it];
-//        }else{
-//            xmax=yBufferU[it];
-//            xmin=yBufferD[it];
-
-//        }
-//        for(int x= xmin; x<xmax; ++x){
-//        rasterPoint.append(x);
-//        rasterPoint.append(y);
-//        }
-//        it=it+1;
- //   }
-
-
-    yBufferD.clear();
-    yBufferU.clear();
-    vProy.clear();
-
 }
-
-
-
 
 
 
@@ -163,65 +197,34 @@ void CamProjection::scanFillPoly(double x1, double y1, double x2, double y2)
         temp=y1;y1=y2;y2=temp;
     }
 
-    double dx= x2 - x1;
-    double dy= y2- y1;
+    double dx= x2-x1;
+    double dy= y2-y1;
     double m = dx/dy;
 
     double ey=int(y1+1) - y1;
     double ex= m*ey;
-
 
     double Ax= x1+ex ;
     int Ay=int(y1+1);
     int By= int(y2);
 
     double x=Ax;
-    for(int y=Ay; y<By ;y++){
+    for(int y=Ay; y<=By ;y++){
            yBuffer[y][up]=int(x);
-                  //yBufferD.push_back(int(x));
-                   //yBufferD.push_back(y);
-                   //rasterPoint.append(x);
-                   //rasterPoint.append(y);
             x+=m;
            }
 
-
-//    if(dy>0){
-//        for(int y=Ay; y<By ;y++){
-//                yBufferD.push_back(int(x));
-//                yBufferD.push_back(y);
-//                //rasterPoint.append(x);
-//                //rasterPoint.append(y);
-//                    x+=m;
-//        }
-//        if(By>yMax){
-//            yMax=By;
-//        }
-//        if(Ay<yMin){
-//            yMin=Ay;
-//        }
-
-//    }
-//    else if(dy<0){
-//        for(int y=By; y<Ay ;y++){
-//                yBufferU.push_back(int(x));
-//                yBufferU.push_back(y);
-//                //rasterPoint.append(x);
-//                //rasterPoint.append(y);
-//                    x+=m;
-//        }  }
-    //for(int i=0; i<sizeof(yBuffer)/sizeof(yBuffer[0]); ++i){
-    //qDebug()<<"yBufferD" <<yBufferD;
-    //qDebug()<<"yBufferU"<< yBufferU;
-    //qDebug()<<"y"<< yMax << ","<<yMin;
-    //}
 }
+
+
+
+
 
 
 void CamProjection::scanDDA()
 {
      std::vector<int> ddaBuffer;
-    double x1= rasterPoint[0], y1=rasterPoint[1], x2=rasterPoint[2], y2=rasterPoint[3];
+    double x1= rasterPoint[2], y1=rasterPoint[3], x2=rasterPoint[4], y2=rasterPoint[5];
     double mx=x2-x1;
     double my=y2-y1;
 

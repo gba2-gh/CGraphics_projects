@@ -10,6 +10,7 @@ class renderWindow: public QWidget{
 
 public:
     QList<int> pointsList;
+    bool drawEdgesBool=true;
     renderWindow(QWidget *parent=0); //constructor
     void paintEvent(QPaintEvent *event) override;
     void drawCubeEdges(QPainter &points, QList<int> pointsList);

@@ -21,3 +21,7 @@ void CubeObject::rotateObject(double angleD)
     this->vertices= rotateEuler(this->vertices,rotMatX);
 
 }
+
+void CubeObject::createFaces()
+{
+    }

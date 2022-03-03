@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent)
     fillPolyBtn->setText("Fill poly");
     connect(fillPolyBtn, SIGNAL(clicked()),this, SLOT(fillPoly()));
 
+    drawEdgesBtn= new QPushButton(this);
+    drawEdgesBtn->setText("Draw Edges");
+    connect(drawEdgesBtn, SIGNAL(clicked()),this, SLOT(drawEdges()));
+
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
@@ -45,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(orthoProyBtn);
     mainLayout->addWidget(setRotationBtn);
     mainLayout->addWidget(fillPolyBtn);
+    mainLayout->addWidget(drawEdgesBtn);
     centralWidget()->setLayout(mainLayout);
 
 
@@ -59,8 +64,8 @@ MainWindow::MainWindow(QWidget *parent)
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos2= {{0,0,1,  -10},
-                                                {0,1, 0,  5},
-                                                {-1,0,0 ,-10},
+                                                {0,1, 0,  20},
+                                                {-1,0,0 ,-15},
                                                 {0,0,0,1}};
 
     camProj->camMarco = camPos1;
@@ -70,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer= new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawObject()));
-    timer->start(1000);
+    timer->start(30);
 
 
     setWindowTitle(tr("3d Projection CG"));
@@ -107,36 +112,27 @@ void MainWindow::drawObject(){
 
 
     //Cámara 1
-    //Enviar a cada vértice a la proyección con la cámara 1
-//        double punto[4];
-//        for(int k=0; k<8;++k){
-//            for(int j=0;j<4;++j){
-//                punto[j]=cubeObject->coord[k][j];
-//                }
+        camProj->fillPolyBool=fillPolyBool;
+        camProj->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 200, 0);
 
-            camProj->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 300, 100, fillPolyBool);
-//        }
-
+        renderwindow->drawEdgesBool=drawEdgesBool;
         renderwindow->pointsList.append(camProj->rasterPoint);
         camProj->rasterPoint.clear();
 
-//    //Cámara 2
-//    double punto2[4];
-//    for(int k=0; k<8;++k){
-//        for(int j=0;j<4;++j){
-//            punto2[j]=cubeObject->coord[k][j];
-//            }
 
-//        camProj2->projectPoint(punto2, orthoProy, 300, 100, 400, 200);
-//    }
+    //Cámara 2
+        camProj2->fillPolyBool=fillPolyBool;
+        camProj2->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 400, 200);
 
-//    renderwindow->pointsList.append(camProj2->rasterPoint);
+        renderwindow->drawEdgesBool=drawEdgesBool;
+        renderwindow->pointsList.append(camProj2->rasterPoint);
+        camProj2->rasterPoint.clear();
+
 //// qDebug()<< renderwindow->pointsList;
-//   camProj2->rasterPoint.clear();
 
 //    //Rotar objeto en +1 grado
     if(rotateBool){
-        cubeObject->rotateObject(20);
+        cubeObject->rotateObject(1);
     }
 
     update();
@@ -146,6 +142,11 @@ void MainWindow::drawObject(){
 void MainWindow::fillPoly()
 {
     fillPolyBool = !fillPolyBool;
+}
+
+void MainWindow::drawEdges()
+{
+    drawEdgesBool= !drawEdgesBool;
 }
 
 

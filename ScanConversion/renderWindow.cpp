@@ -33,10 +33,9 @@ void renderWindow::paintEvent(QPaintEvent *event)
     for(int k=0; k<pointsList.size()-1;k=k+2) {//fork
         points.drawPoint(pointsList[k],pointsList[k+1]);
 }
-
-    //drawCubeEdges(points, pointsList);
-//    lineDDA(points,pointsList.value(0), pointsList.value(1),
-//             pointsList.value(2), pointsList.value(3));
+    if(drawEdgesBool){
+    drawCubeEdges(points, pointsList);
+    }
 
 
 
@@ -44,9 +43,6 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
 
 }
-
-
-
 
 
 void renderWindow::drawCubeEdges(QPainter &points, QList<int> pointsList)
@@ -57,17 +53,12 @@ void renderWindow::drawCubeEdges(QPainter &points, QList<int> pointsList)
 
         lineDDA(points,pointsList.value(0), pointsList.value(1),
                  pointsList.value(14), pointsList.value(15));
-
         lineDDA(points,pointsList.value(2), pointsList.value(3),
                  pointsList.value(12), pointsList.value(13));
-
         lineDDA(points,pointsList.value(4), pointsList.value(5),
                  pointsList.value(10), pointsList.value(11));
-
        lineDDA(points,pointsList.value(6), pointsList.value(7),
                 pointsList.value(8), pointsList.value(9));
-
-
        lineDDA(points,pointsList.value(6), pointsList.value(7),
                 pointsList.value(0), pointsList.value(1));
 

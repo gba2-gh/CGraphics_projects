@@ -31,6 +31,7 @@ public slots:
     void setRotation();
     void drawObject();
     void fillPoly();
+    void drawEdges();
 
 
 private:
@@ -40,6 +41,7 @@ private:
     QPushButton *persProyBtn;
     QPushButton *setRotationBtn;
     QPushButton *fillPolyBtn;
+    QPushButton *drawEdgesBtn;
     renderWindow *renderwindow;
     CamProjection *camProj;
     CamProjection *camProj2;
@@ -49,5 +51,6 @@ private:
     bool orthoProy= false;
     bool rotateBool=false;
     bool fillPolyBool=false;
+    bool drawEdgesBool=true;
 };
 #endif // MAINWINDOW_H
