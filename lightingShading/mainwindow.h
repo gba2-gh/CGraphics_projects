@@ -1,0 +1,58 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+
+#include<QPainter>
+#include<QApplication>
+#include<QtWidgets>
+#include"renderWindow.h"
+#include"camProjection.h"
+#include"cubeobject.h"
+#include"lights.h"
+
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+class renderWindow;
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+public slots:
+    void pickColor();
+    void setOrtho();
+    void setPers();
+    void setRotation();
+    void drawObject();
+    void fillPoly();
+    void drawEdges();
+
+
+private:
+    Ui::MainWindow *ui;
+    QPushButton *colorBtn;
+    QPushButton *orthoProyBtn;
+    QPushButton *persProyBtn;
+    QPushButton *setRotationBtn;
+    QPushButton *fillPolyBtn;
+    QPushButton *drawEdgesBtn;
+    renderWindow *renderwindow;
+    CamProjection *camProj;
+    CamProjection *camProj2;
+    CubeObject *cubeObject;
+    ambientLight *ambLight;
+
+    QTimer *timer ;
+    bool orthoProy= false;
+    bool rotateBool=false;
+    bool fillPolyBool=false;
+    bool drawEdgesBool=true;
+};
+#endif // MAINWINDOW_H

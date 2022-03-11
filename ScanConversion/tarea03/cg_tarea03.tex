@@ -89,9 +89,12 @@ En la clase CamProjection se programa el método de scan conversion para rellena
 
 Después de proyectar y de pasar las coordenadas al plano del dispositivo, la función \textit{fillCubeFace()} recibe las coordenadas de cada una de las 6 caras del cubo (representadas por 4 vértices). Esta función llama a \textit{scanFillPoly()} que realiza el scan conversion, siguiendo cada una de las aristas y llenando el \textit{Buffer}, representado por un arreglo multidimensional.
 
+
 Una vez completado el \textit{Buffer} se utiliza la información de este para ingresar los puntos a dibujar a la lista rasterPoints. Esta QList es la que finalmente se dibuja sobre el canvas.
 
-En renderwindow se realizó una implementación de DDA en la función \textit{lideDDA()}
+El color de las caras se puede modificar en la clase renderWidow, can la variable pointPen. El color elegido es el blanco.
+
+También en renderwindow se realizó una implementación de DDA en la función \textit{lineDDA()}
 
 \section{Ejecutar el programa}
 En la carpeta de build se puede ejecutar el programa con el archivo ScanConversion-Run. Desde la consola de comandos de linux:
