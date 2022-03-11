@@ -29,6 +29,7 @@ public:
 
     void scanFillPoly(double x1, double y1, double x2, double y2);
     void scanDDA();
+    void drawFaces();
     void fillCubeFace(std::vector<int> face);
 };
 

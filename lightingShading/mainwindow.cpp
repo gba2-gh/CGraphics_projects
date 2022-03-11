@@ -86,6 +86,12 @@ MainWindow::MainWindow(QWidget *parent)
     renderwindow->pointPen.setColor(QColor(I_R,I_G,I_B,255));
 
 
+
+
+
+
+
+
     timer= new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawObject()));
     timer->start(30);

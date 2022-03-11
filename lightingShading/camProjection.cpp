@@ -58,63 +58,10 @@ void   CamProjection::projectPoint(std::vector<std::vector<double> > vertices, b
         rasterPoint.append(yd);
 
        }
-    //qDebug()<< "RASTER: "<<rasterPoint;
 
 
     if(fillPolyBool){
-    //////////////////////DRAW FACES
-        std::vector<int> face;
-        //CARA1
-        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
-                           rasterPoint[2], rasterPoint[3],
-                        rasterPoint[4], rasterPoint[5],
-                        rasterPoint[6], rasterPoint[7]});
-        fillCubeFace(face);
-        face.clear();
-
-        //CARA2
-        face.insert(face.end(), {rasterPoint[8], rasterPoint[9],
-                           rasterPoint[10], rasterPoint[11],
-                        rasterPoint[12], rasterPoint[13],
-                        rasterPoint[14], rasterPoint[15]});
-        fillCubeFace(face);
-
-        fillCubeFace(face);
-        face.clear();
-
-        //CARA3
-        face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
-                           rasterPoint[10], rasterPoint[11],
-                        rasterPoint[12], rasterPoint[13],
-                        rasterPoint[2], rasterPoint[3]});
-        fillCubeFace(face);
-        face.clear();
-
-        //CARA4
-        face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
-                           rasterPoint[10], rasterPoint[11],
-                        rasterPoint[8], rasterPoint[9],
-                        rasterPoint[6], rasterPoint[7]});
-        fillCubeFace(face);
-        face.clear();
-
-        //CARA5
-        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
-                           rasterPoint[14], rasterPoint[15],
-                        rasterPoint[12], rasterPoint[13],
-                        rasterPoint[2], rasterPoint[3]});
-        fillCubeFace(face);
-        face.clear();
-
-        //CARA6
-        face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
-                           rasterPoint[14], rasterPoint[15],
-                        rasterPoint[8], rasterPoint[9],
-                        rasterPoint[6], rasterPoint[7
-                                 ]});
-        fillCubeFace(face);
-        face.clear();
-
+        drawFaces();
     }
    // scanDDA();
 
@@ -123,6 +70,63 @@ void   CamProjection::projectPoint(std::vector<std::vector<double> > vertices, b
 
 }
 
+
+void CamProjection::drawFaces(){
+
+    std::vector<int> face;
+    //CARA1
+    face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                       rasterPoint[2], rasterPoint[3],
+                    rasterPoint[4], rasterPoint[5],
+                    rasterPoint[6], rasterPoint[7]});
+    fillCubeFace(face);
+    face.clear();
+
+    //CARA2
+    face.insert(face.end(), {rasterPoint[8], rasterPoint[9],
+                       rasterPoint[10], rasterPoint[11],
+                    rasterPoint[12], rasterPoint[13],
+                    rasterPoint[14], rasterPoint[15]});
+    fillCubeFace(face);
+
+    fillCubeFace(face);
+    face.clear();
+
+    //CARA3
+    face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
+                       rasterPoint[10], rasterPoint[11],
+                    rasterPoint[12], rasterPoint[13],
+                    rasterPoint[2], rasterPoint[3]});
+    fillCubeFace(face);
+    face.clear();
+
+    //CARA4
+    face.insert(face.end(), {rasterPoint[4], rasterPoint[5],
+                       rasterPoint[10], rasterPoint[11],
+                    rasterPoint[8], rasterPoint[9],
+                    rasterPoint[6], rasterPoint[7]});
+    fillCubeFace(face);
+    face.clear();
+
+    //CARA5
+    face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                       rasterPoint[14], rasterPoint[15],
+                    rasterPoint[12], rasterPoint[13],
+                    rasterPoint[2], rasterPoint[3]});
+    fillCubeFace(face);
+    face.clear();
+
+    //CARA6
+    face.insert(face.end(), {rasterPoint[0], rasterPoint[1],
+                       rasterPoint[14], rasterPoint[15],
+                    rasterPoint[8], rasterPoint[9],
+                    rasterPoint[6], rasterPoint[7
+                             ]});
+    fillCubeFace(face);
+    face.clear();
+
+
+}
 
 void CamProjection::fillCubeFace(std::vector<int> face){
     for(int i=0; i<5; i+=2){
