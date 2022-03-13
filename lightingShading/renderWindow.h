@@ -10,6 +10,8 @@ class renderWindow: public QWidget{
 
 public:
     QList<int> pointsList;
+    QList<int> pixelColor[3];
+
     bool drawEdgesBool=true;
     renderWindow(QWidget *parent=0); //constructor
     void paintEvent(QPaintEvent *event) override;

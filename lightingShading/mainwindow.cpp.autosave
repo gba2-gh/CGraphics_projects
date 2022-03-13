@@ -79,11 +79,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     ambLight->intensity = 1;
 
-    double I[3];
+//    double I[3];
 
-    I[0]= (ambLight->intensity * cubeObject->ka[0]) *255 ;
-    I[1]= (ambLight->intensity * cubeObject->ka[1]) *255 ;
-    I[2]= (ambLight->intensity * cubeObject->ka[2]) *255 ;
+//    I[0]= (ambLight->intensity * cubeObject->ka[0]) *255 ;
+//    I[1]= (ambLight->intensity * cubeObject->ka[1]) *255 ;
+//    I[2]= (ambLight->intensity * cubeObject->ka[2]) *255 ;
 
 //    for(int i=0; i<3; ++i){
 
