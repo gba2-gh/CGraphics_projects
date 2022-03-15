@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
                                                 {0,0,1,-35},
                                                 {0,0,0,1}};
 
+
+
     std::vector<std::vector<double> > camPos2= {{0,0,1,  -10},
                                                 {0,1, 0,  20},
                                                 {-1,0,0 ,-15},
@@ -163,7 +165,7 @@ void MainWindow::drawObject(){
 
 //    //Cámara 2
 //        camProj2->fillPolyBool=fillPolyBool;
-//        camProj2->projectPoint(*cubeObject, orthoProy, 300, 100, 400, 200);
+//        camProj2->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
 
 //        renderwindow->drawEdgesBool=drawEdgesBool;
 //        renderwindow->pointsList.append(camProj2->rasterPoint);

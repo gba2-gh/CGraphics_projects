@@ -33,20 +33,20 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
 //    pointPen.setColor(QColor(Ia*255,Ia*255,Ia*255,255));
 
-    points.setPen(pointPen);
 
-    int temp;
-    for(int i=0;i<pixelColor[0].size(); ++i){
-        for(int j=0; j<=02; j++){
-            temp = (int)pixelColor[j][i];
-            if (temp >255){
-                temp=255;}
-            if(temp<=0){
-                temp=0;
-            }
-            pixelColor[j][i] = temp   ;
-        }
-    }
+
+//    int temp;
+//    for(int i=0;i<pixelColor[0].size(); ++i){
+//        for(int j=0; j<=02; j++){
+//            temp = (int)pixelColor[j][i];
+//            if (temp >255){
+//                temp=255;}
+//            if(temp<=0){
+//                temp=100;
+//            }
+//            pixelColor[j][i] = temp   ;
+//        }
+//    }
 
 
 
@@ -55,14 +55,14 @@ void renderWindow::paintEvent(QPaintEvent *event)
         pointPen.setColor(QColor(pixelColor[0][k], pixelColor[1][k], pixelColor[2][k],255));
 
         //pointPen.setColor(QColor(250, 200, 200,255));
-
+        points.setPen(pointPen);
 
         points.drawPoint(pointsList[k][0],pointsList[k][1]);
 
 
-        qDebug() << k;
-        qDebug() << "coord"<< pointsList[k][0]<<pointsList[k][1];
-        qDebug()<< "color"<< pixelColor[0][k] <<pixelColor[1][k]<<pixelColor[2][k];
+//        qDebug() << k;
+//        qDebug() << "coord"<< pointsList[k][0]<<pointsList[k][1];
+//        qDebug()<< "color"<< pixelColor[0][k] <<pixelColor[1][k]<<pixelColor[2][k];
 
 }
 
@@ -76,9 +76,9 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
     pointsList.clear();
 
-//    pixelColor[0].clear();
-//    pixelColor[1].clear();
-//    pixelColor[2].clear();
+    pixelColor[0].clear();
+    pixelColor[1].clear();
+    pixelColor[2].clear();
 
 
 }

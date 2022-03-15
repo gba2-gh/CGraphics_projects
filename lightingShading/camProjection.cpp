@@ -85,15 +85,34 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             }
             dp=dot_product(L,cubeobject.vertexNormals[k]);
             I += Id*kd[i]*dp ;
-           // I += 40*kd[i]*dot_product(L2,cubeobject.vertexNormals[k]);
-            if(I<=0){I=0;}
             L.clear();
-            I=200;
+           //I += 40*kd[i]*dot_product(L2,cubeobject.vertexNormals[k]);
+
             rasterColor[i].append(I);
          }
        }
 
+//    double min=255, max=0;
+//    //0 a 255
+//    for(int i=0; i<=rasterColor[0].size(); ++i){
+//        for(int j=0; j<=2;++j){
+//            if(rasterColor[j][i] < min){
+//                 min=rasterColor[j][i];
+//            }
+//            if(rasterColor[j][i] > max){
+//                 max=rasterColor[j][i];
+//            }
+//        }
+//    }
+//    I=0;
+//    for(int i=0; i<=rasterColor[0].size(); ++i){
+//        for(int j=0; j<=2;++j){
 
+//            I= (rasterColor[j][i]-min)*((255-0)/(max-min));
+//            rasterColor[j][i]=I;
+
+//        }
+//    }
 
     if(fillPolyBool){
         drawFaces(cubeobject);
@@ -120,11 +139,11 @@ void CamProjection::drawFaces(CubeObject cubeobject){
 //            rasterColor[2], rasterColor[3]);
 
     fillCubeFace(0,1,2,3);
-//    fillCubeFace(4,5,6,7);
-//    fillCubeFace(0,1,6,7);
-//    fillCubeFace(2,3,4,5);
-//    fillCubeFace(1,2,5,6);
-//    fillCubeFace(0,3,4,7);
+    fillCubeFace(4,5,6,7);
+    fillCubeFace(0,1,6,7);
+    fillCubeFace(2,3,4,5);
+    fillCubeFace(1,2,5,6);
+    fillCubeFace(0,3,4,7);
    // face.clear();
 
 //    //CARA2
