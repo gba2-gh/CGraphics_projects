@@ -5,7 +5,7 @@
 renderWindow::renderWindow(QWidget *parent):
     QWidget(parent){
 
-    pointPen.setColor(Qt::white);
+    //pointPen.setColor(Qt::white);
     //pointsList.append(200);
     //pointsList.append(200);
 }
@@ -35,16 +35,50 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
     points.setPen(pointPen);
 
-    for(int k=0; k<pointsList.size()-1;k=k+2) {//fork
-        points.drawPoint(pointsList[k],pointsList[k+1]);
-}
-    if(drawEdgesBool){
-        drawCubeEdges(points, pointsList);
+    int temp;
+    for(int i=0;i<pixelColor[0].size(); ++i){
+        for(int j=0; j<=02; j++){
+            temp = (int)pixelColor[j][i];
+            if (temp >255){
+                temp=255;}
+            if(temp<=0){
+                temp=0;
+            }
+            pixelColor[j][i] = temp   ;
+        }
     }
 
 
 
+    for(int k=0; k<pointsList.size();k=k+1) {//fork
+
+        pointPen.setColor(QColor(pixelColor[0][k], pixelColor[1][k], pixelColor[2][k],255));
+
+        //pointPen.setColor(QColor(250, 200, 200,255));
+
+
+        points.drawPoint(pointsList[k][0],pointsList[k][1]);
+
+
+        qDebug() << k;
+        qDebug() << "coord"<< pointsList[k][0]<<pointsList[k][1];
+        qDebug()<< "color"<< pixelColor[0][k] <<pixelColor[1][k]<<pixelColor[2][k];
+
+}
+
+
+
+//    if(drawEdgesBool){
+//        drawCubeEdges(points, pointsList);
+//    }
+
+
+
     pointsList.clear();
+
+//    pixelColor[0].clear();
+//    pixelColor[1].clear();
+//    pixelColor[2].clear();
 
 
 }

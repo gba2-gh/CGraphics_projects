@@ -52,7 +52,7 @@ private:
     QTimer *timer ;
     bool orthoProy= false;
     bool rotateBool=false;
-    bool fillPolyBool=false;
+    bool fillPolyBool=true;
     bool drawEdgesBool=true;
 };
 #endif // MAINWINDOW_H

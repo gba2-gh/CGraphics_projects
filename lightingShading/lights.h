@@ -7,7 +7,7 @@ class lights
 public:
     lights();
 
-    double intensity;
+    double intensity=1;
     double color[3]={0,0,0};
     //double reflecCoef;
 
@@ -17,8 +17,6 @@ public:
                                         {0,0,0,1}};
 
 };
-
-
 
 
 class ambientLight : public lights {

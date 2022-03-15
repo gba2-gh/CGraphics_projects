@@ -79,27 +79,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     ambLight->intensity = 1;
 
-    double I[3];
+//    double I[3];
 
-    I[0]= (ambLight->intensity * cubeObject->ka[0]) *255 ;
-    I[1]= (ambLight->intensity * cubeObject->ka[1]) *255 ;
-    I[2]= (ambLight->intensity * cubeObject->ka[2]) *255 ;
+//    I[0]= (ambLight->intensity * cubeObject->ka[0]) *255 ;
+//    I[1]= (ambLight->intensity * cubeObject->ka[1]) *255 ;
+//    I[2]= (ambLight->intensity * cubeObject->ka[2]) *255 ;
 
 //    for(int i=0; i<3; ++i){
 
 //        I[i] += cubeObject->kd
 
 //    }
-    renderwindow->pixelColor[0].append();
+    //renderwindow->pixelColor[0].append();
 
-    renderwindow->pointPen.setColor(QColor(I[0],I[1],I[2],255));
-
-
+    //renderwindow->pointPen.setColor(QColor(I[0],I[1],I[2],255));
 
 
 
 
 
+
+    drawObject();
 
     timer= new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawObject()));
@@ -107,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     setWindowTitle(tr("3d Projection CG"));
+    update();
 }
 
 MainWindow::~MainWindow()
@@ -124,36 +125,55 @@ void MainWindow::pickColor()
 void MainWindow::setOrtho()
 {
     orthoProy=true;
+    drawObject();
 }
 
 void MainWindow::setPers()
 {
     orthoProy=false;
+    drawObject();
 }
 
 void MainWindow::setRotation()
 {
     rotateBool= !rotateBool;
+    drawObject();
 }
 
 void MainWindow::drawObject(){
 
 
     //Cámara 1
+        qDebug() << fillPolyBool;
         camProj->fillPolyBool=fillPolyBool;
-        camProj->projectPoint(cubeObject->vertices, orthoProy, 400, 000, 400, 0);
+        camProj->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
 
         renderwindow->drawEdgesBool=drawEdgesBool;
         renderwindow->pointsList.append(camProj->rasterPoint);
+
+        for(int i=0;i<=2;++i){
+            renderwindow->pixelColor[i].append(camProj->rasterColor[i]);
+            camProj->rasterColor[i].clear();
+
+        }
+       // qDebug() << renderwindow->pointsList;
         camProj->rasterPoint.clear();
 
 
-    //Cámara 2
+
+//    //Cámara 2
 //        camProj2->fillPolyBool=fillPolyBool;
-//        camProj2->projectPoint(cubeObject->vertices, orthoProy, 300, 100, 400, 200);
+//        camProj2->projectPoint(*cubeObject, orthoProy, 300, 100, 400, 200);
 
 //        renderwindow->drawEdgesBool=drawEdgesBool;
 //        renderwindow->pointsList.append(camProj2->rasterPoint);
+
+//        for(int i=0;i<=2;++i){
+//            renderwindow->pixelColor[i].append(camProj2->rasterColor[i]);
+//            camProj2->rasterColor[i].clear();
+
+//        }
+
 //        camProj2->rasterPoint.clear();
 
 //// qDebug()<< renderwindow->pointsList;
@@ -170,6 +190,7 @@ void MainWindow::drawObject(){
 void MainWindow::fillPoly()
 {
     fillPolyBool = !fillPolyBool;
+    drawObject();
 }
 
 void MainWindow::drawEdges()

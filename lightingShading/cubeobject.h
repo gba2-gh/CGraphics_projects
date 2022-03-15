@@ -20,10 +20,13 @@ public:
     double ke[3]={0.633, 0.72811,0.66};
 
 
+
+
    //caras
    std::vector<std::vector<std::vector <double> > > faces;
 
-   std::vector<std::vector <double> > normals;
+   std::vector<std::vector <double> > faceNormals;
+   std::vector<std::vector <double> >  vertexNormals;
 //    std::vector<std::vector<double> > vertices={{20,15,0,1},
 //                              {0,10,0,1},
 //                              {20,0,0,1},
@@ -32,8 +35,12 @@ public:
 
     void rotateObject(double angleD);
     std::vector<std::vector <double> > createFace(int v0, int v1, int v2, int v3);
-    std::vector<double> calcNormal(std::vector<std::vector<double> > face);
-
+    std::vector<double> calcFaceNormal(std::vector<std::vector<double> > face);
+    void calcVertexNormal(std::vector<double> fn1,
+                                                     std::vector<double> fn2,
+                                                     std::vector<double> fn3);
+    void calcVerticesNormal();
+    void createFaces();
 };
 
 #endif // CUBEOBJECT_H

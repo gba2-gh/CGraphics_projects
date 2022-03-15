@@ -9,8 +9,8 @@ class renderWindow: public QWidget{
     Q_OBJECT //para poder crear slots
 
 public:
-    QList<int> pointsList;
-    QList<int> pixelColor[3];
+    QList<QList<int>> pointsList;
+    QList<double> pixelColor[3];
 
     bool drawEdgesBool=true;
     renderWindow(QWidget *parent=0); //constructor

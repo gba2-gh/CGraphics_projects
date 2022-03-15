@@ -8,24 +8,24 @@
 CubeObject::CubeObject()
 {
     ///CREATE FACES
-    faces.insert(faces.end(), createFace(0,1,2,3));
-    faces.insert(faces.end(), createFace(4,5,6,7));
 
-    faces.insert(faces.end(), createFace(7,6,1,0));
-    faces.insert(faces.end(), createFace(5,4,3,2));
-
-    faces.insert(faces.end(), createFace(6,5,2,1));
-    faces.insert(faces.end(), createFace(0,3,4,7));
-    //qDebug()<<"dos"<<faces[5];
-
-
+    createFaces();
     ///CALCULAR NORMALES
     ///
+    ///
     for(int i=0; i<=5; ++i){
-        normals.insert(normals.end(), calcNormal(faces[i]));
+        faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
     }
 
-    qDebug()<<normals;
+
+    ////VERTEX NORMAL
+    ///
+    calcVerticesNormal();
+
+    //qDebug()<<faceNormals;
+
+
+
 }
 
 void CubeObject::rotateObject(double angleD)
@@ -40,6 +40,16 @@ void CubeObject::rotateObject(double angleD)
 
     this->vertices= rotateEuler(this->vertices,rotMatX);
 
+    createFaces();
+       faceNormals.clear();
+    for(int i=0; i<=5; ++i){
+        faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
+    }
+
+    calcVerticesNormal();
+
+
+
 }
 
 std::vector<std::vector <double> > CubeObject::createFace(int v0, int v1, int v2, int v3)
@@ -52,7 +62,8 @@ std::vector<std::vector <double> > CubeObject::createFace(int v0, int v1, int v2
     return face;
     }
 
-std::vector<double> CubeObject::calcNormal(std::vector<std::vector<double> > face){
+std::vector<double> CubeObject::calcFaceNormal(std::vector<std::vector<double> > face){
+
     std::vector<double> v0v1;
     std::vector<double> v0v3;
 
@@ -72,3 +83,50 @@ std::vector<double> CubeObject::calcNormal(std::vector<std::vector<double> > fac
     return pc;
 
 }
+
+
+
+void CubeObject::calcVertexNormal(std::vector<double> fn1,
+                                                 std::vector<double> fn2,
+                                                 std::vector<double> fn3)
+{
+
+    std::vector<double> v0n;
+
+    v0n=sum_vectors(fn1, fn2);
+    v0n=sum_vectors(v0n, fn3);
+    v0n=norm_vector(v0n);
+    vertexNormals.push_back(v0n);
+
+}
+
+void CubeObject::calcVerticesNormal()
+{
+    vertexNormals.clear();
+    calcVertexNormal(faceNormals[0],faceNormals[2],faceNormals[5]); //v0
+    calcVertexNormal(faceNormals[0],faceNormals[2],faceNormals[4]); //v1
+    calcVertexNormal(faceNormals[0],faceNormals[3],faceNormals[4]); //v2
+    calcVertexNormal(faceNormals[0],faceNormals[3],faceNormals[5]); //v3
+    calcVertexNormal(faceNormals[1],faceNormals[3],faceNormals[5]); //v4
+    calcVertexNormal(faceNormals[1],faceNormals[3],faceNormals[4]); //v5
+    calcVertexNormal(faceNormals[1],faceNormals[2],faceNormals[4]); //v6
+    calcVertexNormal(faceNormals[1],faceNormals[2],faceNormals[5]); //v7
+   // qDebug() << vertexNormals;
+
+}
+
+void CubeObject::createFaces()
+{
+    faces.clear();
+    faces.insert(faces.end(), createFace(0,1,2,3)); //f0
+    faces.insert(faces.end(), createFace(4,5,6,7)); //f1
+
+    faces.insert(faces.end(), createFace(7,6,1,0)); //f2
+    faces.insert(faces.end(), createFace(5,4,3,2)); //f3
+
+    faces.insert(faces.end(), createFace(6,5,2,1)); //f4
+    faces.insert(faces.end(), createFace(0,3,4,7)); //f5
+    //qDebug()<<"dos"<<faces[5];
+}
+
+
