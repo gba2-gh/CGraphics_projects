@@ -10,11 +10,9 @@ public:
     double intensity=1;
     double color[3]={0,0,0};
     //double reflecCoef;
+    double p=0;
 
-    std::vector<std::vector<double> > lightPos= {{1,0,0,0},
-                                        {0,1,0,40},
-                                        {0,0,1,0},
-                                        {0,0,0,1}};
+    std::vector<double> lightPos;
 
 };
 

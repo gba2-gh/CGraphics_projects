@@ -74,14 +74,14 @@ std::vector<double> norm_vector(std::vector<double> v)
 }
 
 
-double dot_product(std::vector<double> v1, std::vector<double> v2){
+//double dot_product(std::vector<double> v1, std::vector<double> v2){
 
-    double sum=0;
-    for(int i=0; i<v1.size(); ++i){
-        sum += v1[i]*v2[i];
-    }
-    return sum;
-}
+//    double sum=0;
+//    for(int i=0; i<v1.size(); ++i){
+//        sum += v1[i]*v2[i];
+//    }
+//    return sum;
+//}
 
 
 

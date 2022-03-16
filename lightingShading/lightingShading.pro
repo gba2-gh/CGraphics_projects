@@ -29,6 +29,7 @@ HEADERS += \
     lights.h \
     mainwindow.h \
     renderWindow.h \
+    shading.h \
     transformations.h
 
 FORMS += \

@@ -25,14 +25,20 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    std::vector<lights> lightScene;
+
 public slots:
     void pickColor();
     void setOrtho();
     void setPers();
     void setRotation();
     void drawObject();
-    void fillPoly();
-    void drawEdges();
+    void setSwitchCamera();
+    void setLight1On();
+    void setLight2On();
+    void setLight3On();
+    void setGouShade();
+    void setPhongShade();
 
 
 private:
@@ -43,16 +49,31 @@ private:
     QPushButton *setRotationBtn;
     QPushButton *fillPolyBtn;
     QPushButton *drawEdgesBtn;
+    QPushButton *switchCamera;
+    QPushButton *light1On;
+    QPushButton *light2On;
+    QPushButton *light3On;
+    QPushButton *gouraud;
+    QPushButton *phong;
+
+
     renderWindow *renderwindow;
     CamProjection *camProj;
     CamProjection *camProj2;
     CubeObject *cubeObject;
     ambientLight *ambLight;
+    lights lightWhite;
+    lights lightRed;
+    lights   lightSpec;
 
     QTimer *timer ;
     bool orthoProy= false;
     bool rotateBool=false;
-    bool fillPolyBool=true;
-    bool drawEdgesBool=true;
+    bool cam1Bool=true;
+    bool l1=true;
+    bool l2=true;
+    bool l3=true;
+    bool phongBool=false;
+
 };
 #endif // MAINWINDOW_H
