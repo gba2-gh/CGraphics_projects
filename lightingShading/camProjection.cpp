@@ -191,6 +191,7 @@ void CamProjection::drawFaces(int cam){
     fillCubeFace(0,3,4,7);
 
 
+
     if(cam==1){
     fillCubeFace(0,1,6,7);
     fillCubeFace(4,5,6,7);

@@ -128,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start(30);
 
 
-    setWindowTitle(tr("3d Projection CG"));
+    setWindowTitle(tr("Lighting&Shading CG"));
     update();
 }
 
