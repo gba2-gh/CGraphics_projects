@@ -9,3 +9,9 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+
+///BACKFACE CULLING
+///ALGORITMO DEL PINTOR
+/// ERROR EN ESPECULAR PHONG
+///OBJETO CARAS
+///FUNCION INTERPOLACION

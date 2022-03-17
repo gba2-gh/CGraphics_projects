@@ -7,14 +7,28 @@
 #define MY_PI 3.14159265358979323846
 CubeObject::CubeObject()
 {
+
+    facesV.insert(facesV.end(), {face0, face1, face2, face3, face4, face5});
     ///CREATE FACES
+    facesV[0].vertices= createFace(0,1,2,3);
+
+    ///formar caras como referencia a los vertices de la cara
+    std::vector<std::reference_wrapper<std::vector<double>> > faceP;
+
+    for(int i=0; i<vertices.size(); ++i){
+        faceP.push_back( vertices[i]);
+    }
+
+    qDebug() << faceP[0].get();
 
     createFaces();
+
     ///CALCULAR NORMALES
     ///
     ///
     for(int i=0; i<=5; ++i){
         faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
+        facesV[i].normal = calcFaceNormal(faces[i]) ;
     }
 
 
@@ -51,6 +65,24 @@ void CubeObject::rotateObject(double angleD)
 
 
 }
+
+
+void CubeObject::createFaces()
+{
+    faces.clear();
+    faces.insert(faces.end(), createFace(0,1,2,3)); //f0
+    faces.insert(faces.end(), createFace(4,5,6,7)); //f1
+
+    faces.insert(faces.end(), createFace(7,6,1,0)); //f2
+    faces.insert(faces.end(), createFace(5,4,3,2)); //f3
+
+    faces.insert(faces.end(), createFace(6,5,2,1)); //f4
+    faces.insert(faces.end(), createFace(0,3,4,7)); //f5
+    //qDebug()<<"dos"<<faces[5];
+}
+
+
+
 
 std::vector<std::vector <double> > CubeObject::createFace(int v0, int v1, int v2, int v3)
 {
@@ -115,18 +147,5 @@ void CubeObject::calcVerticesNormal()
 
 }
 
-void CubeObject::createFaces()
-{
-    faces.clear();
-    faces.insert(faces.end(), createFace(0,1,2,3)); //f0
-    faces.insert(faces.end(), createFace(4,5,6,7)); //f1
-
-    faces.insert(faces.end(), createFace(7,6,1,0)); //f2
-    faces.insert(faces.end(), createFace(5,4,3,2)); //f3
-
-    faces.insert(faces.end(), createFace(6,5,2,1)); //f4
-    faces.insert(faces.end(), createFace(0,3,4,7)); //f5
-    //qDebug()<<"dos"<<faces[5];
-}
 
 

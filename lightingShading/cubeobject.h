@@ -19,6 +19,15 @@ public:
     double kd[3]={0.07568, 0.61424,0.07568};
     double ke[3]={0.633, 0.72811,0.66};
 
+    struct face
+    {
+        std::vector<std::vector <double> > vertices;
+        double position=0;
+        std::vector <double> normal;
+    };
+
+    face face0, face1, face2, face3, face4, face5;
+    std::vector<face> facesV;
 
 
 

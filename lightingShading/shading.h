@@ -74,7 +74,7 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, in
         I +=aux;
 
         L.clear();
-        qDebug() <<I;
+        //qDebug() <<I;
 
         if(I>255){I=255;}
         if(I<0){I=0;}

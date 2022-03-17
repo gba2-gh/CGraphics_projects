@@ -85,7 +85,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, std::vector<lights> li
 
      }
 
-     ///FRIST VERTEX COLOR
+     ///FIRST VERTEX COLOR
     for(int k=0; k<rasterPoint.size(); ++k){
         for(int i =0; i<=2; ++i){
             rasterColor[i].append(calcLightVertex(cubeobject, lightScene, k, i));
