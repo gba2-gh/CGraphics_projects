@@ -4,85 +4,73 @@
 #include"cubeobject.h"
 #include<cmath>
 #include"shading.h"
+#include"functions.h"
 
 
 
 void   CamProjection::projectPoint(CubeObject cubeobject, std::vector<lights> lightScene, bool ortho,  double xdmax ,double xdmin,
                                                                  double ydmax, double ydmin, int cam, bool phongBool)
 {
-    for(int i=0; i<cubeobject.vertices.size();++i){
-        vertices.insert(vertices.end(), cubeobject.vertices[i]);
-    }
-
     std::vector<std::vector<double> > vProy;
- for(int k=0; k<cubeobject.vertices.size();++k){
 
-    double point[4];
-    for(int j=0;j<4;++j){
-          point[j]=cubeobject.vertices[k][j];
+    for(int k=0; k<cubeobject.vertices.size();++k){//Proyectar cada vértice
 
-                   }
+        //MULTIPLICAR PUNTO POR EL MARCO DE LA CÁMARA
+        double p[4];
+        double suma;
 
-    double p[4];
-
-    double suma;
-
-    for(int i=0; i<4; ++i){
-        for(int j=0;j<4;++j){
-                suma += camMarco[i][j]*point[j];
+        for(int i=0; i<4; ++i){
+            for(int j=0;j<4;++j){
+                    suma += camMarco[i][j]*cubeobject.vertices[k][j];
+            }
+            p[i]=suma;
+            suma=0;
         }
-        p[i]=suma;
-        suma=0;
-    }
+
+        //PROYECTAR PUNTO
+        int f=1;
+        std::vector<double > vp;
+        if(ortho){//Ortogonal
+            vp.push_back(p[0]);
+            vp.push_back(p[1]);
+        }
+        else{//Perspectiva
+            vp.push_back(p[0]*f/-p[2]);
+            vp.push_back(p[1]*f/-p[2]);
+        }
+        vProy.push_back(vp);
+        vp.clear();
+
+     }//end for proyeccion
 
 
-    //Proyectar
-    int f=1;
-    std::vector<double > vp;
-    if(ortho){//Ortogonal
-        vp.push_back(p[0]);
-        vp.push_back(p[1]);
-    }
-    else{//Perspectiva
-        vp.push_back(p[0]*f/-p[2]);
-        vp.push_back(p[1]*f/-p[2]);
-    }
-    vProy.push_back(vp);
-    vp.clear();
- }
+    //RASTERIZAR
+        //CALCULOS DE LA VENTANA
+        int canvSc=1;
+        if(ortho){canvSc=20;}
+        QList<int> p_dev;
+        double xpmax=2*canvSc, xpmin=-2*canvSc;
+        double ypmax=2*canvSc, ypmin=-2*canvSc;
+        double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
+        double ox = sx*(-xpmin)+ xdmin, oy = sx*(-ypmin)+ ydmin;
 
-    //qDebug()<<vProy;
+        for(int k=0; k<vProy.size(); ++k){
 
-//RASTERIZAR
-    int canvSc=1;
-    if(ortho){canvSc=20;}
-    QList<int> p_dev;
-    double xpmax=2*canvSc, xpmin=-2*canvSc;
-    double ypmax=2*canvSc, ypmin=-2*canvSc;
-    double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
-    double ox = sx*(-xpmin)+ xdmin, oy = sx*(-ypmin)+ ydmin;
+            p_dev.append(sx*vProy[k][0] + ox);
+            p_dev.append(sy*vProy[k][1] + oy);
 
-
-
-    for(int k=0; k<vProy.size(); ++k){
-
-        p_dev.append(sx*vProy[k][0] + ox);
-        p_dev.append(sy*vProy[k][1] + oy);
-
-        rasterPoint.append(p_dev);
-        p_dev.clear();
-        //rasterPoint.append(yd);  
+            rasterPoint.append(p_dev);
+            p_dev.clear();
        }
 
      vProy.clear();
 
-
+///////////////////////////////////
     ///FIRST VERTEX LIGHTPOS
      for(int k=0; k<cubeobject.vertices.size(); ++k){
          for(int j =0; j<=2; ++j){
              rasterLightPos[j].append(cubeobject.vertices[k][j] - lightScene[0].lightPos[j]);
          }
-
      }
 
      ///FIRST VERTEX COLOR
@@ -108,11 +96,9 @@ void   CamProjection::projectPoint(CubeObject cubeobject, std::vector<lights> li
          }
      }
 
-
-
     drawFaces(cam);
 
-
+    //PHONG
     if(phongBool){
     for (int i=0; i<=2; i++){
             rasterColor[i].clear();
@@ -172,14 +158,12 @@ void   CamProjection::projectPoint(CubeObject cubeobject, std::vector<lights> li
     }
     }
 
-
-
     for (int i=0; i<=2; i++){
             rasterNormal[i].clear();
             rasterLightPos[i].clear();
        }
 
-    vertices.clear();
+
 }
 
 
@@ -211,6 +195,12 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
         scanFillPoly(v2,v3);
         scanFillPoly(v3,v0);
 
+        //INTERPOLAR
+        rasterColor[0].append(interpolar(yBuffer, colorBuffer[0]));
+        rasterColor[1].append(interpolar(yBuffer, colorBuffer[1]));
+        rasterColor[2].append(interpolar(yBuffer, colorBuffer[2]));
+
+
     int xmin=0,xmax=0;
     double imin[3]={0};
     double imax[3]={0};
@@ -221,7 +211,6 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
     double omin[3]={0};
     double omax[3]={0};
 
-    double deltaI[3];
     double deltaN[3];
     double deltaL[3];
     double deltaO[3];
@@ -233,10 +222,7 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
                     xmin= yBuffer[y][0];
                     xmax= yBuffer[y][1];
 
-                    for(int i=0; i<=2; ++i){
-                        imin[i]= colorBuffer[i][y][0];
-                        imax[i]= colorBuffer[i][y][1];
-                        }
+
                     for(int i=0; i<=2; ++i){
                         nmin[i]= normalBuffer[i][y][0];
                         nmax[i]= normalBuffer[i][y][1];
@@ -256,10 +242,6 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
                     xmax= yBuffer[y][0];
 
                     for(int i=0; i<=2; ++i){
-                        imin[i]= colorBuffer[i][y][1];
-                        imax[i]= colorBuffer[i][y][0];
-                        }
-                    for(int i=0; i<=2; ++i){
                         nmin[i]= normalBuffer[i][y][1];
                         nmax[i]= normalBuffer[i][y][0];
 
@@ -275,7 +257,7 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
                 }
 
                 for(int i=0;i<=2;++i){
-                    deltaI[i]=(imin[i]-imax[i])/(xmin-xmax);
+
                     deltaN[i]=(nmin[i]-nmax[i])/(xmin-xmax);
                     deltaL[i]=(lmin[i]-lmax[i])/(xmin-xmax);
                     deltaO[i]=(omin[i]-omax[i])/(xmin-xmax);
@@ -290,8 +272,6 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
                 p_fill.clear();
 
                 for(int i=0; i<=2; ++i){
-                    rasterColor[i].append(imin[i]);
-                    imin[i] += deltaI[i];
 
                     rasterNormal[i].append(nmin[i]);
                     nmin[i] += deltaN[i];

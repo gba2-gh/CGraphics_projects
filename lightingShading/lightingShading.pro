@@ -18,19 +18,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     camProjection.cpp \
     cubeobject.cpp \
+    functions.cpp \
     lights.cpp \
     main.cpp \
     mainwindow.cpp \
-    renderWindow.cpp
+    renderWindow.cpp \
+    shading.cpp
 
 HEADERS += \
     camProjection.h \
     cubeobject.h \
+    functions.h \
     lights.h \
     mainwindow.h \
     renderWindow.h \
-    shading.h \
-    transformations.h
+    shading.h
 
 FORMS += \
     mainwindow.ui

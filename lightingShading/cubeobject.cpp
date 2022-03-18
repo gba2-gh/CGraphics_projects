@@ -1,6 +1,6 @@
 #include "cubeobject.h"
 #include<cmath>
-#include"transformations.h"
+#include"functions.h"
 #include<qdebug.h>
 
 
