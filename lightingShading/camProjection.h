@@ -40,7 +40,7 @@ public:
                                         {0,0,1,0},
                                         {0,0,0,1}};
 
-    void scanFillPoly(int v1, int v2  );
+    void scanLine(int v1, int v2  );
     void scanDDA();
     void drawFaces(int cam);
     //void fillCubeFace(std::vector<QList<int> > face);

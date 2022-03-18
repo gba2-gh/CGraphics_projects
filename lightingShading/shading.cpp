@@ -3,6 +3,8 @@
 #include<cmath>
 #include<qdebug.h>
 #include"functions.h"
+#include"cubeobject.h"
+#include"lights.h"
 
 double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, int k, int i){
 
@@ -74,3 +76,67 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, in
     return I;
     // }
 }
+
+
+std::vector<double> lightVertex(CubeObject cubeobject, std::vector<double> L, std::vector<double> N, std::vector<double> O, std::vector<lights> lightScene){
+
+    std::vector<double> I_v;
+    double I;
+    double dp=0;
+    double Ia=100;
+    double aux=0;
+
+    std::vector<double> h;
+
+    for(int i=0; i<=2; ++i){
+
+        //AMBIENT
+        I= Ia*cubeobject.ka[i];
+
+        //DIFFUSE
+        dp=dot_product(L, N);
+
+        I += lightScene[0].color[i]*(lightScene[0].intensity*cubeobject.kd[i]*dp) ;
+        I += lightScene[1].color[i]*(lightScene[1].intensity*cubeobject.kd[i]*dp) ;
+
+        //SPECULAR
+        h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
+        h[0] -= L[0];h[1] -= L[1]; h[2] -= L[2];
+
+
+        double power= pow(dot_product(O, h),lightScene[2].p);
+        aux = lightScene[2].intensity*cubeobject.ke[i]*power ;
+        if(aux<0){aux=0;}
+
+        I +=aux;
+        if(I>255){I=255;}
+        if(I<0){I=0;}
+
+        I_v.push_back(I);
+        h.clear();
+
+    }
+
+    return I_v;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -72,7 +72,7 @@ double dot_product(std::vector<double> v1, std::vector<double> v2){
 
 
 
-QList<double> interpolar(int yBuffer[400][2], double colorBuffer[400][2]){
+QList<double> horInterpolation(int yBuffer[400][2], double colorBuffer[400][2]){
 
     QList<double>  rasterColor;
 
@@ -82,39 +82,65 @@ QList<double> interpolar(int yBuffer[400][2], double colorBuffer[400][2]){
 
     double deltaI;
 
-      for(int y=0;y<400;++y){
+    for(int y=0;y<400;++y){
 
-                if(yBuffer[y][0]<yBuffer[y][1]){
+           if(yBuffer[y][0]<yBuffer[y][1]){
                     xmin= yBuffer[y][0];
                     xmax= yBuffer[y][1];
 
-                        imin= colorBuffer[y][0];
-                        imax= colorBuffer[y][1];
-
-
-                }
-                else{
+                    imin= colorBuffer[y][0];
+                    imax= colorBuffer[y][1];
+            }
+            else{
                     xmin= yBuffer[y][1];
                     xmax= yBuffer[y][0];
+                    imin= colorBuffer[y][1];
+                    imax= colorBuffer[y][0];
+            }
 
-                        imin= colorBuffer[y][1];
-                        imax= colorBuffer[y][0];
-
-               }
-
-                    deltaI=(imin-imax)/(xmin-xmax);
+           deltaI=(imin-imax)/(xmin-xmax);
 
            for(int x=xmin; x<=xmax; ++x){
 
                rasterColor.append(imin);
                imin += deltaI;
-
             }
 
-        }
+    }
 
       return rasterColor;
-
-
-
 }
+
+
+QList<QList<int>> scanConversion(int yBuffer[400][2]){
+    QList<QList<int>> output;
+    int xmin=0,xmax=0;
+    QList<int> p_fill;
+
+    for(int y=0;y<400;++y){
+
+           if(yBuffer[y][0]<yBuffer[y][1]){
+                    xmin= yBuffer[y][0];
+                    xmax= yBuffer[y][1];
+              }
+           else{
+                    xmin= yBuffer[y][1];
+                    xmax= yBuffer[y][0];
+               }
+
+           for(int x=xmin; x<=xmax; ++x){
+                p_fill.append(x);
+                p_fill.append(y);
+                output.append(p_fill);
+                p_fill.clear();
+            }
+     }
+
+    return output;
+}
+
+
+
+
+
+

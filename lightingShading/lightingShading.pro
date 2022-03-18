@@ -22,6 +22,7 @@ SOURCES += \
     lights.cpp \
     main.cpp \
     mainwindow.cpp \
+    raster.cpp \
     renderWindow.cpp \
     shading.cpp
 
@@ -31,6 +32,7 @@ HEADERS += \
     functions.h \
     lights.h \
     mainwindow.h \
+    raster.h \
     renderWindow.h \
     shading.h
 

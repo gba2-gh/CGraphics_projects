@@ -14,8 +14,8 @@ std::vector<double> norm_vector(std::vector<double> v);
 
 double dot_product(std::vector<double> v1, std::vector<double> v2);
 
-QList<double> interpolar(int yBuffer[400][2], double colorBuffer[400][2]);
+QList<double> horInterpolation(int yBuffer[400][2], double colorBuffer[400][2]);
 
-
+QList<QList<int>> scanConversion(int yBuffer[400][2]);
 
 #endif // FUNCTIONS_H

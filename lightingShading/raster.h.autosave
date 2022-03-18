@@ -1,0 +1,11 @@
+#ifndef RASTER_H
+#define RASTER_H
+
+
+struct raster
+{
+public:
+    raster();
+};
+
+#endif // RASTER_H
