@@ -15,11 +15,11 @@ void   CamProjection::projectPoint(CubeObject cubeobject, std::vector<lights> li
     }
 
     std::vector<std::vector<double> > vProy;
- for(int k=0; k<vertices.size();++k){
+ for(int k=0; k<cubeobject.vertices.size();++k){
 
     double point[4];
     for(int j=0;j<4;++j){
-          point[j]=vertices[k][j];
+          point[j]=cubeobject.vertices[k][j];
 
                    }
 
@@ -210,26 +210,6 @@ void CamProjection::fillCubeFace(int v0, int v1, int v2, int v3){
         scanFillPoly(v1,v2);
         scanFillPoly(v2,v3);
         scanFillPoly(v3,v0);
-
-//    qDebug() << "BUFFER 0/////////////////////////////////";
-//    for(int y=0;y<400;y++){
-//        if(yBuffer[y][0] != 0){
-//            qDebug() << "ybuffer0"<< y <<","<<yBuffer[y][0];
-
-//            qDebug() << "colorR:"<< y <<","<< colorBuffer[0][y][0];
-
-//        }
-
-//    }
-
-//    qDebug() << "BUFFER 1/////////////////////////////////";
-//    for(int y=0;y<400;y++){
-//        if(yBuffer[y][1] != 0){
-//            qDebug() << "ybuffer1"<< y <<","<<yBuffer[y][1];
-//            qDebug() << "colorR:"<< y <<","<< colorBuffer[0][y][0];ç
-//        }
-
-//    }
 
     int xmin=0,xmax=0;
     double imin[3]={0};
@@ -457,50 +437,4 @@ void CamProjection::scanFillPoly(int v1, int v2)
 }
 
 
-
-
-
-
-//void CamProjection::scanDDA()
-//{
-//     std::vector<int> ddaBuffer;
-//    double x1= rasterPoint[2], y1=rasterPoint[3], x2=rasterPoint[4], y2=rasterPoint[5];
-//    double mx=x2-x1;
-//    double my=y2-y1;
-
-//    double s=0;
-//    if (abs(mx)>abs(my)){
-//        s = abs(mx);
-//    }else{
-//            s=abs(my);
-//    }
-
-//    double dx= mx/s, dy=my/s;
-//    int x=x1, y=y1;
-
-
-//    for(int i=0; i<s; i++){
-//        x=int(x1+dx*i);
-//        y=int(y1+dy*i);
-//        ddaBuffer.push_back(x);
-//        ddaBuffer.push_back(y);
-
-//        rasterPoint.append(x);
-//        rasterPoint.append(y);
-
-//    }
-
-//    qDebug()<<ddaBuffer;
-//}
-
-
-
-//double CamProjection::dot_product(std::vector<double> v1, std::vector<double> v2){
-
-//    double sum=0;
-//    for(int i=0; i<v1.size(); ++i){
-//        sum += v1[i]*v2[i];
-//    }
-//    return sum;
-//}
 

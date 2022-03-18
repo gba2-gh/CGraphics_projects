@@ -10,16 +10,17 @@ CubeObject::CubeObject()
 
     facesV.insert(facesV.end(), {face0, face1, face2, face3, face4, face5});
     ///CREATE FACES
-    facesV[0].vertices= createFace(0,1,2,3);
 
     ///formar caras como referencia a los vertices de la cara
-    std::vector<std::reference_wrapper<std::vector<double>> > faceP;
 
-    for(int i=0; i<vertices.size(); ++i){
-        faceP.push_back( vertices[i]);
-    }
-
-    qDebug() << faceP[0].get();
+    //asignar vertices como referencias
+    //numero de cara y los 4 vertices
+    faceVertices(0,0,1,2,3);
+    faceVertices(1,4,5,6,7);
+    faceVertices(2,7,6,1,0);
+    faceVertices(3,5,4,3,2);
+    faceVertices(4,6,5,2,1);
+    faceVertices(5,0,3,4,7);
 
     createFaces();
 
@@ -28,7 +29,7 @@ CubeObject::CubeObject()
     ///
     for(int i=0; i<=5; ++i){
         faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
-        facesV[i].normal = calcFaceNormal(faces[i]) ;
+        facesV[i].normal = calcFaceNormal(facesV[i].get_face()) ;
     }
 
 
@@ -36,11 +37,30 @@ CubeObject::CubeObject()
     ///
     calcVerticesNormal();
 
-    //qDebug()<<faceNormals;
 
+}
+
+void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
+{
+
+    facesV[i].vertices.push_back(vertices[v0]);
+    facesV[i].vertices.push_back(vertices[v1]);
+    facesV[i].vertices.push_back(vertices[v2]);
+    facesV[i].vertices.push_back(vertices[v3]);
 
 
 }
+
+
+//void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
+//{
+//    facesV[i].vertices.push_back(vertices[v0]);
+//    facesV[i].vertices.push_back(vertices[v1]);
+//    facesV[i].vertices.push_back(vertices[v2]);
+//    facesV[i].vertices.push_back(vertices[v3]);
+//}
+
+
 
 void CubeObject::rotateObject(double angleD)
 {
@@ -149,3 +169,15 @@ void CubeObject::calcVerticesNormal()
 
 
 
+
+std::vector<std::vector<double> > CubeObject::face::get_face()
+{
+
+                std::vector<std::vector<double>> vec;
+                for(int i=0; i<=3;++i){
+                    vec.push_back(this->vertices[i].get());
+                }
+
+                return vec;
+
+}

@@ -21,9 +21,12 @@ public:
 
     struct face
     {
-        std::vector<std::vector <double> > vertices;
+        std::vector<std::reference_wrapper<std::vector<double> > >  vertices;
         double position=0;
         std::vector <double> normal;
+
+        std::vector<std::vector<double>> get_face();
+
     };
 
     face face0, face1, face2, face3, face4, face5;
@@ -41,15 +44,18 @@ public:
 //                              {20,0,0,1},
 //                             };
 
-
-    void rotateObject(double angleD);
+    void faceVertices(int i, int v0, int v1, int v2, int v3);
     std::vector<std::vector <double> > createFace(int v0, int v1, int v2, int v3);
+
+
     std::vector<double> calcFaceNormal(std::vector<std::vector<double> > face);
     void calcVertexNormal(std::vector<double> fn1,
                                                      std::vector<double> fn2,
                                                      std::vector<double> fn3);
     void calcVerticesNormal();
     void createFaces();
+    void rotateObject(double angleD);
+
 };
 
 #endif // CUBEOBJECT_H
