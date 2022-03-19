@@ -52,16 +52,6 @@ void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
 }
 
 
-//void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
-//{
-//    facesV[i].vertices.push_back(vertices[v0]);
-//    facesV[i].vertices.push_back(vertices[v1]);
-//    facesV[i].vertices.push_back(vertices[v2]);
-//    facesV[i].vertices.push_back(vertices[v3]);
-//}
-
-
-
 void CubeObject::rotateObject(double angleD)
 {
     double angleR=angleD*MY_PI/180;

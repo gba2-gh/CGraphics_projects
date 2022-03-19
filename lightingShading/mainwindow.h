@@ -10,6 +10,7 @@
 #include"camProjection.h"
 #include"cubeobject.h"
 #include"lights.h"
+#include"raster.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -25,7 +26,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    std::vector<lights> lightScene;
+    std::vector<lights*> lightScene;
 
 public slots:
     void pickColor();
@@ -62,9 +63,10 @@ private:
     CamProjection *camProj2;
     CubeObject *cubeObject;
     ambientLight *ambLight;
-    lights lightWhite;
-    lights lightRed;
-    lights   lightSpec;
+    lights *lightWhite;
+    lights *lightRed;
+    lights   *lightSpec;
+    raster *raster1;
 
     QTimer *timer ;
     bool orthoProy= false;

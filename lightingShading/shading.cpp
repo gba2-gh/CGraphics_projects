@@ -1,12 +1,9 @@
 #include"cubeobject.h"
 #include"lights.h"
-#include<cmath>
-#include<qdebug.h>
 #include"functions.h"
-#include"cubeobject.h"
-#include"lights.h"
 
-double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, int k, int i){
+
+double calcLightVertex(CubeObject cubeobject, std::vector<lights*> lightScene, int k, int i){
 
     //LIGHTS////
     double I=0;
@@ -25,25 +22,25 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, in
 
     I= Ia*cubeobject.ka[i];
     for (int j=0; j<=2; ++j){
-        L.push_back(cubeobject.vertices[k][j]-lightScene[0].lightPos[j]);
+        L.push_back(cubeobject.vertices[k][j]-lightScene[0]->lightPos[j]);
     }
     dp=dot_product(L,cubeobject.vertexNormals[k]);
-    I += lightScene[0].color[i]*(lightScene[0].intensity*cubeobject.kd[i]*dp) ;
+    I += lightScene[0]->color[i]*(lightScene[0]->intensity*cubeobject.kd[i]*dp) ;
 
     L.clear();
 
     //L2
     for (int j=0; j<=2; ++j){
-        L.push_back(cubeobject.vertices[k][j]-lightScene[1].lightPos[j]);
+        L.push_back(cubeobject.vertices[k][j]-lightScene[1]->lightPos[j]);
     }
     dp=dot_product(L,cubeobject.vertexNormals[k]);
-    I += lightScene[1].color[i]*(lightScene[1].intensity*cubeobject.kd[i]*dp) ;
+    I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.kd[i]*dp) ;
 
     L.clear();
 
     //specular
     for (int j=0; j<=2; ++j){
-        L.push_back(cubeobject.vertices[k][j]-lightScene[2].lightPos[j]);
+        L.push_back(cubeobject.vertices[k][j]-lightScene[2]->lightPos[j]);
     }
     dp= 2*dot_product(L, cubeobject.vertexNormals[k]);
     h.insert(h.end(), {dp*cubeobject.vertexNormals[k][0],
@@ -59,8 +56,8 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, in
     dp=dot_product(o, h);
     h.clear();
     o.clear();
-    double power= pow(dp,lightScene[2].p);
-    aux = lightScene[2].intensity*cubeobject.ke[i]*power ;
+    double power= pow(dp,lightScene[2]->p);
+    aux = lightScene[2]->intensity*cubeobject.ke[i]*power ;
     if(aux<0){aux=0;}
 
     I +=aux;
@@ -78,7 +75,7 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights> lightScene, in
 }
 
 
-std::vector<double> lightVertex(CubeObject cubeobject, std::vector<double> L, std::vector<double> N, std::vector<double> O, std::vector<lights> lightScene){
+std::vector<double> lightVertex(CubeObject cubeobject, std::vector<double> L, std::vector<double> N, std::vector<double> O, std::vector<lights*> lightScene){
 
     std::vector<double> I_v;
     double I;
@@ -96,16 +93,16 @@ std::vector<double> lightVertex(CubeObject cubeobject, std::vector<double> L, st
         //DIFFUSE
         dp=dot_product(L, N);
 
-        I += lightScene[0].color[i]*(lightScene[0].intensity*cubeobject.kd[i]*dp) ;
-        I += lightScene[1].color[i]*(lightScene[1].intensity*cubeobject.kd[i]*dp) ;
+        I += lightScene[0]->color[i]*(lightScene[0]->intensity*cubeobject.kd[i]*dp) ;
+        I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.kd[i]*dp) ;
 
         //SPECULAR
         h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
         h[0] -= L[0];h[1] -= L[1]; h[2] -= L[2];
 
 
-        double power= pow(dot_product(O, h),lightScene[2].p);
-        aux = lightScene[2].intensity*cubeobject.ke[i]*power ;
+        double power= pow(dot_product(O, h),lightScene[2]->p);
+        aux = lightScene[2]->intensity*cubeobject.ke[i]*power ;
         if(aux<0){aux=0;}
 
         I +=aux;

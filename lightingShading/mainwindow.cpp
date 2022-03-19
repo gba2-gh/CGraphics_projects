@@ -1,11 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include"renderWindow.h"
-#include"camProjection.h"
-#include"cubeobject.h"
-//#include"transformations.h"
-//#include"lights.h"
+
 
 #define MY_PI 3.14159265358979323846
 
@@ -17,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(400,550);
     ui->setupUi(this);
     renderwindow = new renderWindow;  
+    raster1 = new raster;
+    lightWhite = new lights;
+    lightRed = new lights;
+    lightSpec = new lights;
 
 //    colorBtn = new QPushButton(this);
 //    colorBtn->setText("Change Color");
@@ -75,27 +75,24 @@ MainWindow::MainWindow(QWidget *parent)
 
     centralWidget()->setLayout(grid);
 
-
+        cubeObject = new CubeObject;
 
     ////////RENDER PROJECTIVE POINTS
-    camProj = new CamProjection;
-    camProj2= new CamProjection;
-    cubeObject = new CubeObject;
-
-    std::vector<std::vector<double> > camPos1= {{1,0,0,0},
-                                                {0,1,0,0},
-                                                {0,0,1,-35},
-                                                {0,0,0,1}};
+//    camProj = new CamProjection;
+//    camProj2= new CamProjection;
 
 
+//    std::vector<std::vector<double> > camPos1= {{1,0,0,0},
+//                                                {0,1,0,0},
+//                                                {0,0,1,-35},
+//                                                {0,0,0,1}};
 
-    std::vector<std::vector<double> > camPos2= {{0,0,1,  -10},
-                                                {0,1, 0,  5},
-                                                {-1,0,0 ,-15},
-                                                {0,0,0,1}};
-
-    camProj->camMarco = camPos1;
-    camProj2->camMarco=camPos2;
+//    std::vector<std::vector<double> > camPos2= {{0,0,1,  -10},
+//                                                {0,1, 0,  5},
+//                                                {-1,0,0 ,-15},
+//                                                {0,0,0,1}};
+//    camProj->camMarco = camPos1;
+//    camProj2->camMarco=camPos2;
 
 
     ///////////LIGHTS
@@ -108,19 +105,19 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //lightWhite = new lights;
-    lightWhite.intensity=10;
-    lightWhite.lightPos.insert(lightWhite.lightPos.end(),{ 10,10,10});
-    lightWhite.color[0]=0.8; lightWhite.color[1]=0.8; lightWhite.color[2]=0.8;
+    lightWhite->intensity=10;
+    lightWhite->lightPos.insert(lightWhite->lightPos.end(),{ 10,10,10});
+    lightWhite->color[0]=0.8; lightWhite->color[1]=0.8; lightWhite->color[2]=0.8;
 
     //lightRed = new lights;
-    lightRed.intensity=80;
-    lightRed.lightPos.insert(lightRed.lightPos.end(),{ 10,10,10});
-    lightRed.color[0]=0.8; lightRed.color[1]=0; lightRed.color[2]=0;
+    lightRed->intensity=80;
+    lightRed->lightPos.insert(lightRed->lightPos.end(),{ 10,10,10});
+    lightRed->color[0]=0.8; lightRed->color[1]=0; lightRed->color[2]=0;
 
-    lightSpec.intensity=2;
-    lightSpec.lightPos.insert(lightSpec.lightPos.end(),{10,10,10});
-    lightSpec.color[0]=0.8; lightSpec.color[1]=0.8; lightSpec.color[2]=0.8;
-    lightSpec.p=1;
+    lightSpec->intensity=2;
+    lightSpec->lightPos.insert(lightSpec->lightPos.end(),{10,10,10});
+    lightSpec->color[0]=0.8; lightSpec->color[1]=0.8; lightSpec->color[2]=0.8;
+    lightSpec->p=1;
 
 
     timer= new QTimer(this);
@@ -169,36 +166,29 @@ void MainWindow::drawObject(){
     lightScene.push_back(lightRed);
     lightScene.push_back(lightSpec);
 
-    if(cam1Bool){
-    //Cámara 1
-        camProj->projectPoint(*cubeObject, lightScene, orthoProy, 400, 0, 400, 0, 1, phongBool);
-        renderwindow->pointsList.append(camProj->rasterPoint);
+//    if(cam1Bool){
+//        camProj->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
+//        raster1->rasterPoint.append(camProj->rasterPoint);
+//        camProj->rasterPoint.clear();
+//    }else{
+//        camProj2->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
+//        raster1->rasterPoint.append(camProj2->rasterPoint);
+//        camProj2->rasterPoint.clear();
+//    }
 
+
+
+
+    raster1->pipeline(*cubeObject, lightScene, orthoProy, phongBool, cam1Bool);
+
+        //RASTER A CANVAS
+        renderwindow->pointsList.append(raster1->rasterPoint);
+        raster1->rasterPoint.clear();
         for(int i=0;i<=2;++i){
-            renderwindow->pixelColor[i].append(camProj->rasterColor[i]);
-            camProj->rasterColor[i].clear();
+            renderwindow->pixelColor[i].append(raster1->rasterColor[i]);
+            raster1->rasterColor[i].clear();
 
         }
-       // qDebug() << renderwindow->pointsList;
-        camProj->rasterPoint.clear();
-
-    }
-    else{
-
-    //Cámara 2
-
-        camProj2->projectPoint(*cubeObject, lightScene, orthoProy, 400, 0, 400, 0, 2, phongBool);
-        renderwindow->pointsList.append(camProj2->rasterPoint);
-
-        for(int i=0;i<=2;++i){
-            renderwindow->pixelColor[i].append(camProj2->rasterColor[i]);
-            camProj2->rasterColor[i].clear();
-
-        }
-        camProj2->rasterPoint.clear();
-    }
-
-//// qDebug()<< renderwindow->pointsList;
 
 //    //Rotar objeto en +1 grado
     if(rotateBool){
@@ -210,6 +200,7 @@ void MainWindow::drawObject(){
 
 }
 
+
 void MainWindow::setSwitchCamera()
 {
  cam1Bool = !cam1Bool;
@@ -219,11 +210,11 @@ void MainWindow::setSwitchCamera()
 void MainWindow::setLight1On()
 {
     if(l1){
-        lightWhite.intensity=0;
+        lightWhite->intensity=0;
         l1=false;
     }
     else{
-        lightWhite.intensity=10;
+        lightWhite->intensity=10;
         l1=true;
     }
     drawObject();
@@ -232,11 +223,11 @@ void MainWindow::setLight1On()
 void MainWindow::setLight2On()
 {
     if(l2){
-        lightRed.intensity=0;
+        lightRed->intensity=0;
         l2=false;
     }
     else{
-        lightRed.intensity=80;
+        lightRed->intensity=80;
         l2=true;
     }
     drawObject();
@@ -246,11 +237,11 @@ void MainWindow::setLight2On()
 void MainWindow::setLight3On()
 {
     if(l3){
-        lightSpec.intensity=0;
+        lightSpec->intensity=0;
         l3=false;
     }
     else{
-        lightSpec.intensity=2;
+        lightSpec->intensity=2;
         l3=true;
     }
     drawObject();
