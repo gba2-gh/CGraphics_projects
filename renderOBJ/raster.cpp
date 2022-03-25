@@ -13,7 +13,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     CamProjection camProj;
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-3},
+                                                {0,0,1,-35},
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos3= {{0,0,1,  -30},
@@ -22,10 +22,11 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
                                                 {0,0,0,1}};
 
 
-    std::vector<std::vector<double> > camPos2= {{0.71,  0,    0.71, 0},
-                                                {0,  1,    0,  0},
-                                                {-.071,     0,    0.71 ,   40},
-                                                {0,0,0,1}};
+    std::vector<std::vector<double
+            > > camPos2= {{0.5,  0,    -0.87,         },
+                         {0,  1,    0,               0},
+                          {0.87,     0,    0.5 ,   -40},
+                           {0,0,0,1}};
 
     if(camSelect==0){
         camProj.camMarco = camPos1;
@@ -144,11 +145,6 @@ void raster::fillCubeFace(CubeObject cubeobject){
         }
        scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0] );
 
-
-//    scanLine(0,1);
-//    scanLine(1,2);
-//    scanLine(0,2);
-//    scanLine(v3,v0);
 
     //SCAN CONVERSION
     rasterPoint.append(scanConversion(yBuffer));

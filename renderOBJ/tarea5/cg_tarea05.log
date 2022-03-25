@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.3.25)  25 MAR 2022 02:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.3.25)  25 MAR 2022 11:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**cg_tarea04.tex
-(./cg_tarea04.tex
+**cg_tarea05.tex
+(./cg_tarea05.tex
 LaTeX2e <2020-02-02> patch level 2
 L3 programming layer <2020-02-14>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -206,15 +206,11 @@ File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count268
 \l__pdf_internal_box=\box51
 )
-(./cg_tarea04.aux
-
-Package babel Warning: Unknown language `nil'. Very likely you
-(babel)                requested it in a previous run. Expect some
-(babel)                wrong results in this run, which should vanish
-(babel)                in the next one. Reported on input line 4.
-
+(./cg_tarea05.aux
+LaTeX Info: Redefining \. on input line 7.
+LaTeX Info: Redefining \% on input line 7.
 )
-\openout1 = `cg_tarea04.aux'.
+\openout1 = `cg_tarea05.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -230,7 +226,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
- (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count269
 \scratchdimen=\dimen159
@@ -301,19 +298,40 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<images/lighting.png, id=1, 539.01375pt x 200.75pt>
-File: images/lighting.png Graphic file (type png)
-<use images/lighting.png>
-Package pdftex.def Info: images/lighting.png  used on input line 41.
-(pdftex.def)             Requested size: 269.50621pt x 100.37474pt.
+<images/objetos.png, id=1, 1281.78876pt x 364.36125pt>
+File: images/objetos.png Graphic file (type png)
+<use images/objetos.png>
+Package pdftex.def Info: images/objetos.png  used on input line 38.
+(pdftex.def)             Requested size: 384.5396pt x 109.3092pt.
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./images/lighting.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./images/objetos.png>]
+<images/ESCENAA.png, id=13, 735.74875pt x 598.235pt>
+File: images/ESCENAA.png Graphic file (type png)
+<use images/ESCENAA.png>
+Package pdftex.def Info: images/ESCENAA.png  used on input line 97.
+(pdftex.def)             Requested size: 220.72632pt x 179.47188pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--107
 
  []
 
-[2] (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+[2 <./images/ESCENAA.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 108--110
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 111--113
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
+
+ []
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2019/09/10 1.8c listings language file
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -322,68 +340,88 @@ File: lstlang1.sty 2019/09/10 1.8c listings language file
 <images/gui.png, id=21, 403.5075pt x 591.20876pt>
 File: images/gui.png Graphic file (type png)
 <use images/gui.png>
-Package pdftex.def Info: images/gui.png  used on input line 174.
+Package pdftex.def Info: images/gui.png  used on input line 148.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
  [3]
+Underfull \hbox (badness 10000) in paragraph at lines 162--164
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 165--167
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--170
+
+ []
+
 <images/ej1.png, id=26, 403.5075pt x 591.20876pt>
 File: images/ej1.png Graphic file (type png)
 <use images/ej1.png>
-Package pdftex.def Info: images/ej1.png  used on input line 192.
+Package pdftex.def Info: images/ej1.png  used on input line 179.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
 <images/ej2.png, id=27, 403.5075pt x 591.20876pt>
 File: images/ej2.png Graphic file (type png)
 <use images/ej2.png>
-Package pdftex.def Info: images/ej2.png  used on input line 193.
+Package pdftex.def Info: images/ej2.png  used on input line 180.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
- [4 <./images/gui.png>]
-<images/ej3.png, id=32, 403.5075pt x 591.20876pt>
+<images/ej3.png, id=28, 403.5075pt x 591.20876pt>
 File: images/ej3.png Graphic file (type png)
 <use images/ej3.png>
-Package pdftex.def Info: images/ej3.png  used on input line 200.
+Package pdftex.def Info: images/ej3.png  used on input line 181.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
+[4 <./images/gui.png>]
 <images/ej4.png, id=33, 403.5075pt x 591.20876pt>
 File: images/ej4.png Graphic file (type png)
 <use images/ej4.png>
-Package pdftex.def Info: images/ej4.png  used on input line 201.
+Package pdftex.def Info: images/ej4.png  used on input line 188.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
- [5 <./images/ej1.png> <./images/ej2.png>]
-<images/ej5.png, id=39, 403.5075pt x 591.20876pt>
+<images/ej5.png, id=34, 403.5075pt x 591.20876pt>
 File: images/ej5.png Graphic file (type png)
 <use images/ej5.png>
-Package pdftex.def Info: images/ej5.png  used on input line 209.
+Package pdftex.def Info: images/ej5.png  used on input line 189.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
-<images/ej6.png, id=40, 403.5075pt x 591.20876pt>
+<images/ej6.png, id=35, 403.5075pt x 591.20876pt>
 File: images/ej6.png Graphic file (type png)
 <use images/ej6.png>
-Package pdftex.def Info: images/ej6.png  used on input line 210.
+Package pdftex.def Info: images/ej6.png  used on input line 190.
 (pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
- [6 <./images/ej3.png> <./images/ej4.png> <./images/ej5.png> <./images/ej6.png>
-] [7] (./cg_tarea04.aux
-LaTeX Info: Redefining \. on input line 8.
-LaTeX Info: Redefining \% on input line 8.
+ [5 <./images/ej1.png> <./images/ej2.png> <./images/ej3.png>]
+<images/esfera.png, id=42, 403.5075pt x 591.20876pt>
+File: images/esfera.png Graphic file (type png)
+<use images/esfera.png>
+Package pdftex.def Info: images/esfera.png  used on input line 197.
+(pdftex.def)             Requested size: 201.75325pt x 295.60365pt.
+ [6 <./images/ej4.png> <./images/ej5.png> <./images/ej6.png>]
+
+LaTeX Warning: Empty `thebibliography' environment on input line 207.
+
+[7 <./images/esfera.png>] (./cg_tarea05.aux
+LaTeX Info: Redefining \. on input line 7.
+LaTeX Info: Redefining \% on input line 7.
 ) ) 
 Here is how much of TeX's memory you used:
- 5650 strings out of 481239
- 74784 string characters out of 5920377
- 516313 words of memory out of 5000000
- 20857 multiletter control sequences out of 15000+600000
- 541917 words of font info for 61 fonts, out of 8000000 for 9000
+ 5669 strings out of 481239
+ 75133 string characters out of 5920377
+ 517338 words of memory out of 5000000
+ 20873 multiletter control sequences out of 15000+600000
+ 542276 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 33i,7n,51p,318b,1134s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 33i,7n,51p,838b,1134s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmtt12.pfb>
-Output written on cg_tarea04.pdf (7 pages, 320466 bytes).
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmtt12.pfb>
+Output written on cg_tarea05.pdf (7 pages, 420186 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
- 49 compressed objects within 1 object stream
+ 81 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

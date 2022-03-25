@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include"renderWindow.h"
 #include"functions.h"
+#include<qaction.h>
+#include<QAction>
+#include<QKeyEvent>
 
 #define MY_PI 3.14159265358979323846
 
@@ -10,53 +13,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
+
+
+
     cubeObject = new CubeObject;
 
-    std::string path ("../renderOBJ/object_file/sphere.obj");
+    std::string path ("../renderOBJ/object_file/Cube_Triangles.obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
     qDebug() << "Imported";
 
-//    cubeObject->vertices.insert(cubeObject->vertices.end(),{{0,0,0,1},
-//                                  {0,10,0,1},
-//                                  {20,10,0,1},
-//                                  {20,0,0,1},
-//                                  {20,0,15,1},
-//                                  {20,10,15,1},
-//                                  {0,10,15,1},
-//                                  {0,0,15,1}
-//                                 });
 
-//    cubeObject->facesIdx.insert(cubeObject->facesIdx.end(),{
-//                                    {0,1,2,3},
-//                                    {2,3,4,5},
-//                                    {1,2,5,6},
-//                                    {0,3,4,7},
-//                                    {0,1,6,7},
-//                                    {4,5,6,7}
-//                                });
 
-//        cubeObject->vertices.insert(cubeObject->vertices.end(),{
-//                                        {15.0, -15.0, 15.0, 1},
-//                                        {15.0, 15.0, 15.0,  1},
-//                                        {-15.0, 15.0, 15.0,  1},
-//                                        {-15.0, -15.0, 15.0, 1},
-//                                        {15.0, -15.0, -15.0, 1},
-//                                        {15.0, 15.0, -15.0, 1},
-//                                        {-15.0, 15.0, -15.0, 1},
-//                                        {-15.0, -15.0, -15.0, 1}
-//                                     });
-//            cubeObject->facesIdx.insert(cubeObject->facesIdx.end(),{
-//                                            {0,1,2,3},
-//                                            {1,0,4,5},
-//                                            {5,4,7,6},
-//                                            {6,7,3,2},
-//                                            {1,5,6,2},
-//                                            {0,3,7,4}
-
-//                                        });
-
-//
     cubeObject->curr_mat=0;
 
     cubeObject->calcVerticesNormal();
@@ -75,28 +43,28 @@ MainWindow::MainWindow(QWidget *parent)
 //    colorBtn->setText("Change Color");
 //    connect(colorBtn, SIGNAL(clicked()),this, SLOT(pickColor()));
 
-    orthoProyBtn = new QPushButton(this);
-    orthoProyBtn->setText("Proyeccion Ortográfica");
-    connect(orthoProyBtn, SIGNAL(clicked()),this, SLOT(setOrtho()));
+//    orthoProyBtn = new QPushButton(this);
+//    orthoProyBtn->setText("Proyeccion Ortográfica");
+//    connect(orthoProyBtn, SIGNAL(clicked()),this, SLOT(setOrtho()));
 
-    persProyBtn = new QPushButton(this);
-    persProyBtn->setText("Proyeccion Perspectiva");
-    connect(persProyBtn, SIGNAL(clicked()),this, SLOT(setPers()));
+//    persProyBtn = new QPushButton(this);
+//    persProyBtn->setText("Proyeccion Perspectiva");
+//    connect(persProyBtn, SIGNAL(clicked()),this, SLOT(setPers()));
 
-    setRotationBtn = new QPushButton(this);
-    setRotationBtn->setText("Rotate Cube");
-    connect(setRotationBtn, SIGNAL(clicked()),this, SLOT(setRotation()));
+//    setRotationBtn = new QPushButton(this);
+//    setRotationBtn->setText("Rotate Cube");
+//    connect(setRotationBtn, SIGNAL(clicked()),this, SLOT(setRotation()));
 
-    switchCamera= new QPushButton(this);
-    switchCamera->setText("Switch camera");
-    connect(switchCamera, SIGNAL(clicked()),this, SLOT(setSwitchCamera()));
+//    switchCamera= new QPushButton(this);
+//    switchCamera->setText("Switch camera");
+//    connect(switchCamera, SIGNAL(clicked()),this, SLOT(setSwitchCamera()));
 
-    light1On= new QPushButton(this);
-    light1On->setText("Luz blanca");
-    connect(light1On, SIGNAL(clicked()),this, SLOT(setLight1On()));
+//    light1On= new QPushButton(this);
+//    light1On->setText("Luz blanca");
+//    connect(light1On, SIGNAL(clicked()),this, SLOT(setLight1On()));
 
     light2On= new QPushButton(this);
-    light2On->setText("Luz 2");
+    light2On->setText("Luz Azul");
     connect(light2On, SIGNAL(clicked()),this, SLOT(setLight2On()));
 
     light3On= new QPushButton(this);
@@ -121,21 +89,33 @@ MainWindow::MainWindow(QWidget *parent)
     connect(material2, SIGNAL(clicked()),this, SLOT(setMaterial2()));
 
 
+
+    QAction *action = new QAction(this);
+    action->setShortcut(Qt::Key_R);
+    connect(action,  SIGNAL(triggered()), this, SLOT(setRotation()));
+    this->addAction(action);
+
+//    switchCamera->addAction(action);
+
+
+
+
     QGridLayout *grid = new QGridLayout(this);
     grid->setSpacing(4);
 
     grid->addWidget(renderwindow, 0, 0,1,2);
-    grid->addWidget(persProyBtn, 1, 0);
-    grid->addWidget(orthoProyBtn, 1, 1);
-    grid->addWidget(setRotationBtn, 6, 0);
-    grid->addWidget(switchCamera, 2, 0,1,2);
-    grid->addWidget(light1On,3,0,1,2);
+    //grid->addWidget(persProyBtn, 1, 0);
+    //grid->addWidget(orthoProyBtn, 1, 1);
+    //grid->addWidget(setRotationBtn, 6, 0);
+    //grid->addWidget(switchCamera, 2, 0,1,2);
+    //grid->addWidget(light1On,3,0);
     grid->addWidget(light2On, 4, 0);
     grid->addWidget(light3On, 4, 1);
     grid->addWidget(gouraud, 5, 0);
     grid->addWidget(phong, 5, 1);
     grid->addWidget(material1, 7, 0);
     grid->addWidget(material2, 7, 1);
+
 
     centralWidget()->setLayout(grid);
 
@@ -151,16 +131,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     //lightWhite = new lights;
     lightWhite->intensity=10;
-    lightWhite->lightPos.insert(lightWhite->lightPos.end(),{ 10,10,10});
+    lightWhite->lightPos.insert(lightWhite->lightPos.end(),{ -20,20,20});
     lightWhite->color[0]=0.8; lightWhite->color[1]=0.8; lightWhite->color[2]=0.8;
 
     //lightRed = new lights;
     lightRed->intensity=80;
-    lightRed->lightPos.insert(lightRed->lightPos.end(),{ 10,10,10});
-    lightRed->color[0]=0.0; lightRed->color[1]=0; lightRed->color[2]=0.8;
+    lightRed->lightPos.insert(lightRed->lightPos.end(),{ 20,-20,20});
+    lightRed->color[0]=0.01; lightRed->color[1]=0.01; lightRed->color[2]=0.8;
 
-    lightSpec->intensity=0;
-    lightSpec->lightPos.insert(lightSpec->lightPos.end(),{10,10,10});
+    lightSpec->intensity=0.1;
+    lightSpec->lightPos.insert(lightSpec->lightPos.end(),{20,20,-20});
     lightSpec->color[0]=0.8; lightSpec->color[1]=0.8; lightSpec->color[2]=0.8;
     lightSpec->p=1;
 
@@ -279,7 +259,7 @@ void MainWindow::setLight3On()
         l3=false;
     }
     else{
-        lightSpec->intensity=2;
+        lightSpec->intensity=0.1;
         l3=true;
     }
     drawObject();
@@ -304,6 +284,37 @@ void MainWindow::setMaterial1()
 void MainWindow::setMaterial2()
 {
     cubeObject->curr_mat=1;
+}
+
+void MainWindow::setCamera1()
+{
+    qDebug()<< "hi";
+    update();
+
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+
+
+    if(event->key()==Qt::Key_1){
+
+        camSelect=0;
+    }
+
+
+
+    if(event->key()==Qt::Key_2){
+
+        camSelect=1;
+    }
+
+
+    if(event->key()==Qt::Key_3){
+
+        camSelect=2;
+    }
+
 }
 
 

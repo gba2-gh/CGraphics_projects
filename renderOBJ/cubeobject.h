@@ -14,6 +14,7 @@ public:
         double kd[4]={0,0,0,1};
         double ke[4]={0,0,0,1};
         double ro=0;
+        double Ia=200;
     };
 
     material mat1, mat2;

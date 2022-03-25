@@ -11,6 +11,7 @@
 #include"cubeobject.h"
 #include"lights.h"
 #include"raster.h"
+#include<qaction.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -28,7 +29,7 @@ public:
 
     std::vector<lights*> lightScene;
     CubeObject *cubeObject;
-
+    QAction    *action;
 public slots:
 
     void pickColor();
@@ -44,6 +45,7 @@ public slots:
     void setPhongShade();
     void setMaterial1();
     void setMaterial2();
+    void setCamera1();
 
 
 private:
@@ -62,6 +64,9 @@ private:
     QPushButton *phong;
     QPushButton *material1;
      QPushButton *material2;
+
+     void keyPressEvent(QKeyEvent * event);
+
 
 
     renderWindow *renderwindow;

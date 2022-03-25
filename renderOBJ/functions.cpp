@@ -15,10 +15,8 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
     Assimp::Importer importer;
 
     const aiScene* scene = importer.ReadFile(pFile,
-  //    aiProcess_CalcTangentSpace);
-  //    aiProcess_Triangulate            |
       aiProcess_JoinIdenticalVertices  );
-  //    aiProcess_SortByPType);
+
 
      aiMesh* mesh = scene->mMeshes[0];
      aiVector3D* pPos ;
@@ -55,16 +53,11 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
      *cubeFacesIdx = facesIdx;
 
     qDebug() << facesIdx;
-    // If the import failed, report it
     if (nullptr != scene) {
         printf("Error");
-      return false;
+        return false;
     }
 
-    // Now we can access the file's contents.
-    //DoTheSceneProcessing( scene);
-
-    // We're done. Everything will be cleaned up by the importer destructor
     return true;
 }
 

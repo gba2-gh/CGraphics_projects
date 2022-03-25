@@ -1,6 +1,7 @@
 #include"cubeobject.h"
 #include"lights.h"
 #include"functions.h"
+#include<cmath>
 
 
 double calcLightVertex(CubeObject cubeobject, std::vector<lights*> lightScene, int k, int i){
@@ -20,7 +21,8 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights*> lightScene, i
     //diffuse
     // for(int i=0; i<=2; ++i){
 
-    I= Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
+    I= cubeobject.all_mat[cubeobject.curr_mat].Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
+
     for (int j=0; j<=2; ++j){
         L.push_back(cubeobject.vertices[k][j]-lightScene[0]->lightPos[j]);
     }
@@ -34,7 +36,8 @@ double calcLightVertex(CubeObject cubeobject, std::vector<lights*> lightScene, i
         L.push_back(cubeobject.vertices[k][j]-lightScene[1]->lightPos[j]);
     }
     dp=dot_product(L,cubeobject.vertexNormals[k]);
-    I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
+    double aux2=lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
+    I += abs(aux2);
 
     L.clear();
 
@@ -88,13 +91,13 @@ std::vector<double> lightVertex(CubeObject cubeobject, std::vector<double> L, st
     for(int i=0; i<=2; ++i){
 
         //AMBIENT
-        I= Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
+        I= cubeobject.all_mat[cubeobject.curr_mat].Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
 
         //DIFFUSE
         dp=dot_product(L, N);
 
         I += lightScene[0]->color[i]*(lightScene[0]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
-        I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
+        I += abs(lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp)) ;
 
         //SPECULAR
         h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
