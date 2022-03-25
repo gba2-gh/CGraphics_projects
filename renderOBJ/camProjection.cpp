@@ -33,9 +33,9 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             vp.push_back(1/p[2]);
         }
         else{//Perspectiva
-            vp.push_back(p[0]*f/-p[2]);
-            vp.push_back(p[1]*f/-p[2]);
-            vp.push_back(1/p[2]);
+            vp.push_back(p[0]*f/p[2]);
+            vp.push_back(p[1]*f/p[2]);
+            vp.push_back(abs(1/p[2]));
         }
         vProy.push_back(vp);
         vp.clear();
@@ -58,6 +58,19 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             p_dev.append(sx*vProy[k][0] + ox);
             p_dev.append(sy*vProy[k][1] + oy);
 
+
+            if(p_dev[0]>400){
+                p_dev[0]=399;
+            }
+            if(p_dev[0]<0){
+                p_dev[0]=0;
+            }
+            if(p_dev[1]>400){
+                p_dev[1]=399;
+            }
+            if(p_dev[1]<0){
+                p_dev[1]=0;
+            }
 
             rasterPoint.append(p_dev);
             rasterZ.append(vProy[k][2]);

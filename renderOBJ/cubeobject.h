@@ -7,9 +7,18 @@ class CubeObject
 public:
     CubeObject();
     std::vector<std::vector<double> > vertices;
-    double ka[3]={0.3, 0.3,0.3};
-    double kd[3]={0.07568, 0.61424,0.07568};
-    double ke[3]={0.633, 0.72811,0.66};
+
+    struct material
+    {
+        double ka[4]={0,0,0,1};
+        double kd[4]={0,0,0,1};
+        double ke[4]={0,0,0,1};
+        double ro=0;
+    };
+
+    material mat1, mat2;
+    std::vector<material> all_mat;
+    int curr_mat=0;
 
     struct face
     {
@@ -18,7 +27,6 @@ public:
         std::vector <double> normal;
 
         std::vector<std::vector<double>> get_face();
-
     };
 
     face face0, face1, face2, face3, face4, face5;
@@ -28,16 +36,12 @@ public:
     std::vector<std::vector<int> > facesIdx;
 
 
-
    //caras
    std::vector<std::vector<std::vector <double> > > faces;
 
    std::vector<std::vector <double> > faceNormals;
    std::vector<std::vector <double> >  vertexNormals;
-//    std::vector<std::vector<double> > vertices={{20,15,0,1},
-//                              {0,10,0,1},
-//                              {20,0,0,1},
-//                             };
+
 
     void faceVertices(int i, int v0, int v1, int v2, int v3);
     std::vector<std::vector <double> > createFace(int v0, int v1, int v2, int v3);

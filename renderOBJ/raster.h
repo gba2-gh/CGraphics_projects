@@ -13,7 +13,7 @@ class raster
 public:
     raster();
 
-    void pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho,bool phongBool,bool cam1Bool);
+    void pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho,bool phongBool,int camSelect);
     void drawFaces(CubeObject cubeobject);
     void fillCubeFace(int v0, int v1, int v2, int v3);
     void scanLine(int v1, int v2);

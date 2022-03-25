@@ -7,23 +7,32 @@ raster::raster()
     //colorBuffer[0][0][0]=0;
 }
 
-void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho, bool phongBool, bool cam1bool)
+void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho, bool phongBool, int camSelect)
 {
     phong = phongBool;
     CamProjection camProj;
-    std::vector<std::vector<double> > camPos1= {{1,0,0,0},
+    std::vector<std::vector<double> > camPos2= {{1,0,0,0},
                                                 {0,1,0,0},
                                                 {0,0,1,-35},
                                                 {0,0,0,1}};
 
-    std::vector<std::vector<double> > camPos2= {{0,0,1,  -20},
+    std::vector<std::vector<double> > camPos3= {{0,0,1,  -30},
                                                 {0,1, 0,  5},
-                                                {-1,0,0 ,-25},
+                                                {-1,0,0 ,-45},
                                                 {0,0,0,1}};
-    if(cam1bool){
+
+
+    std::vector<std::vector<double> > camPos1= {{0.71,  0,    0.71, 0},
+                                                {0,  1,    0,  0},
+                                                {-.071,     0,    0.71 ,   40},
+                                                {0,0,0,1}};
+
+    if(camSelect==0){
         camProj.camMarco = camPos1;
-    }else{
+    }else if(camSelect==1){
         camProj.camMarco = camPos2;
+    }else if(camSelect==2){
+        camProj.camMarco = camPos3;
     }
 
     camProj.projectPoint(cubeobject, ortho, 400, 0, 400, 0);
@@ -31,20 +40,18 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
     rasterPoint.append(camProj.rasterPoint);
     rasterZ.append(camProj.rasterZ);
-
+    qDebug() <<"rasterZ : " << rasterZ;
 
     camProj.rasterPoint.clear();
+    camProj.rasterZ.clear();
 
-
-    double test;
-    test=  calcLightVertex(cubeobject, lightScene, 7, 0);
     ///////////////////////////////////
 
          ///FIRST VERTEX COLOR
         for(int k=0; k<cubeobject.vertices.size(); ++k){
             for(int i =0; i<=2; ++i){
                 rasterColor[i].append(calcLightVertex(cubeobject, lightScene, k, i));
-               // rasterColor[i].append(255);
+
             }
         }
 
@@ -118,11 +125,10 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
 }
 
-
-
 void raster::drawFaces(CubeObject cubeobject){
 
     for(int i=0; i< cubeobject.facesIdx.size(); ++i){
+
         fillCubeFace(cubeobject.facesIdx[i][0],cubeobject.facesIdx[i][1],
                     cubeobject.facesIdx[i][2], cubeobject.facesIdx[i][3]);
     }
@@ -131,6 +137,13 @@ void raster::drawFaces(CubeObject cubeobject){
 }
 
 void raster::fillCubeFace(int v0, int v1, int v2, int v3){
+
+//    for(int i=0; i< cubeobject.facesIdx.size(); ++i){
+//        for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
+//          scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1])   ;
+//        }
+//        scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1] , cubeobject.facesIdx[i][0]);
+//    }
 
     scanLine(v0,v1);
     scanLine(v1,v2);

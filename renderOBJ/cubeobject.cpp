@@ -8,36 +8,19 @@
 CubeObject::CubeObject()
 {
 
-//    facesV.insert(facesV.end(), {face0, face1, face2, face3, face4, face5});
-//    ///CREATE FACES
+        for(int i=0; i<=2; ++i){
+            mat1.kd[i]=0.5;
+            mat1.ke[i]=0.7;
 
-//    ///formar caras como referencia a los vertices de la cara
+            mat2.ka[i]=0.23125;
+            mat2.kd[i]=0.2775;
+            mat2.ke[i]=0.773911;
+        }
+        mat1.ro=32;
+        mat2.ro=89.6;
 
-//    //asignar vertices como referencias
-//    //numero de cara y los 4 vertices
-//    faceVertices(0,0,1,2,3);
-//    faceVertices(1,4,5,6,7);
-//    faceVertices(2,7,6,1,0);
-//    faceVertices(3,5,4,3,2);
-//    faceVertices(4,6,5,2,1);
-//    faceVertices(5,0,3,4,7);
-
-//    createFaces();
-
-//    ///CALCULAR NORMALES
-//    ///
-//    ///
-//    for(int i=0; i<=5; ++i){
-//        faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
-//        facesV[i].normal = calcFaceNormal(facesV[i].get_face()) ;
-//    }
-
-
-//    ////VERTEX NORMAL
-//    ///
-//    calcVerticesNormal();
-
-
+        all_mat.push_back(mat1);
+        all_mat.push_back(mat2);
 }
 
 void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
@@ -64,11 +47,6 @@ void CubeObject::rotateObject(double angleD)
 
     this->vertices= rotateEuler(this->vertices,rotMatX);
 
-    createFaces();
-       faceNormals.clear();
-    for(int i=0; i<=5; ++i){
-        faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
-    }
 
     calcVerticesNormal();
 
@@ -80,16 +58,21 @@ void CubeObject::rotateObject(double angleD)
 void CubeObject::createFaces()
 {
     faces.clear();
-    faces.insert(faces.end(), createFace(0,1,2,3)); //f0
-    faces.insert(faces.end(), createFace(4,5,6,7)); //f1
+    std::vector<std::vector<double> > face;
 
-    faces.insert(faces.end(), createFace(7,6,1,0)); //f2
-    faces.insert(faces.end(), createFace(5,4,3,2)); //f3
+    for(int i=0; i<facesIdx.size(); ++i){
+        for(int j=0; j<facesIdx[i].size(); ++j){
+            face.push_back(vertices[facesIdx[i][j]]);
+        }
+        faces.push_back(face);
+        face.clear();
 
-    faces.insert(faces.end(), createFace(6,5,2,1)); //f4
-    faces.insert(faces.end(), createFace(0,3,4,7)); //f5
-    //qDebug()<<"dos"<<faces[5];
-}
+    }
+    //faces.push_back( createFace(facesIdx[i][0], facesIdx[i][1], facesIdx[i][2], facesIdx[i][3]));
+
+
+ }
+
 
 
 
@@ -113,7 +96,7 @@ std::vector<double> CubeObject::calcFaceNormal(std::vector<std::vector<double> >
         v0v1.push_back(face[1][i]-face[0][i]);
     }
     for(int i=0; i<face[1].size()-1; ++i){
-        v0v3.push_back(face[3][i]-face[0][i]);
+        v0v3.push_back(face[2][i]-face[0][i]);
     }
 
       //Producto cruz
@@ -144,46 +127,39 @@ void CubeObject::calcVertexNormal(std::vector<double> fn1,
 
 void CubeObject::calcVerticesNormal()
 {
-
-    facesV.insert(facesV.end(), {face0, face1, face2, face3, face4, face5});
-    ///CREATE FACES
-
+    ///CREATE FACE
     ///formar caras como referencia a los vertices de la cara
-
-    //asignar vertices como referencias
-    //numero de cara y los 4 vertices
-    faceVertices(0,0,1,2,3);
-    faceVertices(1,4,5,6,7);
-    faceVertices(2,7,6,1,0);
-    faceVertices(3,5,4,3,2);
-    faceVertices(4,6,5,2,1);
-    faceVertices(5,0,3,4,7);
-
     createFaces();
 
     ///CALCULAR NORMALES
     ///
     ///
-    for(int i=0; i<=5; ++i){
+    faceNormals.clear();
+    for(int i=0; i<faces.size(); ++i){
         faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
-        facesV[i].normal = calcFaceNormal(facesV[i].get_face()) ;
+        //facesV[i].normal = calcFaceNormal(facesV[i].get_face()) ;
     }
 
-
-
-
-
+    std::vector<double> vn={0,0,0};
 
     vertexNormals.clear();
-    calcVertexNormal(faceNormals[0],faceNormals[2],faceNormals[5]); //v0
-    calcVertexNormal(faceNormals[0],faceNormals[2],faceNormals[4]); //v1
-    calcVertexNormal(faceNormals[0],faceNormals[3],faceNormals[4]); //v2
-    calcVertexNormal(faceNormals[0],faceNormals[3],faceNormals[5]); //v3
-    calcVertexNormal(faceNormals[1],faceNormals[3],faceNormals[5]); //v4
-    calcVertexNormal(faceNormals[1],faceNormals[3],faceNormals[4]); //v5
-    calcVertexNormal(faceNormals[1],faceNormals[2],faceNormals[4]); //v6
-    calcVertexNormal(faceNormals[1],faceNormals[2],faceNormals[5]); //v7
-   // qDebug() << vertexNormals;
+    for(int v_id=0; v_id< vertices.size(); ++v_id){
+        for(int i=0; i<facesIdx.size(); ++i){
+            for(int j=0; j<facesIdx[i].size(); ++j){
+
+               if(facesIdx[i][j]==v_id){
+
+                   vn =sum_vectors(vn, faceNormals[i]);
+               }
+            }
+          }
+        vn=norm_vector(vn);
+        vertexNormals.push_back(vn);
+        vn={0,0,0};
+     }
+
+    //qDebug() <<"vertices: " <<vertices;
+    //qDebug() <<"vnormal: " << vertexNormals;
 
 }
 

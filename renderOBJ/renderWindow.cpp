@@ -1,15 +1,16 @@
 #include "renderWindow.h"
 #include <vector>
 #include <QDebug>
+#include <cmath>
 
 renderWindow::renderWindow(QWidget *parent):
     QWidget(parent){
 
-    for(int i=0; i<400; i++){
-        for(int j=0; j<400; j++){
-            depthBuffer[i][j] = 99999999;
-        }
-    }
+//    for(int i=0; i<400; i++){
+//        for(int j=0; j<400; j++){
+//            depthBuffer[i][j] = 0;
+//        }
+//    }
     //pointPen.setColor(Qt::white);
     //pointsList.append(200);
     //pointsList.append(200);
@@ -39,15 +40,12 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
         points.setPen(pointPen);
 
-        if (pointsZ[k] < depthBuffer[pointsList[k][0]][pointsList[k][1]]){
+        if (pointsZ[k] > depthBuffer[pointsList[k][0]][pointsList[k][1]]){
 
             depthBuffer[pointsList[k][0]][pointsList[k][1]] = pointsZ[k];
             points.drawPoint(pointsList[k][0],pointsList[k][1]);
 
         }
-
-
-
 
 //        qDebug() << k;
 //        qDebug() << "coord"<< pointsList[k][0]<<pointsList[k][1];
@@ -64,7 +62,7 @@ void renderWindow::paintEvent(QPaintEvent *event)
 
     for(int i=0; i<400; i++){
         for(int j=0; j<400; j++){
-            depthBuffer[i][j] = 99999999;
+            depthBuffer[i][j] = 0;
         }
     }
 

@@ -42,6 +42,8 @@ public slots:
     void setLight3On();
     void setGouShade();
     void setPhongShade();
+    void setMaterial1();
+    void setMaterial2();
 
 
 private:
@@ -58,11 +60,11 @@ private:
     QPushButton *light3On;
     QPushButton *gouraud;
     QPushButton *phong;
+    QPushButton *material1;
+     QPushButton *material2;
 
 
     renderWindow *renderwindow;
-    CamProjection *camProj;
-    CamProjection *camProj2;
 
     ambientLight *ambLight;
     lights *lightWhite;
@@ -73,11 +75,12 @@ private:
     QTimer *timer ;
     bool orthoProy= false;
     bool rotateBool=false;
-    bool cam1Bool=true;
     bool l1=true;
     bool l2=true;
     bool l3=true;
     bool phongBool=false;
+
+    int camSelect=0;
 
 };
 #endif // MAINWINDOW_H

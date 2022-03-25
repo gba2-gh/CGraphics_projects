@@ -12,11 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     cubeObject = new CubeObject;
 
-    std::string path ("/home/gba/Documents/qtProject/CGraphics_projects/lightingShading/object_file/Cube_Quads.obj");
+    std::string path ("../renderOBJ/object_file/Cube_Quads.obj");
 
-    //importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
-
-
+    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
+    qDebug() << "Imported";
 
 //    cubeObject->vertices.insert(cubeObject->vertices.end(),{{0,0,0,1},
 //                                  {0,10,0,1},
@@ -37,33 +36,30 @@ MainWindow::MainWindow(QWidget *parent)
 //                                    {4,5,6,7}
 //                                });
 
-        cubeObject->vertices.insert(cubeObject->vertices.end(),{
-                                        {15.0, -15.0, 15.0, 1},
-                                        {15.0, 15.0, 15.0,  1},
-                                        {-15.0, 15.0, 15.0,  1},
-                                        {-15.0, -15.0, 15.0, 1},
-                                        {15.0, -15.0, -15.0, 1},
-                                        {15.0, 15.0, -15.0, 1},
-                                        {-15.0, 15.0, -15.0, 1},
-                                        {-15.0, -15.0, -15.0, 1}
-                                     });
-            cubeObject->facesIdx.insert(cubeObject->facesIdx.end(),{
-                                            {0,1,2,3},
-                                            {1,0,4,5},
-                                            {5,4,7,6},
-                                            {6,7,3,2},
-                                            {1,5,6,2},
-                                            {0,3,7,4}
+//        cubeObject->vertices.insert(cubeObject->vertices.end(),{
+//                                        {15.0, -15.0, 15.0, 1},
+//                                        {15.0, 15.0, 15.0,  1},
+//                                        {-15.0, 15.0, 15.0,  1},
+//                                        {-15.0, -15.0, 15.0, 1},
+//                                        {15.0, -15.0, -15.0, 1},
+//                                        {15.0, 15.0, -15.0, 1},
+//                                        {-15.0, 15.0, -15.0, 1},
+//                                        {-15.0, -15.0, -15.0, 1}
+//                                     });
+//            cubeObject->facesIdx.insert(cubeObject->facesIdx.end(),{
+//                                            {0,1,2,3},
+//                                            {1,0,4,5},
+//                                            {5,4,7,6},
+//                                            {6,7,3,2},
+//                                            {1,5,6,2},
+//                                            {0,3,7,4}
 
-                                        });
+//                                        });
 
 //
-
-
-
+    cubeObject->curr_mat=0;
 
     cubeObject->calcVerticesNormal();
-
 
 
     ////////////GUI
@@ -100,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(light1On, SIGNAL(clicked()),this, SLOT(setLight1On()));
 
     light2On= new QPushButton(this);
-    light2On->setText("Luz roja");
+    light2On->setText("Luz 2");
     connect(light2On, SIGNAL(clicked()),this, SLOT(setLight2On()));
 
     light3On= new QPushButton(this);
@@ -114,6 +110,15 @@ MainWindow::MainWindow(QWidget *parent)
     phong= new QPushButton(this);
     phong->setText("Phong Shading");
     connect(phong, SIGNAL(clicked()),this, SLOT(setPhongShade()));
+
+    material1= new QPushButton(this);
+    material1->setText("Material 1");
+    connect(material1, SIGNAL(clicked()),this, SLOT(setMaterial1()));
+
+
+    material2= new QPushButton(this);
+    material2->setText("Material 2");
+    connect(material2, SIGNAL(clicked()),this, SLOT(setMaterial2()));
 
 
     QGridLayout *grid = new QGridLayout(this);
@@ -129,29 +134,14 @@ MainWindow::MainWindow(QWidget *parent)
     grid->addWidget(light3On, 4, 1);
     grid->addWidget(gouraud, 5, 0);
     grid->addWidget(phong, 5, 1);
+    grid->addWidget(material1, 7, 0);
+    grid->addWidget(material2, 7, 1);
 
     centralWidget()->setLayout(grid);
 
     ////////RENDER PROJECTIVE POINTS
-//    camProj = new CamProjection;
-//    camProj2= new CamProjection;
-
-
-//    std::vector<std::vector<double> > camPos1= {{1,0,0,0},
-//                                                {0,1,0,0},
-//                                                {0,0,1,-35},
-//                                                {0,0,0,1}};
-
-//    std::vector<std::vector<double> > camPos2= {{0,0,1,  -10},
-//                                                {0,1, 0,  5},
-//                                                {-1,0,0 ,-15},
-//                                                {0,0,0,1}};
-//    camProj->camMarco = camPos1;
-//    camProj2->camMarco=camPos2;
-
 
     ///////////LIGHTS
-    ///
     ///
 
     ambLight = new ambientLight;
@@ -167,9 +157,9 @@ MainWindow::MainWindow(QWidget *parent)
     //lightRed = new lights;
     lightRed->intensity=80;
     lightRed->lightPos.insert(lightRed->lightPos.end(),{ 10,10,10});
-    lightRed->color[0]=0.8; lightRed->color[1]=0; lightRed->color[2]=0;
+    lightRed->color[0]=0.0; lightRed->color[1]=0; lightRed->color[2]=0.8;
 
-    lightSpec->intensity=2;
+    lightSpec->intensity=0;
     lightSpec->lightPos.insert(lightSpec->lightPos.end(),{10,10,10});
     lightSpec->color[0]=0.8; lightSpec->color[1]=0.8; lightSpec->color[2]=0.8;
     lightSpec->p=1;
@@ -221,20 +211,8 @@ void MainWindow::drawObject(){
     lightScene.push_back(lightRed);
     lightScene.push_back(lightSpec);
 
-//    if(cam1Bool){
-//        camProj->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
-//        raster1->rasterPoint.append(camProj->rasterPoint);
-//        camProj->rasterPoint.clear();
-//    }else{
-//        camProj2->projectPoint(*cubeObject, orthoProy, 400, 0, 400, 0);
-//        raster1->rasterPoint.append(camProj2->rasterPoint);
-//        camProj2->rasterPoint.clear();
-//    }
 
-
-
-
-    raster1->pipeline(*cubeObject, lightScene, orthoProy, phongBool, cam1Bool);
+    raster1->pipeline(*cubeObject, lightScene, orthoProy, phongBool, camSelect);
 
         //RASTER A CANVAS
         renderwindow->pointsList.append(raster1->rasterPoint);
@@ -260,7 +238,10 @@ void MainWindow::drawObject(){
 
 void MainWindow::setSwitchCamera()
 {
- cam1Bool = !cam1Bool;
+ camSelect +=1;
+         if(camSelect>=3){
+         camSelect=0;
+}
  drawObject();
 }
 
@@ -313,6 +294,16 @@ void MainWindow::setGouShade()
 void MainWindow::setPhongShade()
 {
     phongBool =true;
+}
+
+void MainWindow::setMaterial1()
+{
+    cubeObject->curr_mat=0;
+}
+
+void MainWindow::setMaterial2()
+{
+    cubeObject->curr_mat=1;
 }
 
 

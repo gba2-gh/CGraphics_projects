@@ -13,7 +13,7 @@ public:
     QList<double> pixelColor[3];
     QList<double> pointsZ;
 
-    double depthBuffer[400][400];
+    double depthBuffer[400][400] = {0};
 
     bool drawEdgesBool=true;
     renderWindow(QWidget *parent=0); //constructor
