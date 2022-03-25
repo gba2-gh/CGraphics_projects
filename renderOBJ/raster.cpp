@@ -11,9 +11,9 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 {
     phong = phongBool;
     CamProjection camProj;
-    std::vector<std::vector<double> > camPos2= {{1,0,0,0},
+    std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-35},
+                                                {0,0,1,-3},
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos3= {{0,0,1,  -30},
@@ -22,7 +22,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
                                                 {0,0,0,1}};
 
 
-    std::vector<std::vector<double> > camPos1= {{0.71,  0,    0.71, 0},
+    std::vector<std::vector<double> > camPos2= {{0.71,  0,    0.71, 0},
                                                 {0,  1,    0,  0},
                                                 {-.071,     0,    0.71 ,   40},
                                                 {0,0,0,1}};
@@ -40,7 +40,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
     rasterPoint.append(camProj.rasterPoint);
     rasterZ.append(camProj.rasterZ);
-    qDebug() <<"rasterZ : " << rasterZ;
+    //qDebug() <<"rasterZ : " << rasterZ;
 
     camProj.rasterPoint.clear();
     camProj.rasterZ.clear();
@@ -80,7 +80,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
 
 
-   this->drawFaces(cubeobject);
+   this->fillCubeFace(cubeobject);
 
          //PHONG
          if(phong){
@@ -127,28 +127,28 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
 void raster::drawFaces(CubeObject cubeobject){
 
-    for(int i=0; i< cubeobject.facesIdx.size(); ++i){
+//    for(int i=0; i< cubeobject.facesIdx.size(); ++i){
 
-        fillCubeFace(cubeobject.facesIdx[i][0],cubeobject.facesIdx[i][1],
-                    cubeobject.facesIdx[i][2], cubeobject.facesIdx[i][3]);
-    }
+//        fillCubeFace(cubeobject.facesIdx[i][0],cubeobject.facesIdx[i][1],
+//                    cubeobject.facesIdx[i][2], cubeobject.facesIdx[i][3]);
+//    }
 
 
 }
 
-void raster::fillCubeFace(int v0, int v1, int v2, int v3){
+void raster::fillCubeFace(CubeObject cubeobject){
 
-//    for(int i=0; i< cubeobject.facesIdx.size(); ++i){
-//        for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
-//          scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1])   ;
-//        }
-//        scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1] , cubeobject.facesIdx[i][0]);
-//    }
+    for(int i=0; i< cubeobject.facesIdx.size(); ++i){
+        for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
+          scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1])   ;
+        }
+       scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0] );
 
-    scanLine(v0,v1);
-    scanLine(v1,v2);
-    scanLine(v2,v3);
-    scanLine(v3,v0);
+
+//    scanLine(0,1);
+//    scanLine(1,2);
+//    scanLine(0,2);
+//    scanLine(v3,v0);
 
     //SCAN CONVERSION
     rasterPoint.append(scanConversion(yBuffer));
@@ -186,7 +186,7 @@ void raster::fillCubeFace(int v0, int v1, int v2, int v3){
     }
 
 
-
+}
 }
 
 

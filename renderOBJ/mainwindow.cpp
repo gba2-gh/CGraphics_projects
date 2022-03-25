@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     cubeObject = new CubeObject;
 
-    std::string path ("../renderOBJ/object_file/Cube_Quads.obj");
+    std::string path ("../renderOBJ/object_file/sphere.obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
     qDebug() << "Imported";
