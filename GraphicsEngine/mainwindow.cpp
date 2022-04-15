@@ -5,6 +5,17 @@
 #include<qaction.h>
 #include<QAction>
 #include<QKeyEvent>
+#include<fstream>
+#include <sstream>
+#include<qdebug.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stdint.h>
+#include<stb_image.h>
+
+#include"lodepng/lodepng.h"
+
+
 
 #define MY_PI 3.14159265358979323846
 
@@ -13,6 +24,55 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
+
+//    std::ifstream fin("check.png", std::ios::in | std::ios::binary);
+//    std::ostringstream oss;
+//    oss << fin.rdbuf();
+//    std::string data(oss.str());
+
+//    //qDebug() << data;
+
+
+//    int wi, he, bpp;
+
+//    unsigned char* rgb_image = stbi_load("../GraphicsEngine/check.png", &wi, &he, &bpp, 3);
+
+//    if(rgb_image == NULL) {
+//        qDebug() << "Error in loading the image\n";
+//    }
+
+//    qDebug() << rgb_image;
+
+//    stbi_image_free(rgb_image);
+
+
+
+//    std::vector<unsigned char> image; //the raw pixels
+//     unsigned width, height;
+
+//      const char* filename = "../GraphicsEngine/check.png";
+
+//     //decode
+//     unsigned  error = lodepng::decode(image, width, height, filename);
+
+//     //if there's an error, display it
+//     if(error) {
+//         qDebug() << error;
+//        //qDebug() << lodepng_error_text(error);
+//     }
+
+
+
+     //QString url = R"(../GraphicsEngine/check.png)";
+     //QImage texture_img(url);
+
+     //QList<double> texture_img;
+
+//     for(int i=0; i<img.height();i++){
+//         for(int j=0; j<img.width();j++){
+//             texture_img
+//            qDebug() << img.pixelColor(1,1);
+//    }
 
     shaderSel=1;
 
@@ -31,12 +91,21 @@ MainWindow::MainWindow(QWidget *parent)
       cubeObject->calcVerticesNormal();
     }
 
+   // std::vector<std::vector<int> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0},
+    //                                          {0,0}, {0,0}, {0,0}, {0,0}};
+
+     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
+                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
+
+
+    cubeObject->vertex_uvCoord = uvCoord;
+
     raster1 = new raster;
 
     ////////////GUI
     setFixedSize(400,550);
     ui->setupUi(this);
-    renderwindow = new renderWindow;  
+    renderwindow = new renderWindow;
     raster1 = new raster;
     lightWhite = new lights;
     lightRed = new lights;
@@ -186,18 +255,23 @@ void MainWindow::setPers()
 void MainWindow::setRotation()
 {
 
-    rotateBool= !rotateBool;
+    //rotateBool= !rotateBool;
+    cubeObject->rotateObject(45);
+
     drawObject();
 }
 
 void MainWindow::drawObject(){
+
+    QString url = R"(../GraphicsEngine/texture.png)";
+    QImage texture_img(url);
 
     lightScene.push_back(lightWhite);
     lightScene.push_back(lightRed);
     lightScene.push_back(lightSpec);
 
 
-    raster1->pipeline(*cubeObject, lightScene, orthoProy, phongBool, camSelect, shaderSel);
+    raster1->pipeline(*cubeObject, lightScene, orthoProy, phongBool, camSelect, shaderSel, texture_img);
 
         //RASTER A CANVAS
         renderwindow->pointsList.append(raster1->rasterPoint);
@@ -274,21 +348,27 @@ void MainWindow::setLight3On()
 void MainWindow::setGouShade()
 {
     phongBool =false;
+    shaderSel=1;
+    drawObject();
 }
 
 void MainWindow::setPhongShade()
 {
     phongBool =true;
+    shaderSel=2;
+    drawObject();
 }
 
 void MainWindow::setMaterial1()
 {
     cubeObject->curr_mat=0;
+    drawObject();
 }
 
 void MainWindow::setMaterial2()
 {
     cubeObject->curr_mat=1;
+    drawObject();
 }
 
 void MainWindow::setCamera1()

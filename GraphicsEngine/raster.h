@@ -4,6 +4,7 @@
 #include<vector>
 #include"cubeobject.h"
 #include"lights.h"
+#include<QImage>
 
 //#include"shading.h"
 
@@ -13,7 +14,7 @@ class raster
 public:
     raster();
 
-    void pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho,bool phongBool,int camSelect, int shaderS);
+    void pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho,bool phongBool,int camSelect, int shaderS, QImage texture_img);
     void drawFaces(CubeObject cubeobject);
     void fillCubeFace(CubeObject cubeobject);
     void scanLine(int v1, int v2);
@@ -25,6 +26,8 @@ public:
     QList<double>  rasterColor[3];
     QList<QList<int> > rasterPoint;
     QList<double>  rasterZ;
+    QList<double>  rasterUV[2];
+
 
 
     int yBuffer[400][2]={0};
@@ -34,6 +37,7 @@ public:
     double obsBuffer[3][400][2]={0};
     double zBuffer[400][2]={0};
     double depthBuffer[400][400];
+    double uvBuffer[2][400][2]={0};
 
     bool phong;
     int shaderSel;

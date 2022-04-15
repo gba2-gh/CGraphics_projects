@@ -20,6 +20,7 @@ SOURCES += \
     cubeobject.cpp \
     functions.cpp \
     lights.cpp \
+    lodepng/lodepng.cpp \
     main.cpp \
     mainwindow.cpp \
     raster.cpp \
@@ -31,10 +32,12 @@ HEADERS += \
     cubeobject.h \
     functions.h \
     lights.h \
+    lodepng/lodepng.h \
     mainwindow.h \
     raster.h \
     renderWindow.h \
-    shading.h
+    shading.h \
+    stb_image.h
 
 FORMS += \
     mainwindow.ui
@@ -50,3 +53,13 @@ else:unix: LIBS += -L$$PWD/../../../assimpF/assimp/bin/ -lassimp
 
 INCLUDEPATH += $$PWD/../../../assimpF/assimp/include
 DEPENDPATH += $$PWD/../../../assimpF/assimp/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../assimp-source/assimp/bin/release/ -lassimp
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../assimp-source/assimp/bin/debug/ -lassimp
+else:unix: LIBS += -L$$PWD/../../../assimp-source/assimp/bin/ -lassimp
+
+INCLUDEPATH += $$PWD/../../../assimp-source/assimp/include
+DEPENDPATH += $$PWD/../../../assimp-source/assimp/include
+
+DISTFILES += \
+    check.png
