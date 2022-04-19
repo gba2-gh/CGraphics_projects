@@ -43,6 +43,9 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
      }//end for proyeccion
 
 
+    qDebug()<< "vertice Proyectado: " << vProy;
+
+
     //RASTERIZAR
         //CALCULOS DE LA VENTANA
         int canvSc=1;
@@ -50,7 +53,9 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
         QList<int> p_dev;
         double xpmax=2*canvSc, xpmin=-2*canvSc;
         double ypmax=2*canvSc, ypmin=-2*canvSc;
-        double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
+       // double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
+        double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmax-ydmin)/(ypmax-ypmin));
+
         double ox = sx*(-xpmin)+ xdmin, oy = sx*(-ypmin)+ ydmin;
 
         for(int k=0; k<vProy.size(); ++k){
@@ -58,6 +63,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             p_dev.append(sx*vProy[k][0] + ox);
             p_dev.append(sy*vProy[k][1] + oy);
 
+            qDebug()<< "p_device: " << p_dev;
 
             if(p_dev[0]>400){
                 p_dev[0]=399;

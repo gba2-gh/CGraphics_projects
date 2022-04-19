@@ -78,10 +78,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     cubeObject = new CubeObject;
 
-    std::string path ("../GraphicsEngine/object_file/Cube_Triangles.obj");
+    std::string path ("../GraphicsEngine/object_file/Cube"
+                      ".obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
     qDebug() << "Imported";
+
 
 
 
@@ -91,11 +93,11 @@ MainWindow::MainWindow(QWidget *parent)
       cubeObject->calcVerticesNormal();
     }
 
-   // std::vector<std::vector<int> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0},
-    //                                          {0,0}, {0,0}, {0,0}, {0,0}};
+    std::vector<std::vector<double> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0}};//, {0,0},
+                       //                       {0,0}, {0,0}, {0,0}, {0,0}};
 
-     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
-                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
+//     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
+//                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
 
 
     cubeObject->vertex_uvCoord = uvCoord;
@@ -115,13 +117,13 @@ MainWindow::MainWindow(QWidget *parent)
 //    colorBtn->setText("Change Color");
 //    connect(colorBtn, SIGNAL(clicked()),this, SLOT(pickColor()));
 
-//    orthoProyBtn = new QPushButton(this);
-//    orthoProyBtn->setText("Proyeccion Ortográfica");
-//    connect(orthoProyBtn, SIGNAL(clicked()),this, SLOT(setOrtho()));
+    orthoProyBtn = new QPushButton(this);
+    orthoProyBtn->setText("Proyeccion Ortográfica");
+    connect(orthoProyBtn, SIGNAL(clicked()),this, SLOT(setOrtho()));
 
-//    persProyBtn = new QPushButton(this);
-//    persProyBtn->setText("Proyeccion Perspectiva");
-//    connect(persProyBtn, SIGNAL(clicked()),this, SLOT(setPers()));
+    persProyBtn = new QPushButton(this);
+    persProyBtn->setText("Proyeccion Perspectiva");
+    connect(persProyBtn, SIGNAL(clicked()),this, SLOT(setPers()));
 
 //    setRotationBtn = new QPushButton(this);
 //    setRotationBtn->setText("Rotate Cube");
@@ -176,8 +178,8 @@ MainWindow::MainWindow(QWidget *parent)
     grid->setSpacing(4);
 
     grid->addWidget(renderwindow, 0, 0,1,2);
-    //grid->addWidget(persProyBtn, 1, 0);
-    //grid->addWidget(orthoProyBtn, 1, 1);
+    grid->addWidget(persProyBtn, 1, 0);
+    grid->addWidget(orthoProyBtn, 1, 1);
     //grid->addWidget(setRotationBtn, 6, 0);
     //grid->addWidget(switchCamera, 2, 0,1,2);
     //grid->addWidget(light1On,3,0);

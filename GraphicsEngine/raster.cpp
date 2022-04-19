@@ -14,20 +14,23 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     CamProjection camProj;
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-3},
+                                                {0,0,1,15},
                                                 {0,0,0,1}};
 
-    std::vector<std::vector<double> > camPos3= {{0,0,1,  -3},
-                                                {0,1, 0,  0},
-                                                {-1,0,0 ,-4},
-                                                {0,0,0,1}};
-
-
-    std::vector<std::vector<double
-            > > camPos2= {{0.5,  0,    -0.87,         },
+    std::vector<std::vector<double> > camPos2=
+                        {{0.5,  0,    -0.87,         0},
                          {0,  1,    0,               0},
-                          {0.87,     0,    0.5 ,   -4},
-                           {0,0,0,1}};
+                          {
+                             0.87,     0,    0.5 ,   -15},
+                           {0,0,0,                  1}};
+
+    std::vector<std::vector<double> > camPos3= {{0,0,1,  -10},
+                                                {0,1, 0,  0},
+                                                {-1,0,0 ,-15},
+                                                {0,0,0,1}};
+
+
+
 
     if(camSelect==0){
         camProj.camMarco = camPos1;
@@ -147,7 +150,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
    this->fillCubeFace(cubeobject);
 
-
+if(shaderSel==3){
        //for (int i=0; i<=2; i++){
         //   rasterColor[i].clear();
        //}
@@ -180,6 +183,7 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
            // rasterColor[i].append(I[i]);
            //}
        }
+   }
 
 
          //PHONG
