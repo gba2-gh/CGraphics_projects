@@ -54,7 +54,8 @@ public:
                                                      std::vector<double> fn3);
     void calcVerticesNormal();
     void createFaces();
-    void rotateObject(double angleD);
+    void rotateX(double angleD);
+    void rotateY(double angleD);
 
 };
 

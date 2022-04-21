@@ -9,7 +9,8 @@
 
 
 bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cubeVert,
-                                            std::vector<std::vector<int>>*  cubeFacesIdx)
+                                            std::vector<std::vector<int>>*  cubeFacesIdx,
+                                              std::vector<std::vector<double>>*  cubeUV   )
 {
     // Create an instance of the Importer class
     Assimp::Importer importer;
@@ -20,9 +21,13 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
 
      aiMesh* mesh = scene->mMeshes[0];
      aiVector3D* pPos ;
+     aiVector3D* uv ;
      aiFace* face;
+     //aiUVTransform* uv;
+
      std::vector<double> vertex;
      std::vector<std::vector<double>> vertices;
+
 
      for(int i=0; i<mesh->mNumVertices; ++i){
           pPos = &(mesh->mVertices[i]);
@@ -35,7 +40,7 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
      }
 
 
-    *cubeVert= vertices;
+     *cubeVert= vertices;
 
 
      std::vector<std::vector<int> > facesIdx;
@@ -50,7 +55,25 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
           idx.clear();
      }
 
-     *cubeFacesIdx = facesIdx;
+      *cubeFacesIdx = facesIdx;
+
+
+       std::vector<std::vector<double> > uvCoord;
+       std::vector<double> temp;
+
+        qDebug() << mesh->mTextureCoords[0];
+
+//       for(int i=0; i< sizeof(mesh->mTextureCoords); ++i){
+//           uv =  (mesh->mTextureCoords[i]);
+//           temp.push_back(uv->x);
+//           temp.push_back(uv->y);
+//           uvCoord.push_back(temp);
+//           temp.clear();
+//       }
+
+
+//    *cubeUV = uvCoord;
+
 
     //qDebug() << facesIdx;
     if (nullptr != scene) {

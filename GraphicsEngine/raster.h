@@ -26,6 +26,8 @@ public:
     QList<double>  rasterColor[3];
     QList<QList<int> > rasterPoint;
     QList<double>  rasterZ;
+    QList<double>  depthZ;
+    QList<double> proy[3];
     QList<double>  rasterUV[2];
 
 
@@ -36,8 +38,9 @@ public:
     double lightPosBuffer[3][400][2]={0};
     double obsBuffer[3][400][2]={0};
     double zBuffer[400][2]={0};
-    double depthBuffer[400][400];
     double uvBuffer[2][400][2]={0};
+    double depthBuffer[400][2]={0};
+
 
     bool phong;
     int shaderSel;

@@ -33,9 +33,14 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             vp.push_back(1/p[2]);
         }
         else{//Perspectiva
-            vp.push_back(p[0]*f/p[2]);
-            vp.push_back(p[1]*f/p[2]);
-            vp.push_back(abs(1/p[2]));
+            proy[0].append(p[0]*f/-p[2]);
+            proy[1].append(p[1]*f/-p[2]);
+            proy[2].append(-p[2]);
+
+            vp.push_back(p[0]*f/-p[2]);
+            vp.push_back(p[1]*f/-p[2]);
+            vp.push_back(1/-p[2]
+                    );
         }
         vProy.push_back(vp);
         vp.clear();
@@ -56,7 +61,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
        // double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmin-ydmax)/(ypmax-ypmin));
         double sx= ((xdmax-xdmin)/(xpmax-xpmin)), sy= ((ydmax-ydmin)/(ypmax-ypmin));
 
-        double ox = sx*(-xpmin)+ xdmin, oy = sx*(-ypmin)+ ydmin;
+        double ox = sx*(-xpmin)+ xdmin, oy = sy*(-ypmin)+ ydmin;
 
         for(int k=0; k<vProy.size(); ++k){
 
@@ -80,6 +85,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
 
             rasterPoint.append(p_dev);
             rasterZ.append(vProy[k][2]);
+            depthZ.append(1/vProy[k][2]);
             p_dev.clear();
        }
 

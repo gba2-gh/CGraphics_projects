@@ -8,7 +8,8 @@
 
 
 bool importFile( const std::string& pFile, std::vector<std::vector<double>>*  cubeVert,
-                                            std::vector<std::vector<int>>*  cubeFacesIdx);
+                                            std::vector<std::vector<int>>*  cubeFacesIdx,
+                                             std::vector<std::vector<double>>*  cubeUV );
 
 
 std::vector<std::vector<double>> rotateEuler( std::vector<std::vector<double> > coord, double rotMat[4][4]);

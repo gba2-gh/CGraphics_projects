@@ -74,15 +74,16 @@ MainWindow::MainWindow(QWidget *parent)
 //            qDebug() << img.pixelColor(1,1);
 //    }
 
-    shaderSel=1;
+    shaderSel=3;
 
     cubeObject = new CubeObject;
 
-    std::string path ("../GraphicsEngine/object_file/Cube"
+    std::string path ("../GraphicsEngine/object_file/Cube_Triangles"
                       ".obj");
 
-    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx);
+    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertex_uvCoord);
     qDebug() << "Imported";
+
 
 
 
@@ -93,16 +94,19 @@ MainWindow::MainWindow(QWidget *parent)
       cubeObject->calcVerticesNormal();
     }
 
-    std::vector<std::vector<double> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0}};//, {0,0},
-                       //                       {0,0}, {0,0}, {0,0}, {0,0}};
+//    std::vector<std::vector<double> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0},
+//                                             {0,0}, {1,0}, {0,0}, {0,0}};
 
-//     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
-//                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
+     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
+                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
+
 
 
     cubeObject->vertex_uvCoord = uvCoord;
 
     raster1 = new raster;
+
+    //cubeObject->rotateY(30);
 
     ////////////GUI
     setFixedSize(400,550);
@@ -258,7 +262,7 @@ void MainWindow::setRotation()
 {
 
     //rotateBool= !rotateBool;
-    cubeObject->rotateObject(45);
+    cubeObject->rotateY(30);
 
     drawObject();
 }
@@ -283,12 +287,11 @@ void MainWindow::drawObject(){
         for(int i=0;i<=2;++i){
             renderwindow->pixelColor[i].append(raster1->rasterColor[i]);
             raster1->rasterColor[i].clear();
-
         }
 
 //    //Rotar objeto en +1 grado
     if(rotateBool){
-        cubeObject->rotateObject(1);
+        cubeObject->rotateX(1);
     }
 
     lightScene.clear();

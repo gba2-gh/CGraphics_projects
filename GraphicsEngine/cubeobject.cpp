@@ -35,7 +35,7 @@ void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
 }
 
 
-void CubeObject::rotateObject(double angleD)
+void CubeObject::rotateX(double angleD)
 {
     double angleR=angleD*MY_PI/180;
 
@@ -44,16 +44,26 @@ void CubeObject::rotateObject(double angleD)
                           0, -sin(angleR), cos(angleR),0,
                           0,0,0,1};
 
-
     this->vertices= rotateEuler(this->vertices,rotMatX);
-
 
     calcVerticesNormal();
 
-
-
 }
 
+void CubeObject::rotateY(double angleD)
+{
+    double angleR=angleD*MY_PI/180;
+
+    double rotMat[4][4]= {cos(angleR),0,sin(angleR),0,
+                          0, 1, 0,0,
+                          -sin(angleR), 0, cos(angleR),0,
+                          0,0,0,1};
+
+    this->vertices= rotateEuler(this->vertices,rotMat);
+
+    calcVerticesNormal();
+
+}
 
 
 

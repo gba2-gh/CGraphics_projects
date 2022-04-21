@@ -14,19 +14,25 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     CamProjection camProj;
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,15},
+                                                {0,0,1,-35},
                                                 {0,0,0,1}};
 
-    std::vector<std::vector<double> > camPos2=
-                        {{0.5,  0,    -0.87,         0},
-                         {0,  1,    0,               0},
-                          {
-                             0.87,     0,    0.5 ,   -15},
-                           {0,0,0,                  1}};
-
-    std::vector<std::vector<double> > camPos3= {{0,0,1,  -10},
+//    std::vector<std::vector<double> > camPos2=
+//                        {{0.5,  0,    -0.87,         0},
+//                         {0,  1,    0,               0},
+//                          {
+//                             0.87,     0,    0.5 ,   -15},
+//                           {0,0,0,                  1}};
+    std::vector<std::vector<double> > camPos2= {{0,0,-1,  0},
                                                 {0,1, 0,  0},
-                                                {-1,0,0 ,-15},
+                                                {1,0,0 ,-15},
+                                                {0,0,0,1}};
+
+
+
+    std::vector<std::vector<double> > camPos3= {{0,0,1,  0},
+                                                {0,1, 0,  0},
+                                                {-1,0,0 ,-30},
                                                 {0,0,0,1}};
 
 
@@ -40,11 +46,17 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
         camProj.camMarco = camPos3;
     }
 
-    camProj.projectPoint(cubeobject, ortho, 400, 0, -400, 0);
+    camProj.projectPoint(cubeobject, ortho, 400, 0, 0, 400);
 
 
     rasterPoint.append(camProj.rasterPoint);
     rasterZ.append(camProj.rasterZ);
+    depthZ.append(camProj.depthZ);
+
+    proy[0].append(camProj.proy[0]);
+    proy[1].append(camProj.proy[1]);
+    proy[2].append(camProj.proy[2]);
+
     //qDebug() <<"rasterZ : " << rasterZ;
 
     camProj.rasterPoint.clear();
@@ -94,14 +106,15 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
                        rasterColor[i].append(255);
                    }
 
-               }else if(shaderSel==3){
-
-
-                   for(int i=0; i<=2;++i){
-                       rasterColor[i].append(255);
-                   }
-
                }
+//               else if(shaderSel==3){
+
+
+//                   for(int i=0; i<=2;++i){
+//                       rasterColor[i].append(255);
+//                   }
+
+//               }
               else{
                //rasterColor[i].append(calcLightVertex(cubeobject, lightScene, k, i));
 
@@ -141,6 +154,9 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
            //texel.append(cubeobject.vertex_uvCoord[k][1]);
            //rasterUV.append(texel);
            //texel.clear();
+
+
+
            rasterUV[0].append(cubeobject.vertex_uvCoord[k][0]);
            rasterUV[1].append(cubeobject.vertex_uvCoord[k][1]);
        }
@@ -160,22 +176,36 @@ if(shaderSel==3){
 
            int x,y;
 
-           x= floor((texture_img.width()-1)*(rasterUV[0][i]) );
+           //x= floor((texture_img.width()-1)*(rasterUV[0][i] / rasterZ[i] ));
+           //y= floor((texture_img.height()-1)*(1 -rasterUV[1][i] /rasterZ[i] ) );
+           x= floor((texture_img.width()-1)*(rasterUV[0][i] ));
            y= floor((texture_img.height()-1)*(1 -rasterUV[1][i]) );
+
+
+//           x= floor((texture_img.width()-1)*(rasterUV[0][i] ));
+//           y= floor((texture_img.height()-1)*(1 -rasterUV[1][i] ) );
 
 
            color_texel= texture_img.pixelColor(x,y);
 
 
-           qDebug() << "x: " << x << "y: " << y;
-           qDebug() << rasterUV[0][i];
+//           qDebug() << "x: " << x << "y: " << y;
+//           qDebug() << rasterUV[0][i];
 
-           if(color_texel.isValid()){
-               rasterColor[0][i] = color_texel.red();
-               rasterColor[1][i] = color_texel.green();
-               rasterColor[2][i] = color_texel.blue();
+           ////STICKER
+//           if(color_texel.isValid()){
+//               rasterColor[0][i] -= color_texel.red()/10;
+//               rasterColor[1][i] -= color_texel.green()/10;
+//               rasterColor[2][i] -= color_texel.blue()/10;
+//           }
 
-           }
+           ////reemplazo
+       if(color_texel.isValid()){
+           rasterColor[0][i] = color_texel.red();
+           rasterColor[1][i] = color_texel.green();
+           rasterColor[2][i] = color_texel.blue();
+       }
+
 
 
 
@@ -294,10 +324,64 @@ void raster::fillCubeFace(CubeObject cubeobject){
     rasterZ.append(horInterpolation(yBuffer, zBuffer));
 
 
-    rasterUV[0].append(horInterpolation(yBuffer, uvBuffer[0]));
-    rasterUV[1].append(horInterpolation(yBuffer, uvBuffer[1]));
+    //rasterUV[0].append(horInterpolation(yBuffer, uvBuffer[0]));
+    //rasterUV[1].append(horInterpolation(yBuffer, uvBuffer[1]));
+
+    int xmin=0,xmax=0;
+    double imin=0, imin2=0;
+    double imax=0, imax2=0;
+
+    double deltaI, deltaI2, z_act;
+
+    for(int y=0;y<400;++y){
+
+           if(yBuffer[y][0]<yBuffer[y][1]){
+                    xmin= yBuffer[y][0];
+                    xmax= yBuffer[y][1];
+
+                    imin= uvBuffer[0][y][0];
+                    imax= uvBuffer[0][y][1];
+                    imin2= uvBuffer[1][y][0];
+                    imax2= uvBuffer[1][y][1];
+
+                    z_act= zBuffer[y][0];
+            }
+            else{
+                    xmin= yBuffer[y][1];
+                    xmax= yBuffer[y][0];
+                    imin= uvBuffer[0][y][1];
+                    imax= uvBuffer[0][y][0];
+                    imin= uvBuffer[1][y][1];
+                    imax= uvBuffer[1][y][0];
+
+                    z_act= zBuffer[y][1];
+            }
+
+           deltaI=(imin-imax)/(xmin-xmax);
+           deltaI2=(imin2-imax2)/(xmin-xmax);
+
+           for(int x=xmin; x<=xmax; ++x){
+
+               rasterUV[0].append(imin);
+               imin += deltaI;
+
+               rasterUV[1].append(imin2);
+               imin2 += deltaI2;
+            }
+
+    }
 
 
+
+
+
+
+
+
+//    for(int i=7; i<rasterPoint.size(); ++i){
+//        double lambda =
+
+//    }
 
 
 
@@ -371,11 +455,21 @@ void raster::scanLine(int v1, int v2)
     double z=z1;
 
 
+    double z1d= depthZ[v1], z2d= depthZ[v2];
+    double deltaZd = (z2d-z1d)/dy;
+    double zd=z1d;
+
+
     ///TEXTTURE
     ///
 
+//    double u1= rasterUV[0][v1]/zd, u2=rasterUV[0][v2]/zd;
+//    double vC1= rasterUV[1][v1]/zd, vC2=rasterUV[1][v2]/zd;
+
+
     double u1= rasterUV[0][v1], u2=rasterUV[0][v2];
     double vC1= rasterUV[1][v1], vC2=rasterUV[1][v2];
+
 
     double du= u2-u1;
     double dv= vC2-vC1;
@@ -383,15 +477,15 @@ void raster::scanLine(int v1, int v2)
 
 
     //double vd= vC1+1 - vC1;
-    double u= u1+ duv/dy ;
+    double u= u1 ;
 
-    double v=int(vC1+1);
-    int vC2p= int(vC2);
+    double v= vC1;
+    //int vC2p= int(vC2);
 
 
     double deltaU=0;
-      if(dx !=0){
-            deltaU= du/dy;}
+
+            deltaU= du/dy;
     double deltaV= dv/dy;
 
     //FILL BUFFER
@@ -423,10 +517,25 @@ void raster::scanLine(int v1, int v2)
             zBuffer[y][up]=z;
             z+=deltaZ;
 
+            depthBuffer[y][up] = zd;
+            zd += deltaZd;
+
+
+
+            //double lambda = (x - proy[v1][0])/(proy[0][v2]-proy[0][v1]);
+            double lambda =  (x-x1)/(x2-x1);
+            //double pz= 1/ proy[v1][2] * (1-lambda) + 1/proy[v2][3] * (lambda);
+            double pz = (1/x1) * (1-lambda) + (1/x2)*(lambda);
+
+
+            depthBuffer[y][up]= 1/pz;
+
+
             uvBuffer[0][y][up]=u;
             uvBuffer[1][y][up]=v;
+
             u=u+deltaU;
-            v=v-deltaV;
+            v=v+deltaV;
 
 
                 for(int i=0; i<=2; i++){
@@ -435,7 +544,7 @@ void raster::scanLine(int v1, int v2)
 
                     if(shaderSel == 2){
                     normalBuffer[i][y][up]=N[i];
-                    N[i] +=deltaN[i];
+                   N[i] +=deltaN[i];
 
                     lightPosBuffer[i][y][up]=L[i];
                     L[i] +=deltaL[i];
@@ -448,6 +557,7 @@ void raster::scanLine(int v1, int v2)
 
     }
 }
+
 
 
 

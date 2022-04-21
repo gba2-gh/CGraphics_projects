@@ -23,6 +23,8 @@ public:
     std::vector<std::vector <double> >  vertices;
     QList<QList<int> > rasterPoint;
     QList<double> rasterZ;
+    QList<double> proy[3];
+    QList<double> depthZ;
 
 
     std::vector<std::vector<double> > camMarco= {{1,0,0,0},
