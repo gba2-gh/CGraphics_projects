@@ -15,7 +15,12 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     CamProjection camProj;
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-2},
+                                                {0,0,1,-1.7},
+                                                {0,0,0,1}};
+
+    std::vector<std::vector<double> > camPos3= {{-1,0,0,0},
+                                                {0,1,0,0},
+                                                {0,0,-1,-1.5},
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos2=
@@ -30,10 +35,10 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
 
 
-    std::vector<std::vector<double> > camPos3= {{0,0,1,  0},
-                                                {0,1, 0,  0},
-                                                {-1,0,0 ,-30},
-                                                {0,0,0,1}};
+//    std::vector<std::vector<double> > camPos3= {{0,0,1,  0},
+//                                                {0,1, 0,  0},
+//                                                {-1,0,0 ,-30},
+//                                                {0,0,0,1}};
 
 
 
@@ -250,14 +255,14 @@ void raster::fillCubeFace(CubeObject cubeobject){
 
 
     for(int i=0; i< cubeobject.facesIdx.size(); ++i){
-        std::vector<std::vector<double>> temp={{0,0}, {0,0}};
+
 
             for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
 
-              scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1], temp)   ;
+              scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1])   ;
             }
 
-           scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0], temp);
+           scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0]);
 
 
         //SCAN CONVERSION
@@ -350,8 +355,6 @@ void raster::fillCubeFace(CubeObject cubeobject){
         }
 
         if(shaderSel==3 && facein){
-          //for(int l=0; l< cubeobject.textureFaces.size(); ++l){
-             //if(cubeobject.textureFaces[l]==i){
 
                QColor color_texel;
 
@@ -374,23 +377,12 @@ void raster::fillCubeFace(CubeObject cubeobject){
                    ////               rasterColor[1][i] -= color_texel.green()/10;
                    ////               rasterColor[2][i] -= color_texel.blue()/10;
                    ////           }
-                   //if(color_texel.isValid()){
+
                        rasterColorT[0].append(color_texel.red());
                        rasterColorT[1].append(color_texel.green());
                        rasterColorT[2].append(color_texel.blue());
 
                }  //end for rasteruv
-//                 }
-//                 else{
-//                    for(int c=color_sizeT; c< rasterColor[0].size(); ++c){
-//                    rasterColorT[0].append(rasterColor[0][c]);
-//                    rasterColorT[1].append(rasterColor[1][c]);
-//                    rasterColorT[2].append(rasterColor[2][c]);
-//                    }
-
-//                    }//end else
-//                //}
-
             }
             else{//else shader==3
                 for(int c=color_sizeT; c< rasterColor[0].size(); ++c){
@@ -436,7 +428,7 @@ void raster::fillCubeFace(CubeObject cubeobject){
 
 
 
-void raster::scanLine(int v1, int v2, std::vector<std::vector<double>> temp)
+void raster::scanLine(int v1, int v2)
 {
 
 
@@ -473,19 +465,11 @@ void raster::scanLine(int v1, int v2, std::vector<std::vector<double>> temp)
     double zd=z1d;
 
 
-    ///TEXTTURE
+ ///TEXTTURE
     ///
 
-//    double u1= rasterUV[0][v1]/zd, u2=rasterUV[0][v2]/zd;
-//    double vC1= rasterUV[1][v1]/zd, vC2=rasterUV[1][v2]/zd;
-
-
-        double u1= rasterUV[0][v1], u2=rasterUV[0][v2];
-        double vC1= rasterUV[1][v1], vC2=rasterUV[1][v2];
-
-        //double u1 = temp[0][0], u2= temp[1][0];
-        //double vC1 = temp[0][1], vC2= temp[1][1];
-
+    double u1= rasterUV[0][v1], u2=rasterUV[0][v2];
+    double vC1= rasterUV[1][v1], vC2=rasterUV[1][v2];
 
     double du= u2-u1;
     double dv= vC2-vC1;
@@ -510,7 +494,7 @@ void raster::scanLine(int v1, int v2, std::vector<std::vector<double>> temp)
         double deltaL[3];
         double deltaL2[3];
         double deltaO[3];
-
+    if(shaderSel == 2){
         for(int i=0; i<=2; i++){
             deltaI[i]=(rasterColor[i][v2]-rasterColor[i][v1])/(y2-y1);
             if(shaderSel==2){
@@ -521,6 +505,7 @@ void raster::scanLine(int v1, int v2, std::vector<std::vector<double>> temp)
             }
         }
 
+ }
 
         double I[3]={rasterColor[0][v1], rasterColor[1][v1], rasterColor[2][v1]};
         double N[3]= {rasterNormal[0][v1], rasterNormal[1][v1], rasterNormal[2][v1]};
@@ -536,25 +521,23 @@ void raster::scanLine(int v1, int v2, std::vector<std::vector<double>> temp)
             zBuffer[y][up]=z;
             z+=deltaZ;
 
-            depthBuffer[y][up] = zd;
-            zd += deltaZd;
+
+            if(shaderSel==3){
+                //depthBuffer[y][up] = zd;
+                zd += deltaZd;
+                //double lambda = (x - proy[v1][0])/(proy[0][v2]-proy[0][v1]);
+                double lambda =  (x-x1)/(x2-x1);
+                //double pz= 1/ proy[v1][2] * (1-lambda) + 1/proy[v2][3] * (lambda);
+                double pz = (1/x1) * (1-lambda) + (1/x2)*(lambda);
 
 
+                depthBuffer[y][up]= 1/pz;
+                uvBuffer[0][y][up]=u;
+                uvBuffer[1][y][up]=v;
 
-            //double lambda = (x - proy[v1][0])/(proy[0][v2]-proy[0][v1]);
-            double lambda =  (x-x1)/(x2-x1);
-            //double pz= 1/ proy[v1][2] * (1-lambda) + 1/proy[v2][3] * (lambda);
-            double pz = (1/x1) * (1-lambda) + (1/x2)*(lambda);
-
-
-            depthBuffer[y][up]= 1/pz;
-
-
-            uvBuffer[0][y][up]=u;
-            uvBuffer[1][y][up]=v;
-
-            u=u+deltaU;
-            v=v+deltaV;
+                u=u+deltaU;
+                v=v+deltaV;
+            }
 
 
                 for(int i=0; i<=2; i++){

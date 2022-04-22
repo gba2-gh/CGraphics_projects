@@ -24,58 +24,42 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
 
-
+    raster1 = new raster;
 
     shaderSel=1;
-
     cubeObject = new CubeObject;
 
-    std::string path ("../GraphicsEngine/object_file/sphere"
+    cubeObject->curr_mat=1;
+
+  //IMPORT
+    std::string path ("../GraphicsEngine/object_file/bunny"
                       ".obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertexNormals);
     qDebug() << "Imported";
 
 
-
-
-
-    cubeObject->curr_mat=1;
-
-//    if(shaderSel !=0){
-//      cubeObject->calcVerticesNormal();
-//    }
-
-//    std::vector<std::vector<double> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0},
-//                                             {0,0}, {1,0}, {0,0}, {0,0}};
-
-//     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
-//                                                   {0,0}, {0,0}, {0,0}, {0,0}
-
-//                                              };
-
-//     std::vector<double> uv1(cubeObject->vertices.size(), 0);
+  //UV COORDINATES
      std::vector<std::vector<double> > uvCoord(cubeObject->vertices.size(), std::vector<double>(2) );
+        //COORDINATES
+//     uvCoord[0][0]= 0.5;
+//     uvCoord[1][0]=0.5; uvCoord[1][1]=0.5;
+//     uvCoord[2][1]=0.5;
+      uvCoord[33029][0]= 0.5;
+      uvCoord[16713][0]=0.5; uvCoord[1][1]=0.5;
+      uvCoord[27773][1]=0.5;
 
-     uvCoord[0][0]= 0.5;
-     uvCoord[1][0]=0.5; uvCoord[1][1]=0.5;
-     uvCoord[2][1]=0.5;
+      uvCoord[15616][1]=1;
+      uvCoord[15615][1]=0.8;
 
-//    uvCoord[3][0]=1.0;
-//    uvCoord[4][0]=1.0; uvCoord[4][1]=1.0;
+        //FACES TO RENDER TEXTURE
+    std::vector<double> textureFaces_sel= {41146, 68765, 68764, 34347} ;
 
-
-//    std::vector< std::vector<std::vector<double> > > uvCoord = {{{0},{0.5,0}, {0.5,0.5}, {0,0.5}}
-//                                             };
-
-
-
-    std::vector<double> textureFaces_sel= {0,1} ;
     cubeObject->textureFaces = textureFaces_sel;
     cubeObject->vertex_uvCoord = uvCoord;
 
-    raster1 = new raster;
-
+    qDebug() << cubeObject->facesIdx[34347];
+    qDebug() << cubeObject->vertices[33029];
     //cubeObject->rotateY(30);
 
     ////////////GUI

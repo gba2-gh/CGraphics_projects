@@ -20,7 +20,7 @@
 \title{%
   Proyecto 01\\
   \large Motor Grafica \\
-    \Large Computación Gráfica\\
+    \Large Computación Gráfico\\
      \large UNAM 2022-2}
 \author{Gibran Zazueta Cruz \\
 \small 24/marzo/2022}
@@ -33,40 +33,126 @@
 
 El programa que se presenta a continuación recibe una malla 3d desde un archivo OBJ y lo renderiza dentro de una escena. Los objetos se definen en 3 archivos diferentes con geometría para un cubo de 8 vértices y 6 caras cuadradas, un cubo de 8 vértices y 12 caras triangulares y una esfera con caras rectangulares.
 
+Se implementa
+
+el pipeline grafico 2d coordinates to rester coordinates
+Lectura de vertices y normales
+calculo de normales
+
+Sombreado de Phong y gouroud
+
+texturizado sobre caras especifica
+
+\section{pipeline}
+
+se proyecta sobre una vetnana de 400x400
+\subsection{Proyecciòn con la càmara}
+
+Para lograr la proyección se implementaron las matrices de transformación necesarias. Primero la cámara recibe su posición desde la matriz de transformación mundo-cámara.
+
+
+\begin{equation}
+\begin{bmatrix}
+M_{c}^{T} &  M_{c}^{T}o_{w}\\
+O^{T} & 1 
+
+\end{bmatrix}
+\end{equation} 
+
+Donde $M_{c}^{T} $ son los vectores unitarios del marco de la cámara y $o_{w}$ es el desplazamaiento con respecto al mundo.
+Para las dos vistas de las cámaras utilizadas en la escena resultan las siguientes matrices:
+
+$$
+M_{camara1}= \begin{bmatrix}
+1 & 0 & 0& 0\\
+0 & 1 & 0& 0\\
+0 & 0 & 1&-25 \\
+0 & 0 & 0&1
+\end{bmatrix}
+M_{camara1}= \begin{bmatrix}
+0 & 0 & 1& -10\\
+0 & 1 & 0& 5\\
+-1 & 0 & 0&-10 \\
+0 & 0 & 0&1
+\end{bmatrix}
+$$
+
+
+\textbf{ARREGLO DE OBJETO CON CAMARAS}
+
+\section{scan convertsion interpolacion}
+
+A continuaciòn se explica el método de scan conversion 
+
+
+Para lograr rellenar un polígono primero se almacena la información de sus aristas en un \textit{Buffer}.
+
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{images/objetos.png}
-\caption{Objetos a renderizar}
+\includegraphics[scale=0.5]{images/scanfillED.png}
+\caption{Algortimo rellenado de poligonos con Scan Conversion (imagen obtenida de \cite{fill})}
 \end{figure}
 
+Se siguen las aristas de la figura, una por una. Se calcula la pendiente de la recta y se va avanzando una unidad (de pixel) por \textit{y}, calculando el valor correspondiente para \textit{x}. Este proceso se debe realizar en orden, es decir, las aristas se siguen en orden horario o antihorario. 
 
-Como ya se mencionó, la geometría se lee desde un fichero OBJ. Se explica a continuación.
+Tomando como ejemplo la figura 2, un procesamiento antihorario sería: $a_{1} \rightarrow a_{2} \rightarrow a_{3}$.\\
 
-\subsection{Archivo OBJ}
+La idea es dividir las aristas del polígono entre un 'lado izquierdo' y un 'lado derecho' que permita colorear los pixeles desde un borde hasta el otro, por cada coordenada $y$. 
+Con un procesamiento de este tipo y para un polígono convexo el buffer almacenará 2 coordendas de $x$ por cada coordenada de $y$.\\
 
-OBJ es un formato de archivos desarrollado por Wavefront Technologies. Representa la geometría 3d definiendo:
+La manera en que se clasifican los bordes, entra parte derecha e izquierda, es tomando en cuenta el valor menor entre los dos vértices que forman la arista (por ejemplo $P_{1_{y}}$ y $P_{2_{y}}$ para la arista $a_{1}$).
 
-\begin{itemize}
-\item Posición de los vértivces
-\item Normal de los vértices
-\item Coordenadas UV de textura
-\item Caras (como una lista de vértices)
-\end{itemize}
+Para un recorrido antihorario, mientras el valor del primer punto de la arista sea menor al del segundo se considera que esta pertenece al lado izquierdo. Cuando el valor del segundo punto de la arista sea menor al primero, la recta pertenece al lado derecho. 
 
+La información de las coordendas $x$ (derecha e izquierda) correspondientes a cada coordenada $y$ se almacena en el buffer.\\
 
-Para este trabajo solo se hace uso de la posición de los vertices y la definición de las caras.
+Una vez se tiene la información del buffer, se recorre la figura de arriba hacia abajo (tomando en cuenta el eje de coordenadas del dispostivo, esto corresponde a un incremento en  $y$), donde por cada valor de $y$ se colorean los pixeles desde la coordenada $x$ derecha hasta la $x$ izquierda.
 
-
-\subsubsection{Librería \textit{assimp}}
-
-Para leer los archivos se utiliza la libreria de \text{assimp}. 
-\textit{Assimp} es una librería open source que soporta multiples formatos de geometria 3d, entre llos .OBJ. Además funciona con diversos sistemas operativos y provee una interfaz de C++.
-
-También soporta una jerarquía de nodos para mallas, materiales, texturas y animaciones de \textit{bones}. Para el programa de este reporte se hace uso principalmente de la función \textit{import} clase Assimp::Importer que almacena datos es una estructura llamada aiScene.
+Esta implementación´ está basada en la información presentada en \cite{bb}
 
 
-\section{Escena y materiales}
+\section{shading}
+se utiliza gouroud y phong
 
+Componente ambental, difusa y especular
+
+Ecuaciones
+
+Ambiental
+
+Se calcula como
+
+\begin{equation}
+I_{A}=\kappa_{A}\Lambda_{A}
+\end{equation}
+
+La luz difusa se calcula como 
+
+\begin{equation}
+I_{D}=\kappa_{D}\Lambda_{D}(\vec{n} \cdot \vec{l})
+\end{equation}
+
+especular
+El calcula es el siguiente
+
+\begin{equation} \label{eq:3}
+I_{E}=\kappa_{E}\Lambda_{E}(\vec{o} \cdot \vec{l})^{\rho}
+\end{equation}
+
+donde $\vec{o}$ es el vector de dirección del observador. La ecuación (3) también se puede escribir
+
+\begin{equation}
+I_{E}=\kappa_{E}\Lambda_{E}(\vec{o} \cdot \vec{h})^{\rho}
+\end{equation}
+
+
+donde $h=2(\vec{o} \cdot \vec{l})\vec{n}-\vec{l}$
+
+SE INTERPOLAN NORMALES Y LUZ COOM SE CALCULAN?
+
+
+\subsection{materiales y escena}
 Los objetos cuentan con 2 posibles materiales a seleccionar, estos se definen dentro del código como:
 
 \textbf{Material 1}
@@ -99,41 +185,75 @@ Se disponen de la siguiente manera:
 \end{figure}
 
 
+\section{Archivo obj}
+
+se toma informaciòn de los vèrtices y de las normales, estos datos fueron proporcionados
+LA NORMAL SE PUEDE CALCULAR
+\subsubsection{Librería \textit{assimp}}
+
+Para leer los archivos se utiliza la libreria de \text{assimp}. 
+\textit{Assimp} es una librería open source que soporta multiples formatos de geometria 3d, entre llos .OBJ. Además funciona con diversos sistemas operativos y provee una interfaz de C++.
+
+También soporta una jerarquía de nodos para mallas, materiales, texturas y animaciones de \textit{bones}. Para el programa de este reporte se hace uso principalmente de la función \textit{import} clase Assimp::Importer que almacena datos es una estructura llamada aiScene.
+
+
 
 \section{Estructura del código}
 
-Desde \textit{mainwindow.cpp} se llama a la función \textit{importFile()} que está definida en \textit{functions.cpp}. La función recibe el path del archivo (como una cadena std::string) y apuntadores al contenedor de vertices y caras del objeto cubeObject, que es el objeto  a renderizar en la escena. Dentro de esta función se utiliza la librería de assimp. Se importa la información del fichero con la función \textit{importer} de la clase Assimp::Importer  y se guarda la escena en una variable aiScene. La función \textit{importer} necesita que se le especifique un \textit{"Process"}, que es un post-procesado de los datos leidos. En este caso se utiliza \textit{aiProcessJoinIdenticalVertices} para unir los vértices iguales (que son los vértices que se repiten entre las caras). 
-\\
 
-La información del archivo se importa a la estructura de datos \textit{aiScene}. Dentro del programa la información de la geometría se procesa desde un objeto de la clase CubeObject. Esta clase tiene un método para calcular normales de las caras y normales de los vertices, por lo que solo es necesario darle información de lasOBJ coordenadas de los vértices y la composición de las caras.
-\\
+en mainwindow se define la gui y es 
+\textbf{cubeobject}
+Almacena la infromaciòn del objeto a renderizar, esto incluye coordenadas de los vertices, definición de las caras del poligono (por medio de indices a los vertices), normales de los vértices, normales de las caras, coordenadas uv e informaciòn sobre el material, esto es coeficientes ka,kd,ke
 
-Después de esto, en mainwindow se crean los objetos de clase \textit{light} para las luces blanca, azul y especular, se especifican intensidad, color y posicionamiento. También se crea el grid de botones que conforma la GUI de la aplicacion. Finalmente se llama a la funcion \textit{drawObject()} con un timer que renderizará al polígono cada 30 ms.
-\\
+En los materiales tambièn se cargan las texturas 
 
-En la funcion  \textit{drawObject()} se llama a la función pipeline del objeto raster. En la funcion pipeline primero se proyectan los vertices dentro del objeto de cámara (que contendrá el marco de referencia correspondiente a la cámara 1, 2 o 3),
-despues se hace el scan conversion e interpolación de los pixeles, zbuffer, normales e información de color(si es que se usa Gouroud).
+en el constructor de la clase de definen los 2 materiales a utilizar
+ESta clase tambièn tiene mètodos para realizar rotaciòn de euler en x y y  y para calcular las normles de las caras y de os vértices. la información de normales tambièn se puede almancenar del archivo obj
 
-Si no se utiliza gouroud el último paso es calcular el sombreado de phong en cada pixel.
-\\
+\section{raster}
+raster es la clase mas importante ya que en su mètodo pipeline se realiza la proyecciòn, scan conversiòn y sombreado
 
-Finalmente, la informacion de posición de pixeles, color y profundidad se pasa a la clase renderwindow(que hereda de QPainter), donde se pintarán los pixeles sobre el canvas.
+Para la proyecciòn se utliza la clase camProjection
+entrega las coordenadas de los vertices en el dispositivo e informaciòn de profundidad
+
+después se calculan los primeros valores para los vectores N,L,O, con ellos se pueden calular el valor de color en los vèrtices, esto es ùtil para realizar la interpolaciòn de sombreado de gouroud
+
+con el método \textit{fillCubeFace} se utiliza el aloritmo de scan conversion descrito anteriormente para rellenar los pixeles del polígono y a su vez para interpolar N,L,O COlor y coordenadas de yextura 
+
+la primera interpolaciòn sobre los bordes se realiza en scanline. se busca aplicar scanline entre todos los vèrtices del polìgonos. posteriormente se realiza la interpolaciòn horizontal. PAra ella se utilizan las funciones \textit{scanConversion} y \textit{horInterpolation}
+
+tambièn aqui se limita el dibujar texturas a ciertas caras especificadas
+
+\textbf{lights}
+LA clase lights almacena la informaciòn de las luces de la escena. Se define su intensidad, color y posiciòn
+
+\section{renderwindow}
+
+se utiliza qt para pimtar sobre el canvas
+aqui se toma en cuenta la profundidad interpolad (o mas bien el inverso 1/z)
+el punto solo se dibujarà en el canvas si cumple la restricci´on de profundidad
+
+\textbf{mainWindow}
+Desde \textit{mainwindow.cpp} se llama a la función \textit{importFile()} que está definida en \textit{functions.cpp}. La función recibe el path del archivo (como una cadena std::string) y apuntadores al contenedor de vertices y caras del objeto cubeObject,
 
 
+Después de esto, en mainwindow se crean los objetos de clase \textit{light} para las luces blanca, azul y especular, se especifican intensidad, color y posicionamiento. También se crea el grid de botones que conforma la GUI de la aplicacion. Finalmente se llama a la funcion \textit{drawObject()}
+
+En la funcion  \textit{drawObject()} se llama a la función pipeline del objeto raster, que como ya se mencionó relaza todo lo referente a la proyección, rellenado y sombreado.
 
 
 \section{Ejecutar el programa}
-En la carpeta de build se puede ejecutar el programa con el archivo renderOBJ-Run. Desde la consola de comandos de linux:
+En la carpeta de build se puede ejecutar el programa con el archivo GraphicsEngine-Run. Desde la consola de comandos de linux:
 
 \begin{lstlisting}[language=bash,title={bash}]
-./renderOBJ-Run
+./GraphicsEngine-Run
 \end{lstlisting}
 
 
 En la carpeta principal está el código fuente. Para generar el ejecutable primero se genera el Makefile con
 
 \begin{lstlisting}[language=bash,title={bash}]
- qmake renderOBJ.pro
+ qmake GraphicsEngine.pro
 \end{lstlisting}
 
 Después se construye el proyecto con \textit{make}
@@ -201,10 +321,7 @@ Es posible cambiar entre archivos desde el código. En la variable path de mainw
 
 \begin{thebibliography}{99}
 
-
-%\bibitem{open} Wavefront obj file. ($https://en.wikipedia.org/wiki/Wavefront_.obj_file$)
-
+\bibitem{bb} Upssala Universit. Introduction to polygons. ($http://www.it.uu.se/edu/course/homepage$\\$/grafik1/ht06/Lectures/L02/LinePolygon/x_polyd.htm$)
 \end{thebibliography}
-
 
 \end{document}
