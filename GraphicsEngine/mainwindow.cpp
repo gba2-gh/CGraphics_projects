@@ -26,41 +26,63 @@ MainWindow::MainWindow(QWidget *parent)
 
     raster1 = new raster;
 
-    shaderSel=1;
+    shaderSel=2;
     cubeObject = new CubeObject;
 
     cubeObject->curr_mat=1;
 
   //IMPORT
-    std::string path ("../GraphicsEngine/object_file/bunny"
+    std::string path ("../GraphicsEngine/object_file/Cube_Triangles"
                       ".obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertexNormals);
     qDebug() << "Imported";
 
-
+   // cubeObject->vertexNormals.clear();
+    cubeObject->calcVerticesNormal();
   //UV COORDINATES
      std::vector<std::vector<double> > uvCoord(cubeObject->vertices.size(), std::vector<double>(2) );
         //COORDINATES
-//     uvCoord[0][0]= 0.5;
-//     uvCoord[1][0]=0.5; uvCoord[1][1]=0.5;
-//     uvCoord[2][1]=0.5;
-      uvCoord[33029][0]= 0.5;
-      uvCoord[16713][0]=0.5; uvCoord[1][1]=0.5;
-      uvCoord[27773][1]=0.5;
+     uvCoord[0][0]= 0.5;
+     uvCoord[1][0]=0.5; uvCoord[1][1]=0.5;
+     uvCoord[2][1]=0.5;
 
-      uvCoord[15616][1]=1;
-      uvCoord[15615][1]=0.8;
+     std::vector<double> textureFaces_sel= {0,1} ;
 
-        //FACES TO RENDER TEXTURE
-    std::vector<double> textureFaces_sel= {41146, 68765, 68764, 34347} ;
+
+
+//     uvCoord[27359][0]=0.25;
+//     uvCoord[16715][0]=0.5;
+//     uvCoord[27774][0]=0.75;
+//     uvCoord[15254][0]=1;
+
+
+//     uvCoord[22882][1]=0.25;
+//     uvCoord[16714][0]=0.25; uvCoord[16714][1]=0.25;
+//     uvCoord[16713][0]=0.5; uvCoord[16713][1]=0.25;
+//     uvCoord[27772][0]=0.75; uvCoord[27772][1]=0.25;
+//     uvCoord[15256][0]=1; uvCoord[15256][1]=0.25;
+
+//     uvCoord[16716][0]=0; uvCoord[16716][1]=0.5;
+//     uvCoord[15615][0]=0.25; uvCoord[15615][1]=0.5;
+//     uvCoord[33029][0]=0.5; uvCoord[33029][1]=0.5;
+//     uvCoord[27773][0]=0.75; uvCoord[27773][1]=0.5;
+//     uvCoord[23997][0]=1.0; uvCoord[23997][1]=0.5;
+//        //FACES TO RENDER TEXTURE
+//    std::vector<double> textureFaces_sel= {41146, 68765, 68764, 34347, 68732, 52246, 41147,
+//                                          23473, 23472, 12081, 12080, 7608, 67289,38831,
+//                                          28813, 28812, 7609, 6947, 6946, 67069, 67068,
+//                                          52247, 48721, 1689, 6900, 68733, 17335, 17334,
+//                                           68730, 42908
+//                                          } ;
 
     cubeObject->textureFaces = textureFaces_sel;
     cubeObject->vertex_uvCoord = uvCoord;
 
-    qDebug() << cubeObject->facesIdx[34347];
-    qDebug() << cubeObject->vertices[33029];
-    //cubeObject->rotateY(30);
+//    qDebug() << cubeObject->facesIdx[42908];
+//    qDebug() << cubeObject->vertices[33443];
+//    qDebug() << cubeObject->vertices[33442];
+    cubeObject->rotateY(30);
 
     ////////////GUI
     setFixedSize(400,550);

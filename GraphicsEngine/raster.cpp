@@ -15,18 +15,18 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     CamProjection camProj;
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-1.7},
+                                                {0,0,1,-40},
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos3= {{-1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,-1,-1.5},
+                                                {0,0,-1,-40},
                                                 {0,0,0,1}};
 
     std::vector<std::vector<double> > camPos2=
                         {{1,  0,    0,         0},
                          {0,  0,    -1,               0},
-                          {0,     1,    0 ,   -1.2},
+                          {0,     1,    0 ,   -40},
                            {0,0,0,                  1}};
 //    std::vector<std::vector<double> > camPos2= {{0,0,-1,  0},
 //                                                {0,1, 0,  0},
@@ -354,6 +354,8 @@ void raster::fillCubeFace(CubeObject cubeobject){
 
         }
 
+
+        //texture
         if(shaderSel==3 && facein){
 
                QColor color_texel;
@@ -382,9 +384,13 @@ void raster::fillCubeFace(CubeObject cubeobject){
                        rasterColorT[1].append(color_texel.green());
                        rasterColorT[2].append(color_texel.blue());
 
+
                }  //end for rasteruv
             }
             else{//else shader==3
+
+
+
                 for(int c=color_sizeT; c< rasterColor[0].size(); ++c){
                 rasterColorT[0].append(rasterColor[0][c]);
                 rasterColorT[1].append(rasterColor[1][c]);

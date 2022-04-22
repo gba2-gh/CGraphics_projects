@@ -50,8 +50,9 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
      }
 
 
+
      *cubeVert= vertices;
-    *cubeNormals=normales;
+    //*cubeNormals=normales;
 
      std::vector<std::vector<int> > facesIdx;
      std::vector<int> idx;
