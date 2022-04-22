@@ -36,6 +36,7 @@ public:
 
     std::vector<std::vector<int> > facesIdx;
     std::vector<std::vector<double> > vertex_uvCoord;
+    std::vector<double> textureFaces;
 
    //caras
    std::vector<std::vector<std::vector <double> > > faces;

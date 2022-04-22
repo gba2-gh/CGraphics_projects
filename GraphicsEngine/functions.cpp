@@ -10,7 +10,7 @@
 
 bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cubeVert,
                                             std::vector<std::vector<int>>*  cubeFacesIdx,
-                                              std::vector<std::vector<double>>*  cubeUV   )
+                                                std::vector<std::vector<double>>*  cubeNormals)
 {
     // Create an instance of the Importer class
     Assimp::Importer importer;
@@ -22,12 +22,14 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
      aiMesh* mesh = scene->mMeshes[0];
      aiVector3D* pPos ;
      aiVector3D* uv ;
+     aiVector3D* normal;
      aiFace* face;
      //aiUVTransform* uv;
 
      std::vector<double> vertex;
      std::vector<std::vector<double>> vertices;
 
+     std::vector<std::vector<double>> normales;
 
      for(int i=0; i<mesh->mNumVertices; ++i){
           pPos = &(mesh->mVertices[i]);
@@ -37,11 +39,19 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
           vertex.push_back(1);
           vertices.push_back(vertex);
           vertex.clear();
+
+          normal = &(mesh->mNormals[i]);
+           vertex.push_back(normal->x);
+           vertex.push_back(normal->y);
+           vertex.push_back(normal->z);
+           normales.push_back(vertex);
+           vertex.clear();
+
      }
 
 
      *cubeVert= vertices;
-
+    *cubeNormals=normales;
 
      std::vector<std::vector<int> > facesIdx;
      std::vector<int> idx;

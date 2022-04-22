@@ -73,7 +73,7 @@ private:
 
     ambientLight *ambLight;
     lights *lightWhite;
-    lights *lightRed;
+    lights *light2;
     lights   *lightSpec;
     raster *raster1;
 

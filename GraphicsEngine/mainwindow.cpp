@@ -25,63 +25,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
 
-//    std::ifstream fin("check.png", std::ios::in | std::ios::binary);
-//    std::ostringstream oss;
-//    oss << fin.rdbuf();
-//    std::string data(oss.str());
 
-//    //qDebug() << data;
-
-
-//    int wi, he, bpp;
-
-//    unsigned char* rgb_image = stbi_load("../GraphicsEngine/check.png", &wi, &he, &bpp, 3);
-
-//    if(rgb_image == NULL) {
-//        qDebug() << "Error in loading the image\n";
-//    }
-
-//    qDebug() << rgb_image;
-
-//    stbi_image_free(rgb_image);
-
-
-
-//    std::vector<unsigned char> image; //the raw pixels
-//     unsigned width, height;
-
-//      const char* filename = "../GraphicsEngine/check.png";
-
-//     //decode
-//     unsigned  error = lodepng::decode(image, width, height, filename);
-
-//     //if there's an error, display it
-//     if(error) {
-//         qDebug() << error;
-//        //qDebug() << lodepng_error_text(error);
-//     }
-
-
-
-     //QString url = R"(../GraphicsEngine/check.png)";
-     //QImage texture_img(url);
-
-     //QList<double> texture_img;
-
-//     for(int i=0; i<img.height();i++){
-//         for(int j=0; j<img.width();j++){
-//             texture_img
-//            qDebug() << img.pixelColor(1,1);
-//    }
-
-    shaderSel=3;
+    shaderSel=1;
 
     cubeObject = new CubeObject;
 
-    std::string path ("../GraphicsEngine/object_file/Cube_Triangles"
+    std::string path ("../GraphicsEngine/object_file/sphere"
                       ".obj");
 
-    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertex_uvCoord);
+    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertexNormals);
     qDebug() << "Imported";
 
 
@@ -90,18 +42,36 @@ MainWindow::MainWindow(QWidget *parent)
 
     cubeObject->curr_mat=1;
 
-    if(shaderSel !=0){
-      cubeObject->calcVerticesNormal();
-    }
+//    if(shaderSel !=0){
+//      cubeObject->calcVerticesNormal();
+//    }
 
 //    std::vector<std::vector<double> > uvCoord = {{1,0}, {1,1}, {0,1}, {0,0},
 //                                             {0,0}, {1,0}, {0,0}, {0,0}};
 
-     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
-                                              {1,0}, {1,0.5}, {0,0}, {0,0}};
+//     std::vector<std::vector<double> > uvCoord = {{0.5,0}, {0.5,0.5}, {0,0.5}, {0,0},
+//                                                   {0,0}, {0,0}, {0,0}, {0,0}
+
+//                                              };
+
+//     std::vector<double> uv1(cubeObject->vertices.size(), 0);
+     std::vector<std::vector<double> > uvCoord(cubeObject->vertices.size(), std::vector<double>(2) );
+
+     uvCoord[0][0]= 0.5;
+     uvCoord[1][0]=0.5; uvCoord[1][1]=0.5;
+     uvCoord[2][1]=0.5;
+
+//    uvCoord[3][0]=1.0;
+//    uvCoord[4][0]=1.0; uvCoord[4][1]=1.0;
+
+
+//    std::vector< std::vector<std::vector<double> > > uvCoord = {{{0},{0.5,0}, {0.5,0.5}, {0,0.5}}
+//                                             };
 
 
 
+    std::vector<double> textureFaces_sel= {0,1} ;
+    cubeObject->textureFaces = textureFaces_sel;
     cubeObject->vertex_uvCoord = uvCoord;
 
     raster1 = new raster;
@@ -114,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
     renderwindow = new renderWindow;
     raster1 = new raster;
     lightWhite = new lights;
-    lightRed = new lights;
+    light2 = new lights;
     lightSpec = new lights;
 
 //    colorBtn = new QPushButton(this);
@@ -137,9 +107,9 @@ MainWindow::MainWindow(QWidget *parent)
 //    switchCamera->setText("Switch camera");
 //    connect(switchCamera, SIGNAL(clicked()),this, SLOT(setSwitchCamera()));
 
-//    light1On= new QPushButton(this);
-//    light1On->setText("Luz blanca");
-//    connect(light1On, SIGNAL(clicked()),this, SLOT(setLight1On()));
+    light1On= new QPushButton(this);
+    light1On->setText("Luz blanca");
+    connect(light1On, SIGNAL(clicked()),this, SLOT(setLight1On()));
 
     light2On= new QPushButton(this);
     light2On->setText("Luz Azul");
@@ -186,7 +156,7 @@ MainWindow::MainWindow(QWidget *parent)
     grid->addWidget(orthoProyBtn, 1, 1);
     //grid->addWidget(setRotationBtn, 6, 0);
     //grid->addWidget(switchCamera, 2, 0,1,2);
-    //grid->addWidget(light1On,3,0);
+    grid->addWidget(light1On,3,0);
     grid->addWidget(light2On, 4, 0);
     grid->addWidget(light3On, 4, 1);
     grid->addWidget(gouraud, 5, 0);
@@ -209,17 +179,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     lightWhite = new lights;
     lightWhite->intensity=10;
-    lightWhite->lightPos.insert(lightWhite->lightPos.end(),{ -20,20,20});
+    lightWhite->lightPos.insert(lightWhite->lightPos.end(),{ -40,40,-40});
     lightWhite->color[0]=0.8; lightWhite->color[1]=0.8; lightWhite->color[2]=0.8;
 
-    lightRed = new lights;
-    lightRed->intensity=80;
-    lightRed->lightPos.insert(lightRed->lightPos.end(),{ 20,-20,20});
-    lightRed->color[0]=0.01; lightRed->color[1]=0.01; lightRed->color[2]=0.8;
+    light2 = new lights;
+    light2->intensity=80;
+    light2->lightPos.insert(light2->lightPos.end(),{ 40,-40,-40});
+    light2->color[0]=0.01; light2->color[1]=0.01; light2->color[2]=0.8;
 
     lightSpec = new lights;
     lightSpec->intensity=0.1;
-    lightSpec->lightPos.insert(lightSpec->lightPos.end(),{20,20,-20});
+    lightSpec->lightPos.insert(lightSpec->lightPos.end(),{40,40,-40});
     lightSpec->color[0]=0.8; lightSpec->color[1]=0.8; lightSpec->color[2]=0.8;
     lightSpec->p=1;
 
@@ -273,7 +243,7 @@ void MainWindow::drawObject(){
     QImage texture_img(url);
 
     lightScene.push_back(lightWhite);
-    lightScene.push_back(lightRed);
+    lightScene.push_back(light2);
     lightScene.push_back(lightSpec);
 
 
@@ -285,8 +255,9 @@ void MainWindow::drawObject(){
         renderwindow->pointsZ.append(raster1->rasterZ);
         raster1->rasterZ.clear();
         for(int i=0;i<=2;++i){
-            renderwindow->pixelColor[i].append(raster1->rasterColor[i]);
+            renderwindow->pixelColor[i].append(raster1->rasterColorT[i]);
             raster1->rasterColor[i].clear();
+             raster1->rasterColorT[i].clear();
         }
 
 //    //Rotar objeto en +1 grado
@@ -325,11 +296,11 @@ void MainWindow::setLight1On()
 void MainWindow::setLight2On()
 {
     if(l2){
-        lightRed->intensity=0;
+        light2->intensity=0;
         l2=false;
     }
     else{
-        lightRed->intensity=80;
+        light2->intensity=80;
         l2=true;
     }
     drawObject();

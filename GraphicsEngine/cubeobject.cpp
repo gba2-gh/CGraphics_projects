@@ -9,6 +9,7 @@ CubeObject::CubeObject()
 {
 
         for(int i=0; i<=2; ++i){
+            mat1.ka[i]=0.0;
             mat1.kd[i]=0.5;
             mat1.ke[i]=0.7;
 

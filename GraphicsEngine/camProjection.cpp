@@ -48,7 +48,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
      }//end for proyeccion
 
 
-    qDebug()<< "vertice Proyectado: " << vProy;
+    //qDebug()<< "vertice Proyectado: " << vProy;
 
 
     //RASTERIZAR
@@ -68,7 +68,7 @@ void   CamProjection::projectPoint(CubeObject cubeobject, bool ortho,  double xd
             p_dev.append(sx*vProy[k][0] + ox);
             p_dev.append(sy*vProy[k][1] + oy);
 
-            qDebug()<< "p_device: " << p_dev;
+           // qDebug()<< "p_device: " << p_dev;
 
             if(p_dev[0]>400){
                 p_dev[0]=399;
