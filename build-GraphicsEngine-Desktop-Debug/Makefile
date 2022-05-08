@@ -56,7 +56,6 @@ SOURCES       = ../GraphicsEngine/camProjection.cpp \
 		../GraphicsEngine/cubeobject.cpp \
 		../GraphicsEngine/functions.cpp \
 		../GraphicsEngine/lights.cpp \
-		../GraphicsEngine/lodepng/lodepng.cpp \
 		../GraphicsEngine/main.cpp \
 		../GraphicsEngine/mainwindow.cpp \
 		../GraphicsEngine/raster.cpp \
@@ -67,7 +66,6 @@ OBJECTS       = camProjection.o \
 		cubeobject.o \
 		functions.o \
 		lights.o \
-		lodepng.o \
 		main.o \
 		mainwindow.o \
 		raster.o \
@@ -156,16 +154,13 @@ DIST          = ../GraphicsEngine/check.png \
 		../GraphicsEngine/cubeobject.h \
 		../GraphicsEngine/functions.h \
 		../GraphicsEngine/lights.h \
-		../GraphicsEngine/lodepng/lodepng.h \
 		../GraphicsEngine/mainwindow.h \
 		../GraphicsEngine/raster.h \
 		../GraphicsEngine/renderWindow.h \
-		../GraphicsEngine/shading.h \
-		../GraphicsEngine/stb_image.h ../GraphicsEngine/camProjection.cpp \
+		../GraphicsEngine/shading.h ../GraphicsEngine/camProjection.cpp \
 		../GraphicsEngine/cubeobject.cpp \
 		../GraphicsEngine/functions.cpp \
 		../GraphicsEngine/lights.cpp \
-		../GraphicsEngine/lodepng/lodepng.cpp \
 		../GraphicsEngine/main.cpp \
 		../GraphicsEngine/mainwindow.cpp \
 		../GraphicsEngine/raster.cpp \
@@ -352,8 +347,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../GraphicsEngine/camProjection.h ../GraphicsEngine/cubeobject.h ../GraphicsEngine/functions.h ../GraphicsEngine/lights.h ../GraphicsEngine/lodepng/lodepng.h ../GraphicsEngine/mainwindow.h ../GraphicsEngine/raster.h ../GraphicsEngine/renderWindow.h ../GraphicsEngine/shading.h ../GraphicsEngine/stb_image.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../GraphicsEngine/camProjection.cpp ../GraphicsEngine/cubeobject.cpp ../GraphicsEngine/functions.cpp ../GraphicsEngine/lights.cpp ../GraphicsEngine/lodepng/lodepng.cpp ../GraphicsEngine/main.cpp ../GraphicsEngine/mainwindow.cpp ../GraphicsEngine/raster.cpp ../GraphicsEngine/renderWindow.cpp ../GraphicsEngine/shading.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../GraphicsEngine/camProjection.h ../GraphicsEngine/cubeobject.h ../GraphicsEngine/functions.h ../GraphicsEngine/lights.h ../GraphicsEngine/mainwindow.h ../GraphicsEngine/raster.h ../GraphicsEngine/renderWindow.h ../GraphicsEngine/shading.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../GraphicsEngine/camProjection.cpp ../GraphicsEngine/cubeobject.cpp ../GraphicsEngine/functions.cpp ../GraphicsEngine/lights.cpp ../GraphicsEngine/main.cpp ../GraphicsEngine/mainwindow.cpp ../GraphicsEngine/raster.cpp ../GraphicsEngine/renderWindow.cpp ../GraphicsEngine/shading.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../GraphicsEngine/mainwindow.ui $(DISTDIR)/
 
 
@@ -470,9 +465,6 @@ functions.o: ../GraphicsEngine/functions.cpp ../../../assimpF/assimp/include/ass
 lights.o: ../GraphicsEngine/lights.cpp ../GraphicsEngine/lights.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lights.o ../GraphicsEngine/lights.cpp
 
-lodepng.o: ../GraphicsEngine/lodepng/lodepng.cpp ../GraphicsEngine/lodepng/lodepng.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lodepng.o ../GraphicsEngine/lodepng/lodepng.cpp
-
 main.o: ../GraphicsEngine/main.cpp ../GraphicsEngine/mainwindow.h \
 		../GraphicsEngine/renderWindow.h \
 		../GraphicsEngine/camProjection.h \
@@ -488,9 +480,7 @@ mainwindow.o: ../GraphicsEngine/mainwindow.cpp ../GraphicsEngine/mainwindow.h \
 		../GraphicsEngine/lights.h \
 		../GraphicsEngine/raster.h \
 		ui_mainwindow.h \
-		../GraphicsEngine/functions.h \
-		../GraphicsEngine/stb_image.h \
-		../GraphicsEngine/lodepng/lodepng.h
+		../GraphicsEngine/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../GraphicsEngine/mainwindow.cpp
 
 raster.o: ../GraphicsEngine/raster.cpp ../GraphicsEngine/raster.h \

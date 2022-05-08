@@ -2,6 +2,8 @@
 #define CUBEOBJECT_H
 
 #include<vector>
+#include<QImage>
+#include<qstring.h>
 class CubeObject
 {
 public:
@@ -15,6 +17,11 @@ public:
         double ke[4]={0,0,0,1};
         double ro=0;
         double Ia=200;
+
+        std::vector<double> O;
+
+        QString url;// = R"(../GraphicsEngine/texture.png)";
+        //QImage texture_img(url);
     };
 
     material mat1, mat2;

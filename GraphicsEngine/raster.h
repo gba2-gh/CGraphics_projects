@@ -16,8 +16,8 @@ public:
 
     void pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bool ortho,bool phongBool,int camSelect, int shaderS, QImage texture_img);
     void drawFaces(CubeObject cubeobject);
-    void fillCubeFace(CubeObject cubeobject);
-    void scanLine(int v1, int v2);
+    void fillCubeFace(CubeObject cubeobject, std::vector<lights*> lightScene);
+    void scanLine(int v1, int v2, bool facein);
 
 
     QList<double>   rasterObs[3];

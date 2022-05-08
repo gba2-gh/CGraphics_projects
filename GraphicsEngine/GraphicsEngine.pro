@@ -20,7 +20,6 @@ SOURCES += \
     cubeobject.cpp \
     functions.cpp \
     lights.cpp \
-    lodepng/lodepng.cpp \
     main.cpp \
     mainwindow.cpp \
     raster.cpp \
@@ -32,12 +31,10 @@ HEADERS += \
     cubeobject.h \
     functions.h \
     lights.h \
-    lodepng/lodepng.h \
     mainwindow.h \
     raster.h \
     renderWindow.h \
-    shading.h \
-    stb_image.h
+    shading.h
 
 FORMS += \
     mainwindow.ui

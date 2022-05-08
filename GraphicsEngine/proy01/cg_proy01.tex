@@ -19,11 +19,11 @@
 
 \title{%
   Proyecto 01\\
-  \large Motor Grafica \\
-    \Large Computación Gráfico\\
+  \large Motor Grafico \\
+    \Large Computación Gráfic4\\
      \large UNAM 2022-2}
 \author{Gibran Zazueta Cruz \\
-\small 24/marzo/2022}
+\small 21/abril/2022}
 \date{}
 
 \begin{document}
@@ -31,7 +31,7 @@
 
 \section{Introducción}
 
-El programa que se presenta a continuación implementa el renderizado de una malla 3d utiñlizando un método de rasterización. 
+El programa que se presenta a continuación implementa el renderizado de una malla 3d utilizando un método de rasterización. 
 
 Se implementa
 \begin{itemize}
@@ -84,25 +84,25 @@ $$
 M_{camara1}= \begin{bmatrix}
 1 & 0 & 0& 0\\
 0 & 1 & 0& 0\\
-0 & 0 & 1&-25 \\
+0 & 0 & 1&-2 \\
 0 & 0 & 0&1
 \end{bmatrix}
 M_{camara2}= \begin{bmatrix}
-0 & 0 & 1& -10\\
+0.86 & 0 & 0.5& 0\\
 0 & 1 & 0& 5\\
--1 & 0 & 0&-10 \\
+-0.5 & 0 & 0.86&-2 \\
 0 & 0 & 0&1
 \end{bmatrix}
 M_{camara3}= \begin{bmatrix}
-0 & 0 & 1& -10\\
-0 & 1 & 0& 5\\
--1 & 0 & 0&-10 \\
+-1 & 0 & 0& 0\\
+0 & 1 & 0& 0\\
+0 & 0 & -1&-2 \\
 0 & 0 & 0&1
 \end{bmatrix}
 $$
 
 
-Por otro lado, eL espacio del dispositivo tiene las dimensiones de 400x400 px y un sistema de coordenadas como se muestra en la figura
+Por otro lado, el espacio del dispositivo tiene las dimensiones de 400x400 px y un sistema de coordenadas como se muestra en la figura
 
 \begin{figure}[H]
 \centering
@@ -145,9 +145,9 @@ Esta implementación está basada en la información presentada en \cite{bb}
 
 
 \section{Shading}
-Para el sombreado su utilizan los métodos de sombreado de Gouroud y Phong 
+Para el sombreado su utilizan el mètodo de sombreado de Phong 
 
-EL modelo de iluminación de Phong presenta las siguientes ecuaciones de sus componentes ambental, difusa y especular.
+El modelo de iluminación de Phong presenta las siguientes ecuaciones de sus componentes ambental, difusa y especular.
 
 \textit{Ambiental}
 
@@ -204,14 +204,46 @@ Finalmente, la escena a renderizar cuenta con 2 luces (blanca y azul) y 3 cámar
 
 Se disponen de la siguiente manera: 
 
-
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{images/ESCENAA.png}
+\includegraphics[scale=0.6]{images/escena.png}
 \caption{Posición de las componentes de la escena}
 \end{figure}
 
 
+
+\subsection{Texturas}
+
+El mapeo de texturas consiste en realizar un mapeo de coordenadas (u,v) de una imagen a las coordenadas de la cara de un polígono. El propósito es aplicar un sombreado por medio de una imagen 2d.
+
+El mapeo de texturas utilizado es un mapeo afín, es decir no toma en cuenta la perspectiva. Esto ocasiona un efecto como el mostrado en la figura
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{images/afin.png}
+\caption{Mapeo afin}
+\end{figure}
+
+
+Las texturas utilizadas para los materiales 1 y 2 son:
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=3]{images/textura2.png}
+\caption{Textura material 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{images/textura1.jpg}
+\caption{Textura material 2}
+\end{figure}
+
+
+
+Sobre el objeto del conejo, la textura solo se visualiza en una parte correspondiente a 72 caras (triángulos) de la malla.
 
 
 
@@ -278,7 +310,7 @@ Se presenta la interfaz del programa.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/gui.png}
+\includegraphics[scale=0.5]{images/ej1.png}
 \caption{Interfaz gráfica del programa}
 \end{figure}
 
@@ -292,44 +324,45 @@ Para cambiar entre las camaras se utilizan las teclas de los numeros
 
  
 
-Se puede rotar el objeto $45º$ sobre el eje $y$. Para hacerlo se presiona la tecla R del teclado.
+Se puede rotar el objeto $30º$ sobre el eje $y$. Para hacerlo se presiona la tecla R del teclado.
 \\
 
-Los botones \textit{Luz Azul} y \textit{Especular} encienden o apagan las luces correspondientes. El programa inicia con todas las luces activas.
+El programa incia con luz blanca y luz azul activa. La luz azul se puede deshabilitar al presionar el botòn \textit{Luz Azul (on/off)}
 \\
 
-\textit{Gouraud Shading} activa el Sombreado por Gouraud y \textit{Phong Shading} el sombreado de Phong.
-\\
 
-Es posible cambiar entre archivos desde el código. En la variable path de mainwindow se cambia la extension por el archivo correspondiente. Por defecto es $bunny$, los demàs archivos se encuentra en la carpeta $'object_file'$ del proyecto.
+Es posible cambiar entre archivos desde el código. En la variable path de mainwindow se cambia la extension por el archivo correspondiente. Por defecto es $bunny$, los demàs archivos se encuentra en la carpeta $'object\_file'$ del proyecto.
+
+Tambièn se puede cambiar la posiciòn de las càmaras al modificar las matrices dentor de la función \textbf{pipeline} dentro de \textit{raster.cpp}. De igual manera, la posición de las luces, que fue definida en \textit{mainwindow.cpp}
 
 
-\section{Programa en ejecución}
+\section{Resultados}
+
+El programa se corriò en un computadora con procesador AMD FX-8370, con tarjeta gráfica Nvidia GTX 970 y 12 gb de memoria ram. El conejo se renderizó en un tiempo aproximado de 14 minutos.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/ej1.png}
 \includegraphics[scale=0.5]{images/ej2.png}
 \includegraphics[scale=0.5]{images/ej3.png}
-\caption{Gouraud Shading. Cámara 1, 2 y 3. Material 1}
+\caption{Renderizado de cubo con Phong y textura}
 \end{figure}
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{images/ej4.png}
-\includegraphics[scale=0.5]{images/ej5.png}
-\includegraphics[scale=0.5]{images/ej6.png}
-\caption{Phong Shading. Cámara 1, 2 y 3. Material 2}
+\caption{Renderizado de conejo. Càmara 1. Material 2}
 \end{figure}
-
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/esfera.png}
-
-\caption{Renderizado esfera}
+\includegraphics[scale=0.5]{images/ej5.png}
+\caption{Renderizado de conejo. Càmara 2. Material 2}
 \end{figure}
+
+
+
 
 \begin{thebibliography}{99}
 

@@ -13,32 +13,31 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     phong = phongBool;
     this->shaderSel= shaderS;
     CamProjection camProj;
+
+
+
     std::vector<std::vector<double> > camPos1= {{1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,1,-40},
+                                                {0,0,1,-1.5},
                                                 {0,0,0,1}};
+
+    std::vector<std::vector<double> > camPos2= {{0.86,0,0.5,  0},
+                                                {0,1, 0,  -1},
+                                                {-0.5,0,0.86 , -3},
+                                                {0,0,0,1}};
+
+
 
     std::vector<std::vector<double> > camPos3= {{-1,0,0,0},
                                                 {0,1,0,0},
-                                                {0,0,-1,-40},
+                                                {0,0,-1,-2},
                                                 {0,0,0,1}};
 
-    std::vector<std::vector<double> > camPos2=
-                        {{1,  0,    0,         0},
-                         {0,  0,    -1,               0},
-                          {0,     1,    0 ,   -40},
-                           {0,0,0,                  1}};
-//    std::vector<std::vector<double> > camPos2= {{0,0,-1,  0},
-//                                                {0,1, 0,  0},
-//                                                {1,0,0 ,-15},
-//                                                {0,0,0,1}};
-
-
-
-//    std::vector<std::vector<double> > camPos3= {{0,0,1,  0},
-//                                                {0,1, 0,  0},
-//                                                {-1,0,0 ,-30},
-//                                                {0,0,0,1}};
+//    std::vector<std::vector<double> > camPos2=
+//                        {{1,  0,    0,         0},
+//                         {0,  0,    -1,               0},
+//                          {0,     1,    0 ,   -40},
+//                           {0,0,0,                  1}};
 
 
 
@@ -69,14 +68,16 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
     ///////////////////////////////////
 
-
+        std::vector<double> v1;
+        std::vector<double> v2;
 
         if(shaderSel != 0){
             ///FIRST VERTEX LIGHTPOS
             for(int k=0; k<cubeobject.vertices.size(); ++k){
-                for(int j =0; j<=2; ++j){
-                    rasterLightPos[j].append(cubeobject.vertices[k][j] - lightScene[0]->lightPos[j]);
-                    rasterLightPos2[j].append(cubeobject.vertices[k][j] - lightScene[1]->lightPos[j]);
+
+               for(int j =0; j<=2; ++j){
+                    rasterLightPos[j].append(lightScene[0]->lightPos[j] -  cubeobject.vertices[k][j]);
+                    rasterLightPos2[j].append(lightScene[1]->lightPos[j] - cubeobject.vertices[k][j]);
                 }
             }
 
@@ -89,10 +90,10 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
             }
 
             ///FIRST VERTEX OBS
-             std::vector<double> op= {15,0,15};
+
              for(int k=0; k<cubeobject.vertices.size(); ++k){
                  for(int j =0; j<=2; ++j){
-                     rasterObs[j].append(cubeobject.vertices[k][j] - op[j]);
+                     rasterObs[j].append(cubeobject.all_mat[cubeobject.curr_mat].O[j] -cubeobject.vertices[k][j]);
                  }
              }
         }
@@ -106,29 +107,25 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
         ///FIRST VERTEX COLOR
        for(int k=0; k<cubeobject.vertices.size(); ++k){
-               if(shaderSel == 0){
+               if(shaderSel == 3){
                    for(int i=0; i<=2;++i){
                        rasterColor[i].append(255);
                    }
                }
 
               else{
-               //rasterColor[i].append(calcLightVertex(cubeobject, lightScene, k, i));
-
                    for(int j=0; j<=2; ++j){
                        L.push_back(rasterLightPos[j][k]);
                        L2.push_back(rasterLightPos2[j][k]);
                        N.push_back(rasterNormal[j][k]);
                        O.push_back(rasterObs[j][k]);
                    }
-                   //I=lightVertex(cubeobject, L, N, O, lightScene);
-
-
                    for(int i=0; i<=2;++i){
                       // rasterColor[i].append(I[i]);
                        double dp=dot_product(L, N);
                        I=cubeobject.all_mat[cubeobject.curr_mat].Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
                        I += lightScene[0]->color[i]*(lightScene[0]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
+
 
                        dp=dot_product(L2, N);
                        I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
@@ -161,79 +158,8 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
     ///INTERPOLACION
     ///
 
-   this->fillCubeFace(cubeobject);
+   this->fillCubeFace(cubeobject, lightScene);
 
-
-         //PHONG
-    if(shaderSel==2){
-             for (int i=0; i<=2; i++){
-                 rasterColorT[i].clear();
-             }
-
-             std::vector<double> O;
-             std::vector<double> L;
-             std::vector<double> L2;
-             std::vector<double> N;
-
-
-             for(int k=0; k<rasterNormal[0].size(); ++k){
-
-                 for(int j=0; j<=2; ++j){
-                     L.push_back(rasterLightPos[j][k]);
-                     L2.push_back(rasterLightPos2[j][k]);
-                     N.push_back(rasterNormal[j][k]);
-                     O.push_back(rasterObs[j][k]);
-                 }
-
-                /////i
-
-                 double I;
-                 double dp=0;
-                 double aux=0;
-
-                 std::vector<double> h;
-
-                 for(int i=0; i<=2; ++i){
-
-                     //AMBIENT
-                     I= cubeobject.all_mat[cubeobject.curr_mat].Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
-
-                     //DIFFUSE
-                     dp=dot_product(L, N);
-
-                     I += lightScene[0]->color[i]*(lightScene[0]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
-//                     if(aux<0){aux=0;}
-//                          I +=aux;
-                     dp=dot_product(L2, N);
-                     I += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
-//                     if(aux<0){aux=0;}
-//                          I +=aux;
-                     //SPECULAR
-//                     h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
-//                     h[0] -= L[0];h[1] -= L[1]; h[2] -= L[2];
-//                     double power= pow(dot_product(O, h),lightScene[2]->p);
-//                     aux = lightScene[2]->intensity*cubeobject.all_mat[cubeobject.curr_mat].ke[i]*power ;
-
-//                     if(aux<0){aux=0;}
-//                     I[i] +=aux;
-
-
-                     if(I>255){I=255;}
-                     if(I<0){I=0;}
-
-                     h.clear();
-
-                    rasterColorT[i].append(I);
-
-                    }
-
-                 L.clear();
-                 L2.clear();
-                 N.clear();
-                 O.clear();
-
-             }
-     } //end if shadersel
 
     //CLEAN
      for (int i=0; i<=2; i++){
@@ -251,18 +177,23 @@ void raster::pipeline(CubeObject cubeobject, std::vector<lights*> lightScene, bo
 
 
 
-void raster::fillCubeFace(CubeObject cubeobject){
-
+void raster::fillCubeFace(CubeObject cubeobject, std::vector<lights*> lightScene){
+    int current_size=0;
+    int current_size_uv=0;
 
     for(int i=0; i< cubeobject.facesIdx.size(); ++i){
 
-
-            for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
-
-              scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1])   ;
+            bool facein=false;
+            for(int l=0; l< cubeobject.textureFaces.size(); ++l){
+                 if(cubeobject.textureFaces[l]==i){
+                        facein=true;
+                    }
             }
 
-           scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0]);
+        for(int j=0; j<cubeobject.facesIdx[i].size()-1; ++j){
+              scanLine(cubeobject.facesIdx[i][j],cubeobject.facesIdx[i][j+1], facein);
+          }
+             scanLine(cubeobject.facesIdx[i][cubeobject.facesIdx[i].size()-1], cubeobject.facesIdx[i][0], facein);
 
 
         //SCAN CONVERSION
@@ -270,15 +201,14 @@ void raster::fillCubeFace(CubeObject cubeobject){
         rasterZ.append(horInterpolation(yBuffer, zBuffer));
 
 
-        //rasterUV[0].append(horInterpolation(yBuffer, uvBuffer[0]));
-        //rasterUV[1].append(horInterpolation(yBuffer, uvBuffer[1]));
-
         int xmin=0,xmax=0;
         double imin=0, imin2=0;
         double imax=0, imax2=0;
 
         double deltaI, deltaI2, z_act;
 
+
+      if(facein){
         for(int y=0;y<400;++y){
 
                if(yBuffer[y][0]<yBuffer[y][1]){
@@ -314,13 +244,14 @@ void raster::fillCubeFace(CubeObject cubeobject){
                    rasterUV[1].append(imin2);
                    imin2 += deltaI2;
                 }
-
         }
 
 
+      }else{
+
         //INTERPOLAR
         for(int c=0; c<=2; ++c){
-           if(shaderSel==2){
+           if(true ){
                rasterNormal[c].append(horInterpolation(yBuffer, normalBuffer[c]));
                rasterLightPos[c].append(horInterpolation(yBuffer, lightPosBuffer[c]));
                rasterLightPos2[c].append(horInterpolation(yBuffer, lightPos2Buffer[c]));
@@ -332,82 +263,135 @@ void raster::fillCubeFace(CubeObject cubeobject){
 
         }
 
+      }
 
 
-        double color_sizeT= rasterColorT[0].size();
-        int uv_size= rasterUV[0].size()/2;
-
-        ////////TEST
-        ///
-        bool facein=false;
-        for(int l=0; l< cubeobject.textureFaces.size(); ++l){
-             if(cubeobject.textureFaces[l]==i){
-
-                    facein=true;
-        }}
-
-        if(i>0){
-            for(int l=0; l<cubeobject.vertex_uvCoord.size(); ++l){
-                rasterUV[0].removeFirst();
-                rasterUV[1].removeFirst();
-            }
-
-        }
-
-
-        //texture
-        if(shaderSel==3 && facein){
+  //texture
+    if(facein){
 
                QColor color_texel;
 
-               for(int k=0; k< rasterUV[0].size(); k++){
+               for(int k=current_size_uv; k< rasterUV[0].size(); k++){
 
                    int x,y;
                    x= floor((texture_img.width()-1)*(rasterUV[0][k] ));
                    y= floor((texture_img.height()-1)*(1 -rasterUV[1][k]) );
 
-
                    color_texel= texture_img.pixelColor(x,y);
-
-
-                   ////reemplazo
-
-
-                   //           ////STICKER
-                   ////           if(color_texel.isValid()){
-                   ////               rasterColor[0][i] -= color_texel.red()/10;
-                   ////               rasterColor[1][i] -= color_texel.green()/10;
-                   ////               rasterColor[2][i] -= color_texel.blue()/10;
-                   ////           }
 
                        rasterColorT[0].append(color_texel.red());
                        rasterColorT[1].append(color_texel.green());
                        rasterColorT[2].append(color_texel.blue());
 
 
-               }  //end for rasteruv
+                        }  //end for rasteruv
             }
-            else{//else shader==3
+   else{//else shader==3
 
 
+                std::vector<double> O;
+                std::vector<double> L;
+                std::vector<double> L2;
+                std::vector<double> N;
 
-                for(int c=color_sizeT; c< rasterColor[0].size(); ++c){
-                rasterColorT[0].append(rasterColor[0][c]);
-                rasterColorT[1].append(rasterColor[1][c]);
-                rasterColorT[2].append(rasterColor[2][c]);
+
+        for(int k=current_size; k<rasterNormal[0].size(); ++k){
+
+                for(int j=0; j<=2; ++j){
+                    L.push_back(rasterLightPos[j][k]);
+                    L2.push_back(rasterLightPos2[j][k]);
+                    N.push_back(rasterNormal[j][k]);
+                    O.push_back(rasterObs[j][k]);
                 }
-            }
-        rasterUV[0].clear();
-        rasterUV[1].clear();
+
+               /////i
+
+                double I;
+                double Iamb=0;
+                double Idiff=0;
+                double Ispec=0;
+                double dp=0;
+                double power;
+
+                std::vector<double> h;
+
+                for(int i=0; i<=2; ++i){
 
 
-        for(int k=0; k<cubeobject.vertex_uvCoord.size(); ++k){
+                    L=norm_vector(L);
+                    L2=norm_vector(L2);
+                    O=norm_vector(O);
 
-            rasterUV[0].append(cubeobject.vertex_uvCoord[k][0]);
-            rasterUV[1].append(cubeobject.vertex_uvCoord[k][1]);
-        }
+                    //AMBIENT
+                    Iamb= cubeobject.all_mat[cubeobject.curr_mat].Ia*cubeobject.all_mat[cubeobject.curr_mat].ka[i];
+
+                    ///L1
+                    //DIFFUSE
+                    dp=std::max(dot_product(L, N), 0.0);
+
+                    Idiff= lightScene[0]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp ;
+
+                    //SPECULAR
+                    h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
+                    h[0] -= L[0];   h[1] -= L[1];   h[2] -= L[2];
+                    power= pow(std::max(dot_product(O, h),0.0),cubeobject.all_mat[cubeobject.curr_mat].ro);
+                    Ispec =  lightScene[0]->intensity*cubeobject.all_mat[cubeobject.curr_mat].ke[i]*power ;
+
+                    h.clear();
 
 
+                    ///L2
+                    // DIFFUSE
+                    dp=std::max(dot_product(L2, N), 0.0);
+                    Idiff += lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].kd[i]*dp) ;
+
+                    //SPECULAR
+                    h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
+                    h[0] -= L2[0];   h[1] -= L2[1];   h[2] -= L2[2];
+                    power= pow(std::max(dot_product(O, h),0.0),cubeobject.all_mat[cubeobject.curr_mat].ro);
+                    Ispec +=  lightScene[1]->color[i]*(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].ke[i]*power) ;
+
+                    h.clear();
+
+
+                    I = Iamb + Idiff +Ispec;
+
+
+
+
+
+//                    dp=dot_product(N, L2);
+
+//                    h.insert(h.end(), {2*dp*N[0], 2*dp*N[1], 2*dp*N[2]});
+//                    h[0] -= L[0];   h[1] -= L[1];   h[2] -= L[2];
+//                    power= pow(dot_product(O, h),3);
+//                    aux =  lightScene[1]->color[i] *(lightScene[1]->intensity*cubeobject.all_mat[cubeobject.curr_mat].ke[i]*power) ;
+
+////                    if(aux<0){aux=0;}
+////                    if(aux>255){aux=255;}
+//                    h.clear();
+
+ //                   I +=aux;
+
+                    if(I>255){I=255;}
+                    if(I<0){I=0;}
+
+
+                   rasterColorT[i].append(I);
+
+                   }
+
+                L.clear();
+                L2.clear();
+                N.clear();
+                O.clear();
+
+
+                } // END LOOP PHONG
+            } //END ELSE
+
+        current_size = rasterNormal[0].size();
+        current_size_uv = rasterUV[0].size();
 
 
         //CLEAN BUFFER
@@ -434,7 +418,7 @@ void raster::fillCubeFace(CubeObject cubeobject){
 
 
 
-void raster::scanLine(int v1, int v2)
+void raster::scanLine(int v1, int v2, bool facein)
 {
 
 
@@ -481,7 +465,6 @@ void raster::scanLine(int v1, int v2)
     double dv= vC2-vC1;
     double duv=du/dv;
 
-
     //double vd= vC1+1 - vC1;
     double u= u1 ;
 
@@ -494,30 +477,37 @@ void raster::scanLine(int v1, int v2)
             deltaU= du/dy;
     double deltaV= dv/dy;
 
+
+
+
     //FILL BUFFER
         double deltaI[3];
         double deltaN[3];
         double deltaL[3];
         double deltaL2[3];
         double deltaO[3];
-    if(shaderSel == 2){
+
+    if(!facein){
+
         for(int i=0; i<=2; i++){
             deltaI[i]=(rasterColor[i][v2]-rasterColor[i][v1])/(y2-y1);
-            if(shaderSel==2){
+            //if(shaderSel==2){
             deltaN[i]=(rasterNormal[i][v2]-rasterNormal[i][v1])/(dy);
             deltaL[i]=(rasterLightPos[i][v2]-rasterLightPos[i][v1])/(dy);
             deltaL2[i]=(rasterLightPos2[i][v2]-rasterLightPos2[i][v1])/(dy);
             deltaO[i]=(rasterObs[i][v2]-rasterObs[i][v1])/(dy);
-            }
+            //}
         }
+    }
 
- }
 
         double I[3]={rasterColor[0][v1], rasterColor[1][v1], rasterColor[2][v1]};
         double N[3]= {rasterNormal[0][v1], rasterNormal[1][v1], rasterNormal[2][v1]};
         double L[3]= {rasterLightPos[0][v1], rasterLightPos[1][v1], rasterLightPos[2][v1]};
         double L2[3]= {rasterLightPos2[0][v1], rasterLightPos2[1][v1], rasterLightPos2[2][v1]};
         double O[3]= {rasterObs[0][v1], rasterObs[1][v1], rasterObs[2][v1]};
+
+
 
 
     //INTERPOLACION
@@ -528,7 +518,6 @@ void raster::scanLine(int v1, int v2)
             z+=deltaZ;
 
 
-            if(shaderSel==3){
                 //depthBuffer[y][up] = zd;
                 zd += deltaZd;
                 //double lambda = (x - proy[v1][0])/(proy[0][v2]-proy[0][v1]);
@@ -538,21 +527,23 @@ void raster::scanLine(int v1, int v2)
 
 
                 depthBuffer[y][up]= 1/pz;
+
+
+            if(facein){
                 uvBuffer[0][y][up]=u;
                 uvBuffer[1][y][up]=v;
 
                 u=u+deltaU;
                 v=v+deltaV;
-            }
 
-
+            }else{
                 for(int i=0; i<=2; i++){
                     colorBuffer[i][y][up]=I[i];
                     I[i] +=deltaI[i];
 
-                    if(shaderSel == 2){
+                    //if(shaderSel == 2 || shaderSel == 3 ){
                     normalBuffer[i][y][up]=N[i];
-                   N[i] +=deltaN[i];
+                    N[i] +=deltaN[i];
 
                     lightPosBuffer[i][y][up]=L[i];
                     L[i] +=deltaL[i];
@@ -560,11 +551,11 @@ void raster::scanLine(int v1, int v2)
                     lightPos2Buffer[i][y][up]=L2[i];
                     L2[i] +=deltaL2[i];
 
-
                     obsBuffer[i][y][up]=O[i];
                     O[i] +=deltaO[i];
-                    }
+                    //}
                 }
+         }
 
 
     }

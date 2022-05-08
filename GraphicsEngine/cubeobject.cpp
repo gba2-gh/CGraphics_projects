@@ -20,8 +20,19 @@ CubeObject::CubeObject()
         mat1.ro=32;
         mat2.ro=89.6;
 
+        mat1.O.insert(mat1.O.end(), {40, 0 ,40 });
+        mat2.O.insert(mat2.O.end(), {0, 0 ,40 });
+
+        mat1.url = R"(../GraphicsEngine/check.png)";
+        mat2.url = R"(../GraphicsEngine/texture.jpg)";
+
+
+
         all_mat.push_back(mat1);
         all_mat.push_back(mat2);
+
+
+
 }
 
 void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
