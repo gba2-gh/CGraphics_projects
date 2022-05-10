@@ -36,6 +36,7 @@ private:
     float camSelect = 0;
     bool luzOnOff=true;
 
+    QImage texture_img;
 
 
 };

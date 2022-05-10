@@ -1,4 +1,17 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
+#include<QImage>
+#include <QtGui/QImage>
+
+#include<qaction.h>
+#include<QAction>
+#include<QKeyEvent>
+#include<fstream>
+#include <sstream>
+#include<qdebug.h>
+
+#include <stdint.h>
+
+
 
 MainWindow::MainWindow(QWidget *parent)
 {
@@ -23,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent)
 //    timer->start(100);
 
     rotation=0;
+
+    QString url = R"(..openglFIrst/check.png)";
+    QImage input("url");
+
+    texture_img = input;
+
 
 }
 
@@ -76,14 +95,14 @@ void MainWindow::paintGL()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();           //identidad matriz actual
 
-
+    double es=10;
     if(camSelect==0){
-        gluLookAt(0,0 , -50, 0, 0, -1, 0,1,0);
+        gluLookAt(0,0 , -5*es, 0, 0, -1, 0,1,0);
     }else if(camSelect==1){
         //gluLookAt(0,0 , 50, 0, 0, 1, 0,1,0);
-        gluLookAt(40,20 , 40, 0, 0, -1, 0,1,0);
+        gluLookAt(4*es,2*es , 4*es, 0, 0, -1, 0,1,0);
     }else{
-        gluLookAt(-40,20 , -40, 0, 0, -1, 0,1,0);
+        gluLookAt(-4*es,2*es , -4*es, 0, 0, -1, 0,1,0);
     }
 
     GLfloat kd[] = {0.8, 0.8, 0.8, 1.0};
@@ -129,17 +148,52 @@ void MainWindow::paintGL()
     glRotatef(rotation, 1.0, 1.0, 1.0);
 
 
+//    QString url = R"(../openglFIrst/check.png)";
+//    QImage texture_img(url);
+
+    //IMAGEN TEXTURA
+    QImage image(400, 400, QImage::Format_RGB32);
+    QRgb value = qRgb(189, 149, 39); ;
+
+    for(int i=0; i<400; ++i){
+        for(int j=0; j<400; ++j){
+            image.setPixel(i,j, value);
+        }
+    }
+
+    image = image.convertToFormat(QImage::Format_RGB888);
+    texture_img=texture_img.convertToFormat(QImage::Format_RGB888);
+
+    uint d;
+    glGenTextures(1, &d); // generate a unique ID for this texture
+    glBindTexture(GL_TEXTURE_2D, d); // create texture d
+
+    // interpolacion, wrapping
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 400, 400, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_img.bits());
+    // target, level, internalFormat, width, height, border, format, type, pointer to texels
+
+    glEnable(GL_TEXTURE_2D);
+
+
+
     ///CUBE
     //FRENTE
         glBegin(GL_POLYGON);
-            glColor3f(1.0, 1.0, 1.0);
-
+                glTexCoord2f(0.0f, 1.0f);
                 glNormal3f(0.7071067811, -0.7071067811, 0);
             glVertex3f(15, -15, 15); //1
+                glTexCoord2f(1.0f, 1.0f);
                 glNormal3f(0.7071067811, -0.7071067811, 0);
             glVertex3f(15, 15, 15); //2
+                glTexCoord2f(1.0f, 0.0f);
                 glNormal3f(-0.7071067811, -0.7071067811, 0);
             glVertex3f(-15, 15, 15); //3
+                glTexCoord2f(0.0f, 0.0f);
                 glNormal3f(-0.7071067811, -0.7071067811, 0);
             glVertex3f(-15, -15, 15); //4
         glEnd();
@@ -158,7 +212,6 @@ void MainWindow::paintGL()
 
      //DERECHA
         glBegin(GL_POLYGON);
-            glColor3f(1.0, 1.0, 1.0);
 
             glNormal3f(0.7071067811, -0.7071067811, 0);
         glVertex3f(15, -15, 15); //1
@@ -172,7 +225,7 @@ void MainWindow::paintGL()
 
      //IZQUIERDA
         glBegin(GL_POLYGON);
-            glColor3f(1.0, 1.0, 1.0);
+
             glNormal3f(-0.7071067811, -0.7071067811, 0);
         glVertex3f(-15, 15, 15); //3
             glNormal3f(-0.7071067811, -0.7071067811, 0);
@@ -187,7 +240,6 @@ void MainWindow::paintGL()
 
      //ARRIBA
         glBegin(GL_POLYGON);
-            glColor3f(1.0, 1.0, 1.0);
 
             glNormal3f(0.7071067811, -0.7071067811, 0);
         glVertex3f(15, 15, 15); //2
@@ -202,7 +254,6 @@ void MainWindow::paintGL()
 
       //ABAJO
         glBegin(GL_POLYGON);
-            glColor3f(1.0, 1.0, 1.0);
 
             glNormal3f(0.7071067811, -0.7071067811, 0);
         glVertex3f(15, -15, 15); //1
