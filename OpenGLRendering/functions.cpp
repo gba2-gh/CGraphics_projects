@@ -10,18 +10,18 @@
 
 bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cubeVert,
                                             std::vector<std::vector<int>>*  cubeFacesIdx,
-                                                std::vector<std::vector<double>>*  cubeNormals)
+                                                std::vector<std::vector<double>>*  cubeNormals,
+                                                    std::vector<std::vector<double>>*  cubeUV)
 {
     // Create an instance of the Importer class
     Assimp::Importer importer;
 
     const aiScene* scene = importer.ReadFile(pFile,
-      aiProcess_JoinIdenticalVertices  );
-
+      aiProcess_JoinIdenticalVertices);
 
      aiMesh* mesh = scene->mMeshes[0];
      aiVector3D* pPos ;
-     aiVector3D* uv ;
+     aiVector3D uv ;
      aiVector3D* normal;
      aiFace* face;
      //aiUVTransform* uv;
@@ -36,22 +36,31 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
           vertex.push_back(pPos->x);
           vertex.push_back(pPos->y);
           vertex.push_back(pPos->z);
-          vertex.push_back(1);
+          //vertex.push_back(1);
           vertices.push_back(vertex);
           vertex.clear();
-
-          normal = &(mesh->mNormals[i]);
-           vertex.push_back(normal->x);
-           vertex.push_back(normal->y);
-           vertex.push_back(normal->z);
-           normales.push_back(vertex);
-           vertex.clear();
-
      }
 
-
-
      *cubeVert= vertices;
+
+
+
+    if(&(mesh->mNormals[0]) != NULL){
+
+     for(int i=0; i<mesh->mNumVertices; ++i){
+      normal = &(mesh->mNormals[i]);
+      vertex.push_back(normal->x);
+      vertex.push_back(normal->y);
+      vertex.push_back(normal->z);
+      normales.push_back(vertex);
+      vertex.clear();
+     }
+    }else{
+        vertex.push_back(0);
+        normales.push_back(vertex);
+    }
+
+
     *cubeNormals=normales;
 
      std::vector<std::vector<int> > facesIdx;
@@ -72,18 +81,19 @@ bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cub
        std::vector<std::vector<double> > uvCoord;
        std::vector<double> temp;
 
-        qDebug() << mesh->mTextureCoords[0];
-
-//       for(int i=0; i< sizeof(mesh->mTextureCoords); ++i){
-//           uv =  (mesh->mTextureCoords[i]);
-//           temp.push_back(uv->x);
-//           temp.push_back(uv->y);
-//           uvCoord.push_back(temp);
-//           temp.clear();
-//       }
-
-
-//    *cubeUV = uvCoord;
+       if(mesh->mTextureCoords[0] != NULL){
+           for(int i=0; i< mesh->mNumVertices ; ++i){
+               uv =  (mesh->mTextureCoords[0][i]);
+               temp.push_back(uv.x);
+               temp.push_back(uv.y);
+               uvCoord.push_back(temp);
+               temp.clear();
+           }
+       }else{
+           temp.push_back(0);
+            uvCoord.push_back(temp);
+       }
+       *cubeUV = uvCoord;
 
 
     //qDebug() << facesIdx;

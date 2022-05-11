@@ -23,28 +23,28 @@ CubeObject::CubeObject()
         mat1.O.insert(mat1.O.end(), {40, 0 ,40 });
         mat2.O.insert(mat2.O.end(), {0, 0 ,40 });
 
-        mat1.url = R"(../GraphicsEngine/check.png)";
-        mat2.url = R"(../GraphicsEngine/texture.jpg)";
+        mat1.url = R"(../OpenGLRendering/check.png)";
+        mat2.url = R"(../OpenGLRendering/texture.jpg)";
 
+
+        QString url = R"(../OpenGLRendering/card.jpg)";
+        QString url2 = R"(../OpenGLRendering/rust.jpg)";
+        QImage input(url);
+        QImage input2(url2);
+        QTransform myTransform;
+        myTransform.rotate(90);
+
+        input = input.transformed(myTransform);
+        input2 = input2.transformed(myTransform);
+
+        mat1.texture =  input.mirrored(false,true);
+        mat2.texture =  input2.mirrored(false,true);
 
 
         all_mat.push_back(mat1);
         all_mat.push_back(mat2);
-
-
-
 }
 
-void CubeObject::faceVertices(int i, int v0, int v1, int v2, int v3)
-{
-
-    facesV[i].vertices.push_back(vertices[v0]);
-    facesV[i].vertices.push_back(vertices[v1]);
-    facesV[i].vertices.push_back(vertices[v2]);
-    facesV[i].vertices.push_back(vertices[v3]);
-
-
-}
 
 
 void CubeObject::rotateX(double angleD)
@@ -78,9 +78,6 @@ void CubeObject::rotateY(double angleD)
 }
 
 
-
-
-
 void CubeObject::calcVerticesNormal()
 {
     ///CREATE FACE
@@ -88,12 +85,9 @@ void CubeObject::calcVerticesNormal()
     createFaces();
 
     ///CALCULAR NORMALES
-    ///
-    ///
     faceNormals.clear();
     for(int i=0; i<faces.size(); ++i){
         faceNormals.insert(faceNormals.end(), calcFaceNormal(faces[i]));
-        //facesV[i].normal = calcFaceNormal(facesV[i].get_face()) ;
     }
 
     std::vector<double> vn={0,0,0};
@@ -135,20 +129,10 @@ void CubeObject::createFaces()
         face.clear();
 
     }
-    //faces.push_back( createFace(facesIdx[i][0], facesIdx[i][1], facesIdx[i][2], facesIdx[i][3]));
-
 
  }
 
-std::vector<std::vector <double> > CubeObject::createFace(int v0, int v1, int v2, int v3)
-{
-    std::vector<std::vector <double> >  face;
-    face.insert(face.end(), vertices[v0]);
-    face.insert(face.end(), vertices[v1]);
-    face.insert(face.end(), vertices[v2]);
-    face.insert(face.end(), vertices[v3]);
-    return face;
-    }
+
 
 std::vector<double> CubeObject::calcFaceNormal(std::vector<std::vector<double> > face){
 
@@ -172,32 +156,6 @@ std::vector<double> CubeObject::calcFaceNormal(std::vector<std::vector<double> >
 
 }
 
-void CubeObject::calcVertexNormal(std::vector<double> fn1,
-                                                 std::vector<double> fn2,
-                                                 std::vector<double> fn3)
-{
-
-    std::vector<double> v0n;
-
-    v0n=sum_vectors(fn1, fn2);
-    v0n=sum_vectors(v0n, fn3);
-    v0n=norm_vector(v0n);
-    vertexNormals.push_back(v0n);
-
-}
 
 
 
-
-
-std::vector<std::vector<double> > CubeObject::face::get_face()
-{
-
-                std::vector<std::vector<double>> vec;
-                for(int i=0; i<=3;++i){
-                    vec.push_back(this->vertices[i].get());
-                }
-
-                return vec;
-
-}

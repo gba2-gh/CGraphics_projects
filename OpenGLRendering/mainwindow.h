@@ -7,6 +7,7 @@
 #include <QOpenGLFunctions>
 #include <QtOpenGL>
 #include <GL/glu.h>>
+#include"cubeobject.h"
 
 class MainWindow : public QOpenGLWindow
 {
@@ -27,7 +28,6 @@ protected:
 
 
 public slots:
-    void UpdateAnimation();
 
 private:
     QOpenGLContext *context;
@@ -36,8 +36,9 @@ private:
     float camSelect = 0;
     bool luzOnOff=true;
     bool luzOnOffB=true;
+    int curr_mat= 0;
 
-
+    CubeObject *cubeObject;
     QImage texture_img;
 
 

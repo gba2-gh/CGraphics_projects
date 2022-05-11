@@ -1,0 +1,151 @@
+    ///CUBE
+    //FRENTE
+        glBegin(GL_POLYGON);
+                glTexCoord2f(0.0f, 0.0f);
+                glNormal3f(0.7071067811, -0.7071067811, 0);
+            glVertex3f(15, -15, 15); //1
+                glTexCoord2f(1.0f, 0.0f);
+                glNormal3f(0.7071067811, -0.7071067811, 0);
+            glVertex3f(15, 15, 15); //2
+                glTexCoord2f(1.0f, 1.0f);
+                glNormal3f(-0.7071067811, -0.7071067811, 0);
+            glVertex3f(-15, 15, 15); //3
+                glTexCoord2f(0.0f, 1.0f);
+                glNormal3f(-0.7071067811, -0.7071067811, 0);
+            glVertex3f(-15, -15, 15); //4
+        glEnd();
+    //BACK
+        glBegin(GL_POLYGON);
+
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, -15, -15); //5
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, 15, -15); //6
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, 15, -15); //7
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, -15, -15); //8
+        glEnd();
+
+     //DERECHA
+        glBegin(GL_POLYGON);
+
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, -15, 15); //1
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, 15, 15); //2
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, 15, -15); //6
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, -15, -15); //5
+        glEnd();
+
+     //IZQUIERDA
+        glBegin(GL_POLYGON);
+
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, 15, 15); //3
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, -15, 15); //4
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, -15, -15); //8
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, 15, -15); //7
+
+
+        glEnd();
+
+     //ARRIBA
+        glBegin(GL_POLYGON);
+
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, 15, 15); //2
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, 15, 15); //3
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, 15, -15); //7
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, 15, -15); //6
+
+        glEnd();
+
+      //ABAJO
+        glBegin(GL_POLYGON);
+
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, -15, 15); //1
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, -15, 15); //4
+            glNormal3f(0.7071067811, -0.7071067811, 0);
+        glVertex3f(-15, -15, -15); //8
+            glNormal3f(-0.7071067811, -0.7071067811, 0);
+        glVertex3f(15, -15, -15); //5
+
+        glEnd();
+
+
+     glFlush();
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+         GLfloat vertices2[] = {
+        15.0f, -15.0f, 15.0f,
+        15.0f, 15.0f, 15.0f,
+        -15.0f, 15.0f, 15.0f,
+        -15.0f, -15.0f, 15.0f,
+        15.0f, -15.0f, -15.0f,
+        15.0f, 15.0f, -15.0f,
+        -15.0f, 15.0f, -15.0f,
+        -15.0f, -15.0f, -15.0};
+
+    GLuint indexes2[] = {
+            // Front Face
+            0, 1, 2,
+            2, 3, 0,
+            // Right Face
+            1, 0, 4,
+            4, 5, 1,
+            // Back Face
+            7, 6, 5,
+            5, 4, 7,
+            //Left Face
+            6, 7, 2,
+            7, 3, 2,
+            //Top Face
+            5, 6, 1,
+            2, 1, 6,
+            //Bottom Face
+            3, 7, 0,
+            4, 0, 7};
+
+    GLfloat uvCoord2[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 0.0f,
+        0.0f, 0.0f
+    };
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     

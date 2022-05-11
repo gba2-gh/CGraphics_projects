@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../OpenGLRendering -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+INCPATH       = -I../OpenGLRendering -I. -I../../../assimpF/assimp/include -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = OpenGLRendering1.0.0
 DISTDIR = /home/gba/Documents/qtProject/CGraphics_projects/build-OpenGLRendering-Desktop-Debug/.tmp/OpenGLRendering1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) -lglut -lGLU /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) -lglut -lGLU -L/home/gba/Documents/qtProject/CGraphics_projects/OpenGLRendering/../../../assimpF/assimp/bin/ -lassimp /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,9 +52,13 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../OpenGLRendering/main.cpp \
+SOURCES       = ../OpenGLRendering/cubeobject.cpp \
+		../OpenGLRendering/functions.cpp \
+		../OpenGLRendering/main.cpp \
 		../OpenGLRendering/mainwindow.cpp moc_mainwindow.cpp
-OBJECTS       = main.o \
+OBJECTS       = cubeobject.o \
+		functions.o \
+		main.o \
 		mainwindow.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -113,6 +117,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../OpenGLRendering/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -132,7 +137,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../OpenGLRendering/OpenGLRendering.pro ../OpenGLRendering/mainwindow.h ../OpenGLRendering/main.cpp \
+		../OpenGLRendering/OpenGLRendering.pro ../OpenGLRendering/cubeobject.h \
+		../OpenGLRendering/functions.h \
+		../OpenGLRendering/mainwindow.h ../OpenGLRendering/cubeobject.cpp \
+		../OpenGLRendering/functions.cpp \
+		../OpenGLRendering/main.cpp \
 		../OpenGLRendering/mainwindow.cpp
 QMAKE_TARGET  = OpenGLRendering
 DESTDIR       = 
@@ -201,6 +210,7 @@ Makefile: ../OpenGLRendering/OpenGLRendering.pro /usr/lib/x86_64-linux-gnu/qt5/m
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -278,6 +288,7 @@ Makefile: ../OpenGLRendering/OpenGLRendering.pro /usr/lib/x86_64-linux-gnu/qt5/m
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -313,8 +324,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../OpenGLRendering/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../OpenGLRendering/main.cpp ../OpenGLRendering/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../OpenGLRendering/cubeobject.h ../OpenGLRendering/functions.h ../OpenGLRendering/mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../OpenGLRendering/cubeobject.cpp ../OpenGLRendering/functions.cpp ../OpenGLRendering/main.cpp ../OpenGLRendering/mainwindow.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -350,9 +361,10 @@ compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../OpenGLRendering/mainwindow.h \
+		../OpenGLRendering/cubeobject.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/gba/Documents/qtProject/CGraphics_projects/build-OpenGLRendering-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/gba/Documents/qtProject/CGraphics_projects/OpenGLRendering -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../OpenGLRendering/mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/gba/Documents/qtProject/CGraphics_projects/build-OpenGLRendering-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/gba/Documents/qtProject/CGraphics_projects/OpenGLRendering -I/home/gba/Documents/assimpF/assimp/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../OpenGLRendering/mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -370,10 +382,51 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 ####### Compile
 
-main.o: ../OpenGLRendering/main.cpp ../OpenGLRendering/mainwindow.h
+cubeobject.o: ../OpenGLRendering/cubeobject.cpp ../OpenGLRendering/cubeobject.h \
+		../OpenGLRendering/functions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cubeobject.o ../OpenGLRendering/cubeobject.cpp
+
+functions.o: ../OpenGLRendering/functions.cpp ../../../assimpF/assimp/include/assimp/Importer.hpp \
+		../../../assimpF/assimp/include/assimp/types.h \
+		../../../assimpF/assimp/include/assimp/defs.h \
+		../../../assimpF/assimp/include/assimp/config.h \
+		../../../assimpF/assimp/include/assimp/vector2.h \
+		../../../assimpF/assimp/include/assimp/vector3.h \
+		../../../assimpF/assimp/include/assimp/color4.h \
+		../../../assimpF/assimp/include/assimp/matrix3x3.h \
+		../../../assimpF/assimp/include/assimp/matrix4x4.h \
+		../../../assimpF/assimp/include/assimp/quaternion.h \
+		../../../assimpF/assimp/include/assimp/vector2.inl \
+		../../../assimpF/assimp/include/assimp/vector3.inl \
+		../../../assimpF/assimp/include/assimp/color4.inl \
+		../../../assimpF/assimp/include/assimp/matrix3x3.inl \
+		../../../assimpF/assimp/include/assimp/matrix4x4.inl \
+		../../../assimpF/assimp/include/assimp/MathFunctions.h \
+		../../../assimpF/assimp/include/assimp/quaternion.inl \
+		../../../assimpF/assimp/include/assimp/scene.h \
+		../../../assimpF/assimp/include/assimp/texture.h \
+		../../../assimpF/assimp/include/assimp/Compiler/pushpack1.h \
+		../../../assimpF/assimp/include/assimp/Compiler/poppack1.h \
+		../../../assimpF/assimp/include/assimp/mesh.h \
+		../../../assimpF/assimp/include/assimp/aabb.h \
+		../../../assimpF/assimp/include/assimp/light.h \
+		../../../assimpF/assimp/include/assimp/camera.h \
+		../../../assimpF/assimp/include/assimp/material.h \
+		../../../assimpF/assimp/include/assimp/material.inl \
+		../../../assimpF/assimp/include/assimp/anim.h \
+		../../../assimpF/assimp/include/assimp/metadata.h \
+		../../../assimpF/assimp/include/assimp/Compiler/pstdint.h \
+		../../../assimpF/assimp/include/assimp/postprocess.h \
+		../OpenGLRendering/cubeobject.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o functions.o ../OpenGLRendering/functions.cpp
+
+main.o: ../OpenGLRendering/main.cpp ../OpenGLRendering/mainwindow.h \
+		../OpenGLRendering/cubeobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../OpenGLRendering/main.cpp
 
-mainwindow.o: ../OpenGLRendering/mainwindow.cpp ../OpenGLRendering/mainwindow.h
+mainwindow.o: ../OpenGLRendering/mainwindow.cpp ../OpenGLRendering/mainwindow.h \
+		../OpenGLRendering/cubeobject.h \
+		../OpenGLRendering/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../OpenGLRendering/mainwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

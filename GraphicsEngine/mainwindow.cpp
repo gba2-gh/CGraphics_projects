@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     cubeObject->curr_mat=1;
 
   //IMPORT
-    std::string path ("../GraphicsEngine/object_file/bunny"
+    std::string path ("../GraphicsEngine/object_file/sphere"
                       ".obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx, &cubeObject->vertexNormals);
