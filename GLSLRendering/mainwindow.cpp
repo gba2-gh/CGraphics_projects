@@ -3,7 +3,7 @@
 #include <QtGui/QImage>
 #include"cubeobject.h"
 #include"functions.h"
-
+#include <QOpenGLFunctions_4_5_Core>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -13,22 +13,27 @@ MainWindow::MainWindow(QWidget *parent)
     QSurfaceFormat format;
 
     format.setProfile(QSurfaceFormat::CompatibilityProfile); //fixed function pipelne
-    format.setVersion(4,1); //version opengl
+    format.setVersion(4,5); //version opengl
     setFormat(format);
 
     context = new QOpenGLContext;
     context->setFormat(format);
     context->create();
+    if (!context->create())
+       throw std::runtime_error("context creation failed");
+
     context->makeCurrent(this);
 
-    //openGLFunctions = context->functions();
-
+   //f = context->versionFunctions();
 
     cubeObject = new CubeObject;
     cubeObject->curr_mat=1;
 
+//    if (!f->initializeOpenGLFunctions())
+//          throw std::runtime_error("initialization failed");
+
 //IMPORT
-    std::string path ("../OpenGLRendering/object_file/bunny3.obj");
+    std::string path ("../GLSLRendering/object_file/bunny3.obj");
 
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx,
                             &cubeObject->vertexNormals, &cubeObject->uvCoord);
@@ -50,35 +55,91 @@ void MainWindow::initializeGL()
     resizeGL(this->width(), this->height());
 
     program = new QOpenGLShaderProgram();
-    program->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                     "#version 450\n"
-                                     "in vec3 position;\n"
-                                     "out vec4 fragColor;\n"
-                                     "void main() {\n"
-                                     "    fragColor = vec4(0.3, 0.2, 0.75, 1.0);\n"
-                                     "    gl_Position = vec4(position, 1.0);\n"
-                                     "}");
-    program->addSHaderFromSourceCode(QOpenGLShader::Fragment,
-                                     "#version 450\n"
-                                     "in vec4 fragColor;\n"
-                                     "out vec4 finalColor;\n"
-                                     "void main(){\n"
-                                     "    finalColor = fragColor;\n"
-                                     "}");
+
+
+    const char *vertexShaderSource = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+    const char *fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\n\0";
+
+    program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+    program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
 
     program->link();
 
     float vertices[] = {
-         0.0f,  0.8f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
+         0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left
     };
 
-    vao = new QOpengl
-    vbo = new QOpenGLBuffer;
+    GLuint indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    };
 
-    vao.create();
-    vao.bind();
+//    vao = new QOpenGLVertexArrayObject;
+//    vbo = new QOpenGLBuffer;
+
+//    vao->create();
+//    vao->bind();
+
+//    vbo->create();
+//    vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
+//    vbo->bind();
+//    vbo->allocate(vertices, sizeof(vertices));
+
+//    vao->release();
+//    vbo->release();
+
+//    ibo = new QOpenGLBuffer;
+//    ibo->create();
+//    ibo->setUsagePattern(QOpenGLBuffer::StaticDraw);
+//    ibo->bind();
+//    ibo->allocate(indices, sizeof(indices));
+
+//    ibo->release();
+
+
+        f = QOpenGLContext::currentContext()->extraFunctions();
+
+
+        f->glGenVertexArrays(1, &VAO);
+        f->glGenBuffers(1, &VBO);
+        f->glGenBuffers(1, &EBO);
+        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+        f->glBindVertexArray(VAO);
+
+        f->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        f->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        f->glEnableVertexAttribArray(0);
+
+        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+        f->glBindVertexArray(0);
+
+
+
 
 
 }
@@ -111,222 +172,238 @@ void MainWindow::resizeGL(int w, int h)
 
 void MainWindow::paintGL()
 {
-    //glClearColor(1.0, 0.0f, 0.0f, 0.0f);
 
-//RENDERING CALLBACK
+
+    //f = QOpenGLContext::currentContext()->extraFunctions();
+
+
+////RENDERING CALLBACK
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 //reset model view matrix
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();  //identidad matriz actual
 
-
-// CÁMARAS
-    double es=0.8;
-    if(camSelect==0){
-        gluLookAt(-1,1 , 5*es, 0, 0, -1, 0,1,0);
-    }else if(camSelect==1){
-        gluLookAt(4*es,2*es , 4*es, 0, 0, -1, 0,1,0);
-    }else if(camSelect==2){
-        gluLookAt(-4*es,2*es , -4*es, 0, 0, -1, 0,1,0);
-    }else{
-         gluLookAt(0,2, -5*es, 0, 0, 1, 0,1,0);
-    }
+    program->bind();
+    //vao->bind();
+//    //vbo->bind();
+//    //ibo->bind();
+//    program->enableAttributeArray( "position");
+//    program->setAttributeArray("position", GL_FLOAT, 0, 3);
 
 
-
-// MATERIAL
-
-    GLfloat kd[3];
-    GLfloat ka[3];
-    GLfloat ke[3];
-    GLfloat shininess = 0;
-
-    for (int k =0; k< 3; ++k){
-        kd[k] = cubeObject->all_mat[curr_mat].kd[k];
-        ka[k] = cubeObject->all_mat[curr_mat].ka[k];
-        ke[k] = cubeObject->all_mat[curr_mat].ke[k];
-        shininess = cubeObject->all_mat[curr_mat].ro;
-    }
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, kd);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, ka);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, ke);
-    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-
-// LUZ
-    //GLfloat al[] = {0.8, 0.8, 0.8, 1.0};
-    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, al);
-
-
-//LUZ 1
-    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
-    GLfloat light_position[] = {2.0, 2.0, 2.0, 1.0};
-    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-
-    GLfloat light_ambient[] = {0.8, 0.8, 0.8, 1.0};
-    //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-
-    if(luzOnOffB){
-        glEnable(GL_LIGHT0);
-    }else{
-        glDisable(GL_LIGHT0);
-    }
-
-//LUZ 2
-    GLfloat light_diffuse2[] = {0.1, 0.1, 0.9, 1.0};
-    GLfloat light_position2[] = {-2.0, -2.0, 2.0, 1.0};
-    GLfloat light_specular2[] = {0.0, 0.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse2);
-    glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular2);
-
-    //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-
-
-    if(luzOnOff){
-        glEnable(GL_LIGHT1);
-    }else{
-        glDisable(GL_LIGHT1);
-    }
-
- //Transformacion
-    glTranslatef(0.0,0.0,0);
-    glRotatef(rotation, 1.0, 1.0, 1.0);
-
-
-//IMAGEN TEXTURA
-
-//    QImage image(400, 400, QImage::Format_RGB32);
-//    QRgb value = qRgb(189, 149, 39); ;
-
-//    for(int i=0; i<400; ++i){
-//        for(int j=0; j<400; ++j){
-//            image.setPixel(i,j, value);
-//        }
-//    }
-    //texture_img = image;
-
-    texture_img = cubeObject->all_mat[curr_mat].texture;
-
-    texture_img=texture_img.convertToFormat(QImage::Format_RGB888);
-    uint d;
-    glGenTextures(1, &d); // generate a unique ID for this texture
-    glBindTexture(GL_TEXTURE_2D, d); // create texture d
-
-    // interpolacion, wrapping
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_img.height(), texture_img.width(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_img.bits());
-     //target, level, internalFormat, width, height, border, format, type, pointer to texels
-
-    glEnable(GL_TEXTURE_2D);
-
-    // Método 2
-        GLfloat vert[3];
-        GLfloat n[3];
-        GLfloat uv[2];
-        glBegin(GL_TRIANGLES);
-            for(int i=0; i< cubeObject->facesIdx.size(); ++i){ // Each new triangle starts here
-                for(int k = 0; k < 3; k++){
-                    for(int j = 0; j < 2; j++){ // Each vertex specified here
-                         uv[j] = cubeObject->uvCoord[cubeObject->facesIdx[i][k]][j];
-                     }
-                    glTexCoord2fv(uv);
-
-                    for(int j = 0; j < 3; j++){ // Each vertex specified here
-                        n[j] = cubeObject->vertexNormals[cubeObject->facesIdx[i][k]][j];
-                        vert[j] = cubeObject->vertices[cubeObject->facesIdx[i][k]][j];
-                    }
-                     glNormal3fv(n);
-                     glVertex3fv(vert);
-
-                }
-            }
-        glEnd();
+     f->glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+     f->glBindVertexArray(0); // no need to unbind it every time
 
 
 
+//     // CÁMARAS
+//         double es=0.8;
+//         if(camSelect==0){
+//             gluLookAt(-1,1 , 5*es, 0, 0, -1, 0,1,0);
+//         }else if(camSelect==1){
+//             gluLookAt(4*es,2*es , 4*es, 0, 0, -1, 0,1,0);
+//         }else if(camSelect==2){
+//             gluLookAt(-4*es,2*es , -4*es, 0, 0, -1, 0,1,0);
+//         }else{
+//              gluLookAt(0,2, -5*es, 0, 0, 1, 0,1,0);
+//         }
 
-//Metodo1
 
-//    int v_size = cubeObject->vertices.size() * cubeObject->vertices[0].size();
-//    int n_size = cubeObject->vertexNormals.size() * cubeObject->vertexNormals[0].size();
-//    int uv_size = cubeObject->uvCoord.size() * cubeObject->uvCoord[0].size();
-//    int i_size = cubeObject->facesIdx.size() * cubeObject->facesIdx[0].size();
+//// MATERIAL
 
-//    GLfloat *vertices = (GLfloat*) malloc(v_size * sizeof(GLfloat));
-//    GLfloat *normals = (GLfloat*) malloc(n_size * sizeof(GLfloat));
-//    GLfloat *uvCoord = (GLfloat*) malloc(uv_size * sizeof(GLfloat));
-//    GLuint *indexes = (GLuint*) malloc(i_size * sizeof(GLuint));
+//    GLfloat kd[3];
+//    GLfloat ka[3];
+//    GLfloat ke[3];
+//    GLfloat shininess = 0;
 
-//    GLfloat vertices[v_size];
-//    GLuint indexes[i_size];
-//    GLfloat uvCoord[uv_size];
-//    GLfloat normals[n_size];
-
-//    int id=0;
-
-//    for(int i=0; i<cubeObject->vertices.size(); ++i){
-//        for(int j=0; j<cubeObject->vertices[0].size(); ++j){
-//            vertices[id] = cubeObject->vertices[i][j];
-//            id+=1;
-//        }
-//    }
-//    id=0;
-//    for(int i=0; i<cubeObject->vertexNormals.size(); ++i){
-//        for(int j=0; j<cubeObject->vertexNormals[0].size(); ++j){
-//            normals[id] = cubeObject->vertexNormals[i][j];
-//            id+=1;
-//        }
-//    }
-//    id=0;
-//    for(int i=0; i<cubeObject->facesIdx.size(); ++i){
-//        for(int j=0; j<cubeObject->facesIdx[0].size(); ++j){
-//            indexes[id] = cubeObject->facesIdx[i][j];
-//            id+=1;
-//        }
+//    for (int k =0; k< 3; ++k){
+//        kd[k] = cubeObject->all_mat[curr_mat].kd[k];
+//        ka[k] = cubeObject->all_mat[curr_mat].ka[k];
+//        ke[k] = cubeObject->all_mat[curr_mat].ke[k];
+//        shininess = cubeObject->all_mat[curr_mat].ro;
 //    }
 
-//    id=0;
-//    for(int i=0; i<cubeObject->uvCoord.size(); ++i){
-//        for(int j=0; j<cubeObject->uvCoord[0].size(); ++j){
-//            uvCoord[id] = cubeObject->uvCoord[i][j];
-//            id+=1;
-//        }
+//    glEnable(GL_LIGHTING);
+//    glEnable(GL_COLOR_MATERIAL);
+
+//    glMaterialfv(GL_FRONT, GL_DIFFUSE, kd);
+//    glMaterialfv(GL_FRONT, GL_AMBIENT, ka);
+//    glMaterialfv(GL_FRONT, GL_SPECULAR, ke);
+//    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+//// LUZ
+//    //GLfloat al[] = {0.8, 0.8, 0.8, 1.0};
+//    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, al);
+
+
+////LUZ 1
+//    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
+//    GLfloat light_position[] = {2.0, 2.0, 2.0, 1.0};
+//    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+//    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+//    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+//    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+//    GLfloat light_ambient[] = {0.8, 0.8, 0.8, 1.0};
+//    //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+
+//    if(luzOnOffB){
+//        glEnable(GL_LIGHT0);
+//    }else{
+//        glDisable(GL_LIGHT0);
 //    }
 
-//    glEnableClientState(GL_VERTEX_ARRAY);
-//    glVertexPointer(3, GL_FLOAT, 0, vertices);
-//    glNormalPointer(GL_FLOAT, 0, normals);
-//    glTexCoordPointer(2, GL_FLOAT, 0, uvCoord);
-//    glDrawElements(GL_TRIANGLES, i_size, GL_UNSIGNED_INT, indexes);
+////LUZ 2
+//    GLfloat light_diffuse2[] = {0.1, 0.1, 0.9, 1.0};
+//    GLfloat light_position2[] = {-2.0, -2.0, 2.0, 1.0};
+//    GLfloat light_specular2[] = {0.0, 0.0, 1.0, 1.0};
+//    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse2);
+//    glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
+//    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular2);
 
-//    free(vertices);
-//    free(indexes);
-//    free(normals);
-//    free(uvCoord);
-
+//    //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 
 
+//    if(luzOnOff){
+//        glEnable(GL_LIGHT1);
+//    }else{
+//        glDisable(GL_LIGHT1);
+//    }
+
+// //Transformacion
+//    glTranslatef(0.0,0.0,0);
+//    glRotatef(rotation, 1.0, 1.0, 1.0);
 
 
-//    unsigned int EBO;
-//    glGenBuffers(1, &EBO);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+////IMAGEN TEXTURA
+
+////    QImage image(400, 400, QImage::Format_RGB32);
+////    QRgb value = qRgb(189, 149, 39); ;
+
+////    for(int i=0; i<400; ++i){
+////        for(int j=0; j<400; ++j){
+////            image.setPixel(i,j, value);
+////        }
+////    }
+//    //texture_img = image;
+
+//    texture_img = cubeObject->all_mat[curr_mat].texture;
+
+//    texture_img=texture_img.convertToFormat(QImage::Format_RGB888);
+//    uint d;
+//    glGenTextures(1, &d); // generate a unique ID for this texture
+//    glBindTexture(GL_TEXTURE_2D, d); // create texture d
+
+//    // interpolacion, wrapping
+//    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_img.height(), texture_img.width(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_img.bits());
+//     //target, level, internalFormat, width, height, border, format, type, pointer to texels
+
+//    glEnable(GL_TEXTURE_2D);
+
+//    // Método 2
+//        GLfloat vert[3];
+//        GLfloat n[3];
+//        GLfloat uv[2];
+//        glBegin(GL_TRIANGLES);
+//            for(int i=0; i< cubeObject->facesIdx.size(); ++i){ // Each new triangle starts here
+//                for(int k = 0; k < 3; k++){
+//                    for(int j = 0; j < 2; j++){ // Each vertex specified here
+//                         uv[j] = cubeObject->uvCoord[cubeObject->facesIdx[i][k]][j];
+//                     }
+//                    glTexCoord2fv(uv);
+
+//                    for(int j = 0; j < 3; j++){ // Each vertex specified here
+//                        n[j] = cubeObject->vertexNormals[cubeObject->facesIdx[i][k]][j];
+//                        vert[j] = cubeObject->vertices[cubeObject->facesIdx[i][k]][j];
+//                    }
+//                     glNormal3fv(n);
+//                     glVertex3fv(vert);
+
+//                }
+//            }
+//        glEnd();
+
+
+
+
+////Metodo1
+
+////    int v_size = cubeObject->vertices.size() * cubeObject->vertices[0].size();
+////    int n_size = cubeObject->vertexNormals.size() * cubeObject->vertexNormals[0].size();
+////    int uv_size = cubeObject->uvCoord.size() * cubeObject->uvCoord[0].size();
+////    int i_size = cubeObject->facesIdx.size() * cubeObject->facesIdx[0].size();
+
+////    GLfloat *vertices = (GLfloat*) malloc(v_size * sizeof(GLfloat));
+////    GLfloat *normals = (GLfloat*) malloc(n_size * sizeof(GLfloat));
+////    GLfloat *uvCoord = (GLfloat*) malloc(uv_size * sizeof(GLfloat));
+////    GLuint *indexes = (GLuint*) malloc(i_size * sizeof(GLuint));
+
+////    GLfloat vertices[v_size];
+////    GLuint indexes[i_size];
+////    GLfloat uvCoord[uv_size];
+////    GLfloat normals[n_size];
+
+////    int id=0;
+
+////    for(int i=0; i<cubeObject->vertices.size(); ++i){
+////        for(int j=0; j<cubeObject->vertices[0].size(); ++j){
+////            vertices[id] = cubeObject->vertices[i][j];
+////            id+=1;
+////        }
+////    }
+////    id=0;
+////    for(int i=0; i<cubeObject->vertexNormals.size(); ++i){
+////        for(int j=0; j<cubeObject->vertexNormals[0].size(); ++j){
+////            normals[id] = cubeObject->vertexNormals[i][j];
+////            id+=1;
+////        }
+////    }
+////    id=0;
+////    for(int i=0; i<cubeObject->facesIdx.size(); ++i){
+////        for(int j=0; j<cubeObject->facesIdx[0].size(); ++j){
+////            indexes[id] = cubeObject->facesIdx[i][j];
+////            id+=1;
+////        }
+////    }
+
+////    id=0;
+////    for(int i=0; i<cubeObject->uvCoord.size(); ++i){
+////        for(int j=0; j<cubeObject->uvCoord[0].size(); ++j){
+////            uvCoord[id] = cubeObject->uvCoord[i][j];
+////            id+=1;
+////        }
+////    }
+
+////    glEnableClientState(GL_VERTEX_ARRAY);
+////    glVertexPointer(3, GL_FLOAT, 0, vertices);
+////    glNormalPointer(GL_FLOAT, 0, normals);
+////    glTexCoordPointer(2, GL_FLOAT, 0, uvCoord);
+////    glDrawElements(GL_TRIANGLES, i_size, GL_UNSIGNED_INT, indexes);
+
+////    free(vertices);
+////    free(indexes);
+////    free(normals);
+////    free(uvCoord);
+
+
+
+
+
+////    unsigned int EBO;
+////    glGenBuffers(1, &EBO);
+////    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+////    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+////    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+////    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 }

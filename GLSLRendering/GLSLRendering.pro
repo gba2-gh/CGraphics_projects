@@ -1,5 +1,5 @@
 QT       += core gui opengl
-LIBS += -lglut -lGLU
+LIBS +=  -lGLU
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,9 +32,10 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../assimpF/assimp/bin/release/ -lassimp
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../assimpF/assimp/bin/debug/ -lassimp
-else:unix: LIBS += -L$$PWD/../../../assimpF/assimp/bin/ -lassimp
 
-INCLUDEPATH += $$PWD/../../../assimpF/assimp/include
-DEPENDPATH += $$PWD/../../../assimpF/assimp/include
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../assimp-source/assimp/bin/release/ -lassimp
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../assimp-source/assimp/bin/debug/ -lassimp
+else:unix: LIBS += -L$$PWD/../../../assimp-source/assimp/bin/ -lassimp
+
+INCLUDEPATH += $$PWD/../../../assimp-source/assimp/include/
+DEPENDPATH += $$PWD/../../../assimp-source/assimp/include/

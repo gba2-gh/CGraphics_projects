@@ -8,6 +8,9 @@
 #include <QtOpenGL>
 #include <GL/glu.h>>
 #include"cubeobject.h"
+#include "QOpenGLExtraFunctions"
+
+#include <QOpenGLFunctions_4_5_Core>
 
 class MainWindow : public QOpenGLWindow
 {
@@ -29,14 +32,19 @@ protected:
 
 public slots:
 
+
 private:
     QOpenGLContext *context;
-    //QOpenGLFunctions *openGLFunctions;
+    QOpenGLExtraFunctions *f;
 
-    QOpenGLBuffer vbo;
-    QOpenGLVertexArrayObject vao;
+    //QOpenGLFunctions *f;
+    //QOpenGLFunctions_4_5_Core *f;
+
+    QOpenGLBuffer *ibo;
+    QOpenGLBuffer *vbo;
+    QOpenGLVertexArrayObject *vao;
     QOpenGLShaderProgram *program;
-
+    unsigned int VBO, VAO, EBO;
 
     float rotation =0;
     float camSelect = 0;
