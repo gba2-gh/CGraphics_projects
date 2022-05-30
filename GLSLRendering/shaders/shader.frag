@@ -1,5 +1,7 @@
 #version 450 core
 
+out vec4 FragColor;
+
 in vec3 Normals;
 in vec3 p;
 
@@ -64,7 +66,8 @@ void main(){
     }
 
 
-    gl_FragColor = vec4(I, 1.0f);
+    //gl_FragColor = vec4(I, 1.0f);
+     FragColor = vec4(I, 1.0f);
 
 
         };

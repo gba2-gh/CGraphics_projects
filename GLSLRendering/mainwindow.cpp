@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
  //IMPORT
     cubeObject = new CubeObject;
-    cubeObject->curr_mat=1;
+    cubeObject->curr_mat=0;
 
     std::string path ("../GLSLRendering/object_file/bunny.obj");
     importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx,

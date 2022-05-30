@@ -3,7 +3,7 @@
 layout (location = 0) in vec3 inPos;
 layout (location = 1) in vec3 inNormal;
 
-attribute vec4 vert;
+in vec4 vert;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
