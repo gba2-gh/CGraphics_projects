@@ -39,3 +39,9 @@ else:unix: LIBS += -L$$PWD/../../../assimp-source/assimp/bin/ -lassimp
 
 INCLUDEPATH += $$PWD/../../../assimp-source/assimp/include/
 DEPENDPATH += $$PWD/../../../assimp-source/assimp/include/
+
+DISTFILES += \
+    shaders/shader.frag \
+    shaders/shader.vert
+
+

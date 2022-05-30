@@ -44,6 +44,7 @@ private:
     QOpenGLBuffer *vbo;
     QOpenGLVertexArrayObject *vao;
     QOpenGLShaderProgram *program;
+    QOpenGLShaderProgram *shader;
     unsigned int VBO, VAO, EBO;
 
     float rotation =0;
@@ -51,6 +52,8 @@ private:
     bool luzOnOff=true;
     bool luzOnOffB=true;
     int curr_mat= 0;
+
+    bool shaderPhong = true;
 
     CubeObject *cubeObject;
     QImage texture_img;

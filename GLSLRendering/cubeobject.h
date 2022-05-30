@@ -12,11 +12,11 @@ public:
 
     struct material
     {
-        double ka[4]={0,0,0,1};
-        double kd[4]={0,0,0,1};
-        double ke[4]={0,0,0,1};
-        double ro=0;
-        double Ia=200;
+        float ka[4]={0,0,0,1};
+        float kd[4]={0,0,0,1};
+        float ke[4]={0,0,0,1};
+        float ro=0;
+        float Ia=200;
 
         std::vector<double> O;
 
