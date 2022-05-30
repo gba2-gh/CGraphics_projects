@@ -7,7 +7,7 @@
 #include <QOpenGLFunctions>
 #include <QtOpenGL>
 #include <GL/glu.h>>
-#include"cubeobject.h"
+#include"object.h"
 #include "QOpenGLExtraFunctions"
 
 #include <QOpenGLFunctions_4_5_Core>
@@ -55,7 +55,8 @@ private:
 
     bool shaderPhong = true;
 
-    CubeObject *cubeObject;
+    Object *bunnyObject;
+    Object *bunnyObjectCopy;
     QImage texture_img;
 
 

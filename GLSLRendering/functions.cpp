@@ -5,7 +5,7 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-#include"cubeobject.h"
+#include"object.h"
 
 
 bool importFile(const std::string &pFile, std::vector<std::vector<double>>*  cubeVert,

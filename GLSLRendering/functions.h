@@ -4,7 +4,7 @@
 #include <cmath>
 #include<vector>
 #include<QDebug>
-#include<cubeobject.h>
+#include<object.h>
 
 
 bool importFile( const std::string& pFile, std::vector<std::vector<double>>*  cubeVert,

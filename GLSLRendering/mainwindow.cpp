@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include<QImage>
 #include <QtGui/QImage>
-#include"cubeobject.h"
+#include"object.h"
 #include"functions.h"
 
 
@@ -26,16 +26,36 @@ MainWindow::MainWindow(QWidget *parent)
 
 
  //IMPORT
-    cubeObject = new CubeObject;
-    cubeObject->curr_mat=0;
+    bunnyObject = new Object;
+    bunnyObject->curr_mat=1;
 
     std::string path ("../GLSLRendering/object_file/bunny.obj");
-    importFile(path, &cubeObject->vertices,  &cubeObject->facesIdx,
-                            &cubeObject->vertexNormals, &cubeObject->uvCoord);
+    importFile(path, &bunnyObject->vertices,  &bunnyObject->facesIdx,
+                            &bunnyObject->vertexNormals, &bunnyObject->uvCoord);
+
+    bunnyObject->model.translate(3.0f,0.0f,0.0f);
+
+    //COPY
+    bunnyObjectCopy = new Object;
+    bunnyObjectCopy->curr_mat=1;
+
+    std::string path2 ("../GLSLRendering/object_file/bunny.obj");
+    importFile(path2, &bunnyObjectCopy->vertices,  &bunnyObjectCopy->facesIdx,
+                            &bunnyObjectCopy->vertexNormals, &bunnyObjectCopy->uvCoord);
+
+
+
+
+
     qDebug() << "Imported";
 
-    //cubeObject->calcVerticesNormal();
-    rotation=0;
+    //bunnyObject->calcVerticesNormal();
+
+
+
+
+
+
 
 }
 
@@ -53,52 +73,63 @@ void MainWindow::initializeGL()
     program->addShaderFromSourceFile(QOpenGLShader::Vertex, "../GLSLRendering/shaders/shader.vert");
     program->addShaderFromSourceFile(QOpenGLShader::Fragment, "../GLSLRendering/shaders/shader.frag");
 
-    program->link();
+   // program->link();
 
 
 
-    float vertices[this->cubeObject->vertices.size() *
-                            this->cubeObject->vertices[0].size()*2];
+    shader= new QOpenGLShaderProgram();
 
-    GLuint indices[this->cubeObject->facesIdx.size() *
-                            this->cubeObject->facesIdx[0].size()];
+    shader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../GLSLRendering/shaders/test.vert");
+    shader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../GLSLRendering/shaders/test.frag");
 
-    int totalV= cubeObject->vertices.size();
-    int sizeV = cubeObject->vertices[0].size();
-    for(int i=0; i<totalV; ++i ){
-        for(int j=0; j<sizeV; ++j){
-            vertices[i*(sizeV*2)+j] = cubeObject->vertices[i][j];
-            vertices[i*(sizeV*2)+j+3] = cubeObject->vertexNormals[i][j];
-        }
-    }
+   // shader->link();
 
-    for(int i=0; i<cubeObject->facesIdx.size(); ++i ){
-        for(int j=0; j<cubeObject->facesIdx[0].size(); ++j){
-            indices[i*(cubeObject->facesIdx[0].size())+j] = cubeObject->facesIdx[i][j];
-        }
-    }
+
+
+//    float vertices[this->bunnyObject->vertices.size() *
+//                            this->bunnyObject->vertices[0].size()*2];
+
+//    GLuint indices[this->bunnyObject->facesIdx.size() *
+//                            this->bunnyObject->facesIdx[0].size()];
+
+//    int totalV= bunnyObject->vertices.size();
+//    int sizeV = bunnyObject->vertices[0].size();
+//    for(int i=0; i<totalV; ++i ){
+//        for(int j=0; j<sizeV; ++j){
+//            vertices[i*(sizeV*2)+j] = bunnyObject->vertices[i][j];
+//            vertices[i*(sizeV*2)+j+3] = bunnyObject->vertexNormals[i][j];
+//        }
+//    }
+
+//    for(int i=0; i<bunnyObject->facesIdx.size(); ++i ){
+//        for(int j=0; j<bunnyObject->facesIdx[0].size(); ++j){
+//            indices[i*(bunnyObject->facesIdx[0].size())+j] = bunnyObject->facesIdx[i][j];
+//        }
+//    }
 
 
         f = QOpenGLContext::currentContext()->extraFunctions();
 
-        f->glGenVertexArrays(1, &VAO);
-        f->glGenBuffers(1, &VBO);
-        f->glGenBuffers(1, &EBO);
+//        f->glGenVertexArrays(1, &VAO);
+//        f->glGenBuffers(1, &VBO);
+//        f->glGenBuffers(1, &EBO);
 
-        //bind
-        f->glBindVertexArray(VAO);
+//        //bind
+//        f->glBindVertexArray(VAO);
 
-        f->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-         f->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//        f->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//         f->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-         f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//        f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//         f->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-        f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-         f->glEnableVertexAttribArray(0);
+//        f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+//         f->glEnableVertexAttribArray(0);
 
-        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
-         f->glBindVertexArray(0);
+//        f->glBindBuffer(GL_ARRAY_BUFFER, 0);
+//         f->glBindVertexArray(0);
+
+
 
 }
 
@@ -122,33 +153,42 @@ void MainWindow::resizeGL(int w, int h)
 void MainWindow::paintGL()
 {
     ////RENDERING CALLBACK
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-        QMatrix4x4 proj;
-        //proj.ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
-        proj.perspective(45.0f,1, 0.1f, 100.0f);
-
-        QMatrix4x4 view;
-        if(camSelect==0){
-            view.translate(0.0f, -1.0f, -8.0f);
-        }else if(camSelect==1){
-            view.translate(0.0f, 0.0f, -8.0f);
-            view.rotate(180, 0,1,0 );
-        }else {
-            view.translate(0.0f, 0.0f, -8.0f);
-            view.rotate(45, 1,1,0);
-        }
+        bunnyObject->render( context, program);
+        bunnyObjectCopy->render(context, shader);
 
 
-        QMatrix4x4 model;
-        //model.translate(0.0f, 0.0f, 0.0f);
-        //model.rotate(45, 0,1, 0);
 
-        QMatrix4x4 normalMat;
-        normalMat = model.transposed();
-        normalMat = normalMat.inverted();
+
+
+
+
+
+//        QMatrix4x4 proj;
+//        //proj.ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+//        proj.perspective(45.0f,1, 0.1f, 100.0f);
+
+//        QMatrix4x4 view;
+//        if(camSelect==0){
+//            view.translate(0.0f, -1.0f, -8.0f);
+//        }else if(camSelect==1){
+//            view.translate(0.0f, 0.0f, -8.0f);
+//            view.rotate(180, 0,1,0 );
+//        }else {
+//            view.translate(0.0f, 0.0f, -8.0f);
+//            view.rotate(45, 1,1,0);
+//        }
+
+
+//        QMatrix4x4 model;
+//        //model.translate(0.0f, 0.0f, 0.0f);
+//        //model.rotate(45, 0,1, 0);
+
+//        QMatrix4x4 normalMat;
+//        normalMat = model.transposed();
+//        normalMat = normalMat.inverted();
 
 //    program->release();
 //    shader->release();
@@ -157,60 +197,57 @@ void MainWindow::paintGL()
  //   if(shaderPhong){
         //shader->release();
 
-        int projLocation = program->uniformLocation("proj");
-        int viewLocation = program->uniformLocation("view");
-        int modelLocation = program->uniformLocation("model");
+//        int projLocation = program->uniformLocation("proj");
+//        int viewLocation = program->uniformLocation("view");
+//        int modelLocation = program->uniformLocation("model");
 
-        int lightPosLoc = program->uniformLocation("lightPos");
-        int lightColorLoc = program->uniformLocation("lightColor");
-        int lightPos2Loc = program->uniformLocation("lightPos2");
-        int lightColor2Loc = program->uniformLocation("lightColor2");
+//        int lightPosLoc = program->uniformLocation("lightPos");
+//        int lightColorLoc = program->uniformLocation("lightColor");
+//        int lightPos2Loc = program->uniformLocation("lightPos2");
+//        int lightColor2Loc = program->uniformLocation("lightColor2");
 
-        program->setUniformValue(projLocation, proj);
-        program->setUniformValue(viewLocation, view);
-        program->setUniformValue(modelLocation, model);
-        program->setUniformValue("normalMat", normalMat);
-
-
-        program->setUniformValue(lightColorLoc, 1.0f, 1.0f, 1.0f);
-        program->setUniformValue(lightPosLoc, 2.0f, 2.0f, 2.0f);
-        program->setUniformValue("lightIntensity", 1.0f);
-
-        program->setUniformValue(lightColor2Loc, 0.0f, 0.1f, 0.8f);
-        program->setUniformValue(lightPos2Loc, 2.0f, -2.0f, 2.0f);
+//        program->setUniformValue(projLocation, proj);
+//        program->setUniformValue(viewLocation, view);
+//        program->setUniformValue(modelLocation, model);
+//        program->setUniformValue("normalMat", normalMat);
 
 
-        if(luzOnOff){
-        program->setUniformValue("lightIntensity2", 1.0f);}
-        else{
-            program->setUniformValue("lightIntensity2", 0.0f);
-        }
+//        program->setUniformValue(lightColorLoc, 1.0f, 1.0f, 1.0f);
+//        program->setUniformValue(lightPosLoc, 2.0f, 2.0f, 2.0f);
+//        program->setUniformValue("lightIntensity", 1.0f);
+
+//        program->setUniformValue(lightColor2Loc, 0.0f, 0.1f, 0.8f);
+//        program->setUniformValue(lightPos2Loc, 2.0f, -2.0f, 2.0f);
 
 
-
-        program->setUniformValue("ka", cubeObject->all_mat[curr_mat].ka[0],
-                                        cubeObject->all_mat[curr_mat].ka[1],
-                                            cubeObject->all_mat[curr_mat].ka[2]);
-        program->setUniformValue("kd", cubeObject->all_mat[curr_mat].kd[0],
-                                        cubeObject->all_mat[curr_mat].kd[1],
-                                            cubeObject->all_mat[curr_mat].kd[2]);
-        program->setUniformValue("ke", cubeObject->all_mat[curr_mat].ke[0],
-                                            cubeObject->all_mat[curr_mat].ke[1],
-                                                 cubeObject->all_mat[curr_mat].ke[2]);
-        program->setUniformValue("shininess", cubeObject->all_mat[curr_mat].ro);
-
-        program->setUniformValue("eyePos", 1.0f, 0.0f, 1.0f);
-        program->setUniformValue("shaderPhong", shaderPhong);
-
-        program->bind();
+//        if(luzOnOff){
+//        program->setUniformValue("lightIntensity2", 1.0f);}
+//        else{
+//            program->setUniformValue("lightIntensity2", 0.0f);
+//        }
 
 
 
+//        program->setUniformValue("ka", bunnyObject->all_mat[curr_mat].ka[0],
+//                                        bunnyObject->all_mat[curr_mat].ka[1],
+//                                            bunnyObject->all_mat[curr_mat].ka[2]);
+//        program->setUniformValue("kd", bunnyObject->all_mat[curr_mat].kd[0],
+//                                        bunnyObject->all_mat[curr_mat].kd[1],
+//                                            bunnyObject->all_mat[curr_mat].kd[2]);
+//        program->setUniformValue("ke", bunnyObject->all_mat[curr_mat].ke[0],
+//                                            bunnyObject->all_mat[curr_mat].ke[1],
+//                                                 bunnyObject->all_mat[curr_mat].ke[2]);
+//        program->setUniformValue("shininess", bunnyObject->all_mat[curr_mat].ro);
 
-     f->glBindVertexArray(VAO);
-     glDrawElements(GL_TRIANGLES, cubeObject->facesIdx.size()*cubeObject->facesIdx[0].size(), GL_UNSIGNED_INT, 0);
-     //glDrawArrays(GL_TRIANGLES, 0, 36);
-     //f->glBindVertexArray(0);
+//        program->setUniformValue("eyePos", 1.0f, 0.0f, 1.0f);
+//        program->setUniformValue("shaderPhong", shaderPhong);
+
+//        program->bind();
+
+//     f->glBindVertexArray(VAO);
+//     //glDrawElements(GL_TRIANGLES, bunnyObject->facesIdx.size()*bunnyObject->facesIdx[0].size(), GL_UNSIGNED_INT, 0);
+
+//     program->release();
 
 
 }

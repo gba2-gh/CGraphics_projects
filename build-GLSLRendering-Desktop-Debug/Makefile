@@ -52,14 +52,14 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../GLSLRendering/cubeobject.cpp \
-		../GLSLRendering/functions.cpp \
+SOURCES       = ../GLSLRendering/functions.cpp \
 		../GLSLRendering/main.cpp \
-		../GLSLRendering/mainwindow.cpp moc_mainwindow.cpp
-OBJECTS       = cubeobject.o \
-		functions.o \
+		../GLSLRendering/mainwindow.cpp \
+		../GLSLRendering/object.cpp moc_mainwindow.cpp
+OBJECTS       = functions.o \
 		main.o \
 		mainwindow.o \
+		object.o \
 		moc_mainwindow.o
 DIST          = ../GLSLRendering/shaders/shader.frag \
 		../GLSLRendering/shaders/shader.vert \
@@ -119,6 +119,7 @@ DIST          = ../GLSLRendering/shaders/shader.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../GLSLRendering/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -138,12 +139,12 @@ DIST          = ../GLSLRendering/shaders/shader.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../GLSLRendering/GLSLRendering.pro ../GLSLRendering/cubeobject.h \
-		../GLSLRendering/functions.h \
-		../GLSLRendering/mainwindow.h ../GLSLRendering/cubeobject.cpp \
-		../GLSLRendering/functions.cpp \
+		../GLSLRendering/GLSLRendering.pro ../GLSLRendering/functions.h \
+		../GLSLRendering/mainwindow.h \
+		../GLSLRendering/object.h ../GLSLRendering/functions.cpp \
 		../GLSLRendering/main.cpp \
-		../GLSLRendering/mainwindow.cpp
+		../GLSLRendering/mainwindow.cpp \
+		../GLSLRendering/object.cpp
 QMAKE_TARGET  = GLSLRendering
 DESTDIR       = 
 TARGET        = GLSLRendering
@@ -211,6 +212,7 @@ Makefile: ../GLSLRendering/GLSLRendering.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -288,6 +290,7 @@ Makefile: ../GLSLRendering/GLSLRendering.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -323,8 +326,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../GLSLRendering/cubeobject.h ../GLSLRendering/functions.h ../GLSLRendering/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../GLSLRendering/cubeobject.cpp ../GLSLRendering/functions.cpp ../GLSLRendering/main.cpp ../GLSLRendering/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../GLSLRendering/functions.h ../GLSLRendering/mainwindow.h ../GLSLRendering/object.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../GLSLRendering/functions.cpp ../GLSLRendering/main.cpp ../GLSLRendering/mainwindow.cpp ../GLSLRendering/object.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -360,7 +363,7 @@ compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../GLSLRendering/mainwindow.h \
-		../GLSLRendering/cubeobject.h \
+		../GLSLRendering/object.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/gba/Documents/qtProject/CGraphics_projects/build-GLSLRendering-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/gba/Documents/qtProject/CGraphics_projects/GLSLRendering -I/home/gba/Documents/assimp-source/assimp/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../GLSLRendering/mainwindow.h -o moc_mainwindow.cpp
@@ -381,21 +384,21 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 ####### Compile
 
-cubeobject.o: ../GLSLRendering/cubeobject.cpp ../GLSLRendering/cubeobject.h \
-		../GLSLRendering/functions.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cubeobject.o ../GLSLRendering/cubeobject.cpp
-
-functions.o: ../GLSLRendering/functions.cpp ../GLSLRendering/cubeobject.h
+functions.o: ../GLSLRendering/functions.cpp ../GLSLRendering/object.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o functions.o ../GLSLRendering/functions.cpp
 
 main.o: ../GLSLRendering/main.cpp ../GLSLRendering/mainwindow.h \
-		../GLSLRendering/cubeobject.h
+		../GLSLRendering/object.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../GLSLRendering/main.cpp
 
 mainwindow.o: ../GLSLRendering/mainwindow.cpp ../GLSLRendering/mainwindow.h \
-		../GLSLRendering/cubeobject.h \
+		../GLSLRendering/object.h \
 		../GLSLRendering/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../GLSLRendering/mainwindow.cpp
+
+object.o: ../GLSLRendering/object.cpp ../GLSLRendering/object.h \
+		../GLSLRendering/functions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o object.o ../GLSLRendering/object.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

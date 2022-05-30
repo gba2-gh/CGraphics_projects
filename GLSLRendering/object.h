@@ -1,13 +1,22 @@
-#ifndef CUBEOBJECT_H
-#define CUBEOBJECT_H
+#ifndef OBJECT_H
+#define OBJECT_H
 
 #include<vector>
 #include<QImage>
 #include<qstring.h>
-class CubeObject
+
+#include <QOpenGLFunctions_4_5_Core>
+
+
+
+
+#include <QtOpenGL>
+
+
+class Object
 {
 public:
-    CubeObject();
+    Object();
 
 
     struct material
@@ -33,6 +42,8 @@ public:
     std::vector<std::vector<int> > facesIdx;
     std::vector<std::vector<double> > uvCoord;
 
+    unsigned int VBO, VAO, EBO;
+
     std::vector<double> textureFaces;
    //caras
    std::vector<std::vector<std::vector <double> > > faces;
@@ -48,6 +59,13 @@ public:
     void rotateX(double angleD);
     void rotateY(double angleD);
 
+    void render(QOpenGLContext *context, QOpenGLShaderProgram *program);
+
+    QOpenGLShaderProgram *program;
+       QOpenGLExtraFunctions *f;
+
+       QMatrix4x4 model;
+
 };
 
-#endif // CUBEOBJECT_H
+#endif // OBJECT_H
