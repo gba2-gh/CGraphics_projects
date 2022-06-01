@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     bunnyObject = new Object;
     bunnyObject->curr_mat=1;
 
-    std::string path ("../GLSLRendering/object_file/bunny.obj");
+    std::string path ("../GLSLRendering/object_file/cube.obj");
     importFile(path, &bunnyObject->vertices,  &bunnyObject->facesIdx,
                             &bunnyObject->vertexNormals, &bunnyObject->uvCoord);
 
@@ -157,97 +157,10 @@ void MainWindow::paintGL()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         bunnyObject->render( context, program);
-        bunnyObjectCopy->render(context, shader);
+        bunnyObjectCopy->render(context, program);
 
 
 
-
-
-
-
-
-//        QMatrix4x4 proj;
-//        //proj.ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
-//        proj.perspective(45.0f,1, 0.1f, 100.0f);
-
-//        QMatrix4x4 view;
-//        if(camSelect==0){
-//            view.translate(0.0f, -1.0f, -8.0f);
-//        }else if(camSelect==1){
-//            view.translate(0.0f, 0.0f, -8.0f);
-//            view.rotate(180, 0,1,0 );
-//        }else {
-//            view.translate(0.0f, 0.0f, -8.0f);
-//            view.rotate(45, 1,1,0);
-//        }
-
-
-//        QMatrix4x4 model;
-//        //model.translate(0.0f, 0.0f, 0.0f);
-//        //model.rotate(45, 0,1, 0);
-
-//        QMatrix4x4 normalMat;
-//        normalMat = model.transposed();
-//        normalMat = normalMat.inverted();
-
-//    program->release();
-//    shader->release();
-
-
- //   if(shaderPhong){
-        //shader->release();
-
-//        int projLocation = program->uniformLocation("proj");
-//        int viewLocation = program->uniformLocation("view");
-//        int modelLocation = program->uniformLocation("model");
-
-//        int lightPosLoc = program->uniformLocation("lightPos");
-//        int lightColorLoc = program->uniformLocation("lightColor");
-//        int lightPos2Loc = program->uniformLocation("lightPos2");
-//        int lightColor2Loc = program->uniformLocation("lightColor2");
-
-//        program->setUniformValue(projLocation, proj);
-//        program->setUniformValue(viewLocation, view);
-//        program->setUniformValue(modelLocation, model);
-//        program->setUniformValue("normalMat", normalMat);
-
-
-//        program->setUniformValue(lightColorLoc, 1.0f, 1.0f, 1.0f);
-//        program->setUniformValue(lightPosLoc, 2.0f, 2.0f, 2.0f);
-//        program->setUniformValue("lightIntensity", 1.0f);
-
-//        program->setUniformValue(lightColor2Loc, 0.0f, 0.1f, 0.8f);
-//        program->setUniformValue(lightPos2Loc, 2.0f, -2.0f, 2.0f);
-
-
-//        if(luzOnOff){
-//        program->setUniformValue("lightIntensity2", 1.0f);}
-//        else{
-//            program->setUniformValue("lightIntensity2", 0.0f);
-//        }
-
-
-
-//        program->setUniformValue("ka", bunnyObject->all_mat[curr_mat].ka[0],
-//                                        bunnyObject->all_mat[curr_mat].ka[1],
-//                                            bunnyObject->all_mat[curr_mat].ka[2]);
-//        program->setUniformValue("kd", bunnyObject->all_mat[curr_mat].kd[0],
-//                                        bunnyObject->all_mat[curr_mat].kd[1],
-//                                            bunnyObject->all_mat[curr_mat].kd[2]);
-//        program->setUniformValue("ke", bunnyObject->all_mat[curr_mat].ke[0],
-//                                            bunnyObject->all_mat[curr_mat].ke[1],
-//                                                 bunnyObject->all_mat[curr_mat].ke[2]);
-//        program->setUniformValue("shininess", bunnyObject->all_mat[curr_mat].ro);
-
-//        program->setUniformValue("eyePos", 1.0f, 0.0f, 1.0f);
-//        program->setUniformValue("shaderPhong", shaderPhong);
-
-//        program->bind();
-
-//     f->glBindVertexArray(VAO);
-//     //glDrawElements(GL_TRIANGLES, bunnyObject->facesIdx.size()*bunnyObject->facesIdx[0].size(), GL_UNSIGNED_INT, 0);
-
-//     program->release();
 
 
 }
