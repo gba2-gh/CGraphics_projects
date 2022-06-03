@@ -18,7 +18,6 @@ out vec2 UVcoords;
 
 out vec4 pos_lightProj;
 
-out vec4 tt;
 
 
 void main(){ 
@@ -31,7 +30,5 @@ void main(){
 
         //POINT PROJECTION FROM LIGHT POSITION
         pos_lightProj =proj_light * view_light * model *vec4(inPos, 1.0);
-
-        tt= proj * view * model * vec4(inPos, 1.0);
 
         };
