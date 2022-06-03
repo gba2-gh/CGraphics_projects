@@ -8,6 +8,8 @@
 #include <QtOpenGL>
 #include <GL/glu.h>>
 #include"object.h"
+#include"lights.h"
+
 #include "QOpenGLExtraFunctions"
 
 #include <QOpenGLFunctions_4_5_Core>
@@ -26,6 +28,12 @@ public:
     QVector3D camUp;
     float yaw =0;
     float pitch=0;
+    Lights *sun_light;
+    Lights *spot_light;
+
+    unsigned int depthTexture;
+    unsigned int frameBuffer ;
+
 
 protected:
     //FUNCIONES OPENGLWINDOW interaccion de ventanas
@@ -36,6 +44,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent * event);
 
+    void setShaderValues(Object *object, QMatrix4x4 proj, QMatrix4x4 view);
 
 public slots:
 
@@ -51,7 +60,9 @@ private:
     QOpenGLBuffer *vbo;
     QOpenGLVertexArrayObject *vao;
     QOpenGLShaderProgram *program;
-    QOpenGLShaderProgram *shader;
+    QOpenGLShaderProgram *depthMap_shader;
+    QOpenGLShaderProgram *depthMap_shader_quad;
+
     unsigned int VBO, VAO, EBO;
 
     float rotation =0;
@@ -65,6 +76,9 @@ private:
     Object *bunnyObject;
     Object *box_obj;
     Object *wall_obj;
+    Object *floor_obj;
+
+
     QImage texture_img;
 
 

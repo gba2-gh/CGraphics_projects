@@ -61,9 +61,9 @@ public:
     void rotateX(double angleD);
     void rotateY(double angleD);
 
-    void render(QMatrix4x4 proj, QMatrix4x4 view,QVector3D camPos, QOpenGLShaderProgram *program);
+    void render(QOpenGLShaderProgram *shader);
 
-    QOpenGLShaderProgram *program;
+    //QOpenGLShaderProgram *program;
        QOpenGLExtraFunctions *f;
 
        QMatrix4x4 model;

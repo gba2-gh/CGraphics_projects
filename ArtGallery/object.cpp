@@ -171,10 +171,8 @@ std::vector<double> Object::calcFaceNormal(std::vector<std::vector<double> > fac
 
 
 
-void Object::render(QMatrix4x4 proj, QMatrix4x4 view, QVector3D camPos, QOpenGLShaderProgram *program){
-
-        //QOpenGLFunctions_4_5_Core *f = new QOpenGLFunctions_4_5_Core;
-        //f->initializeOpenGLFunctions();
+void Object::render(QOpenGLShaderProgram *shader){
+        //shader->bind();
 
         f = QOpenGLContext::currentContext()->extraFunctions();
 
@@ -206,109 +204,13 @@ void Object::render(QMatrix4x4 proj, QMatrix4x4 view, QVector3D camPos, QOpenGLS
 
 
 
- /// TEXTURE PARAMETERS
-        QImage texture_img = all_mat[curr_mat].texture;
-
-        texture_img=texture_img.convertToFormat(QImage::Format_RGB888);
-        uint t1;
-        glGenTextures(1, &t1); // generate a unique ID for this texture
-        glBindTexture(GL_TEXTURE_2D, t1); // create texture d
-
-        // interpolacion, wrapping
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_img.height(), texture_img.width(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_img.bits());
-         //target, level, internalFormat, width, height, border, format, type, pointer to texels
-
-        program->setUniformValue("textImage", 0);
-
-
-
- /// CAMERA PARAMETERS
-        int projLocation = program->uniformLocation("proj");
-        int viewLocation = program->uniformLocation("view");
-        int modelLocation = program->uniformLocation("model");
-
-
-        program->setUniformValue(projLocation, proj);
-        program->setUniformValue(viewLocation, view);
-        program->setUniformValue(modelLocation, model);
-
-        QMatrix4x4 normalMat;
-        normalMat = model.transposed();
-        normalMat = normalMat.inverted();
-        program->setUniformValue("normalMat", normalMat);
-
-
- /// LIGHTS PARAMETERS
- ///    LIGHT1
- ///
-        int lightPosLoc = program->uniformLocation("light.pos");
-        int lightColorLoc = program->uniformLocation("light.color");
-
-
-
-                program->setUniformValue(lightColorLoc, 0.5f, 2.0f, 0.1f);
-                //program->setUniformValue(lightPosLoc, 1.5f, 1.0f, 3.0f);
-                program->setUniformValue(lightPosLoc, 0.0f, 1.0f, 8.0f);
-                program->setUniformValue("light.intensity", 1.0f);
-
-                program->setUniformValue("light.attFactor_k", 1.0f);
-                program->setUniformValue("light.attFactor_l", 0.22f);
-                program->setUniformValue("light.attFactor_q", 0.20f);
-
-                float cut_spot = cos(30.0f * PI/180);
-                program->setUniformValue("cut_spot", cut_spot);
-                program->setUniformValue("spotlightDir", 0.0f, 0.0f, -1.0f);
-
-
-
-           /// LIGHT 2
-                int lightPos2Loc = program->uniformLocation("light2.pos");
-                int lightColor2Loc = program->uniformLocation("light2.color");
-
-                program->setUniformValue(lightColor2Loc, 0.9f, 0.9f, 0.8f);
-                program->setUniformValue(lightPos2Loc, 0.0f, 2.0f, 2.0f);
-
-                    program->setUniformValue("light2.intensity", 0.0f);
-
-                program->setUniformValue("light2.attFactor_k", 1.0f);
-                program->setUniformValue("light2.attFactor_l", 0.35f);
-                program->setUniformValue("light2.attFactor_q", 0.44f);
-
-
-
-         /// MATERIAL PARAMETERS
-                program->setUniformValue("ka", this->all_mat[curr_mat].ka[0],
-                                                this->all_mat[curr_mat].ka[1],
-                                                    this->all_mat[curr_mat].ka[2]);
-                program->setUniformValue("kd", this->all_mat[curr_mat].kd[0],
-                                                this->all_mat[curr_mat].kd[1],
-                                                    this->all_mat[curr_mat].kd[2]);
-                program->setUniformValue("ke", this->all_mat[curr_mat].ke[0],
-                                                    this->all_mat[curr_mat].ke[1],
-                                                         this->all_mat[curr_mat].ke[2]);
-                program->setUniformValue("shininess", this->all_mat[curr_mat].ro);
-
-
-                program->setUniformValue("eyePos", camPos);
-                program->setUniformValue("shaderPhong", true);
-
-
-
          /// DRAW
-                program->bind();
+
 
                 f->glBindVertexArray(VAO);
                 glDrawElements(GL_TRIANGLES, this->facesIdx.size()*this->facesIdx[0].size(), GL_UNSIGNED_INT, 0);
                 f->glBindVertexArray(0);
 
-               // program->release();
-
-
+                //shader->release();
 
         }
