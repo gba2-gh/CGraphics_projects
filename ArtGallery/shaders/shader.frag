@@ -23,6 +23,8 @@ in vec2 UVcoords;
 
 in vec4 pos_lightProj;
 
+in vec4 tt;
+
 //material
 uniform vec3 ka;
 uniform vec3 kd;
@@ -33,7 +35,7 @@ uniform vec3 eyePos;
 
 uniform sampler2D shadowMap;
 
-float calculateShadow(vec4 pos_lightProj){
+float calculateShadow(vec4 pos_lightProj, vec4 test){
 
    float  shadowV = 1.0;
    //proyectar pos_lightProj, posiciondel fragmento desde la cámara
@@ -48,7 +50,10 @@ float calculateShadow(vec4 pos_lightProj){
    float div = 1/pos_lightProj.w;
    float lightDepth = (pos_lightProj.z)*div*0.5+0.5  ;
 
-   if(shadowMapDepth < lightDepth){ //cuando buffer de profundidad es menor a la posicion, está en la sombra
+   vec3 ayuda = test.xyz/ test.w;
+   //ayuda = ayuda *0.5+0.5;
+
+   if(shadowMapDepth < lightDepth ){ //cuando buffer de profundidad es menor a la posicion, está en la sombra
          shadowV = 0.0;}
 
     return shadowV;
@@ -77,7 +82,7 @@ void main(){
     vec3 Ispec = ke * pow(dp2, shininess);
     Ispec = clamp(Ispec, 0.0, 1.0);
 
-    float shadowV = calculateShadow(pos_lightProj);
+    float shadowV = calculateShadow(pos_lightProj, tt);
     float cos_spot = dot(L, normalize(-spotlightDir));
     if (cos_spot > cut_spot){
 
@@ -99,7 +104,7 @@ void main(){
     Ispec = clamp(Ispec, 0.0, 1.0);
 
 
-     float shadow = calculateShadow(pos_lightProj);
+     float shadow = calculateShadow(pos_lightProj, tt);
      I = I + (Idiff +Ispec)* light2.color *2 *(shadow) ;
 
 

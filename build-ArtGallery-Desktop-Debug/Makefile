@@ -56,14 +56,12 @@ SOURCES       = ../ArtGallery/functions.cpp \
 		../ArtGallery/lights.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
-		../ArtGallery/object.cpp \
-		../ArtGallery/stb_image.cpp moc_mainwindow.cpp
+		../ArtGallery/object.cpp moc_mainwindow.cpp
 OBJECTS       = functions.o \
 		lights.o \
 		main.o \
 		mainwindow.o \
 		object.o \
-		stb_image.o \
 		moc_mainwindow.o
 DIST          = ../ArtGallery/shaders/depthMap.frag \
 		../ArtGallery/shaders/depthMap.vert \
@@ -150,13 +148,11 @@ DIST          = ../ArtGallery/shaders/depthMap.frag \
 		../ArtGallery/ArtGallery.pro ../ArtGallery/functions.h \
 		../ArtGallery/lights.h \
 		../ArtGallery/mainwindow.h \
-		../ArtGallery/object.h \
-		../ArtGallery/stb_image.h ../ArtGallery/functions.cpp \
+		../ArtGallery/object.h ../ArtGallery/functions.cpp \
 		../ArtGallery/lights.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
-		../ArtGallery/object.cpp \
-		../ArtGallery/stb_image.cpp
+		../ArtGallery/object.cpp
 QMAKE_TARGET  = ArtGallery
 DESTDIR       = 
 TARGET        = ArtGallery
@@ -338,8 +334,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArtGallery/functions.h ../ArtGallery/lights.h ../ArtGallery/mainwindow.h ../ArtGallery/object.h ../ArtGallery/stb_image.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/lights.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/object.cpp ../ArtGallery/stb_image.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArtGallery/functions.h ../ArtGallery/lights.h ../ArtGallery/mainwindow.h ../ArtGallery/object.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/lights.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/object.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -448,9 +444,6 @@ mainwindow.o: ../ArtGallery/mainwindow.cpp ../ArtGallery/mainwindow.h \
 object.o: ../ArtGallery/object.cpp ../ArtGallery/object.h \
 		../ArtGallery/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o object.o ../ArtGallery/object.cpp
-
-stb_image.o: ../ArtGallery/stb_image.cpp ../ArtGallery/stb_image.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o stb_image.o ../ArtGallery/stb_image.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

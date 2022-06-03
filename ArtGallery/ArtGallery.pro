@@ -22,14 +22,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     object.cpp \
-    stb_image.cpp
+
 
 HEADERS += \
     functions.h \
     lights.h \
     mainwindow.h \
     object.h \
-    stb_image.h
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
