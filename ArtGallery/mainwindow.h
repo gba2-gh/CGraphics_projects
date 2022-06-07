@@ -28,10 +28,16 @@ public:
     QVector3D camUp;
     float yaw =0;
     float pitch=0;
-    Lights *sun_light;
-    Lights *spot_light;
 
-    unsigned int depthTexture;
+    std::vector<Lights *> all_lights;
+    Lights *sun_light;
+    Lights *spotLight_1_1;
+    Lights *spotLight_1_2;
+    Lights *spotLight_2_1;
+    Lights *spotLight_2_2;
+
+    unsigned int depthMap1;
+    unsigned int depthMap2;
     unsigned int frameBuffer ;
 
 
@@ -45,6 +51,9 @@ protected:
     void keyPressEvent(QKeyEvent * event);
 
     void setShaderValues(Object *object, QMatrix4x4 proj, QMatrix4x4 view);
+    void setScene();
+    void setLights();
+    void genDepthMap();
 
 public slots:
 

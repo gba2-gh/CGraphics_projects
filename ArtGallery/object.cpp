@@ -54,6 +54,7 @@ Object::Object()
 
         all_mat.push_back(mat1);
         all_mat.push_back(mat2);
+        curr_mat = 0;
 
 }
 
