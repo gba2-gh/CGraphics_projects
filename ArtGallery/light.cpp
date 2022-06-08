@@ -17,5 +17,9 @@ Light::Light()
 
 void Light::setViewMatrix()
 {
-    view.lookAt(position, direction, QVector3D(0.0f, 1.0f, 0.0f));
+    QMatrix4x4 aux;
+
+    aux.lookAt(position, direction, QVector3D(0.0f, 1.0f, 0.0f));
+
+    view = aux;
 }

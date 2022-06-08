@@ -21,6 +21,9 @@ SOURCES += \
     light.cpp \
     main.cpp \
     mainwindow.cpp \
+    mainwindow_scene.cpp \
+    mainwindow_setShader.cpp \
+    mainwindow_shadowMap.cpp \
     object.cpp \
 
 

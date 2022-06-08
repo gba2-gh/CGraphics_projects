@@ -60,6 +60,8 @@ protected:
     void setLights();
     void genDepthMap();
     void renderEnviroment();
+    void setCubeTexture();
+    void compileShaders();
 
 public slots:
 

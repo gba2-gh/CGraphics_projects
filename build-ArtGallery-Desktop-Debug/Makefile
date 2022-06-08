@@ -56,11 +56,17 @@ SOURCES       = ../ArtGallery/functions.cpp \
 		../ArtGallery/light.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
+		../ArtGallery/mainwindow_scene.cpp \
+		../ArtGallery/mainwindow_setShader.cpp \
+		../ArtGallery/mainwindow_shadowMap.cpp \
 		../ArtGallery/object.cpp moc_mainwindow.cpp
 OBJECTS       = functions.o \
 		light.o \
 		main.o \
 		mainwindow.o \
+		mainwindow_scene.o \
+		mainwindow_setShader.o \
+		mainwindow_shadowMap.o \
 		object.o \
 		moc_mainwindow.o
 DIST          = ../ArtGallery/shaders/cubemapEnv.frag \
@@ -156,6 +162,9 @@ DIST          = ../ArtGallery/shaders/cubemapEnv.frag \
 		../ArtGallery/light.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
+		../ArtGallery/mainwindow_scene.cpp \
+		../ArtGallery/mainwindow_setShader.cpp \
+		../ArtGallery/mainwindow_shadowMap.cpp \
 		../ArtGallery/object.cpp
 QMAKE_TARGET  = ArtGallery
 DESTDIR       = 
@@ -339,7 +348,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../ArtGallery/functions.h ../ArtGallery/light.h ../ArtGallery/mainwindow.h ../ArtGallery/object.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/light.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/object.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/light.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/mainwindow_scene.cpp ../ArtGallery/mainwindow_setShader.cpp ../ArtGallery/mainwindow_shadowMap.cpp ../ArtGallery/object.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -444,6 +453,24 @@ mainwindow.o: ../ArtGallery/mainwindow.cpp ../ArtGallery/mainwindow.h \
 		../ArtGallery/light.h \
 		../ArtGallery/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ArtGallery/mainwindow.cpp
+
+mainwindow_scene.o: ../ArtGallery/mainwindow_scene.cpp ../ArtGallery/mainwindow.h \
+		../ArtGallery/object.h \
+		../ArtGallery/light.h \
+		../ArtGallery/functions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow_scene.o ../ArtGallery/mainwindow_scene.cpp
+
+mainwindow_setShader.o: ../ArtGallery/mainwindow_setShader.cpp ../ArtGallery/mainwindow.h \
+		../ArtGallery/object.h \
+		../ArtGallery/light.h \
+		../ArtGallery/functions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow_setShader.o ../ArtGallery/mainwindow_setShader.cpp
+
+mainwindow_shadowMap.o: ../ArtGallery/mainwindow_shadowMap.cpp ../ArtGallery/mainwindow.h \
+		../ArtGallery/object.h \
+		../ArtGallery/light.h \
+		../ArtGallery/functions.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow_shadowMap.o ../ArtGallery/mainwindow_shadowMap.cpp
 
 object.o: ../ArtGallery/object.cpp ../ArtGallery/object.h \
 		../ArtGallery/functions.h
