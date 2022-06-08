@@ -1,6 +1,6 @@
-#include "lights.h"
+#include "light.h"
 
-Lights::Lights()
+Light::Light()
 {
 
     position.setX(0.0f); position.setY(0.0f); position.setZ(0.0f);
@@ -13,4 +13,9 @@ Lights::Lights()
     attFactor_l = 0.22;
     attFactor_q = 0.20;
 
+}
+
+void Light::setViewMatrix()
+{
+    view.lookAt(position, direction, QVector3D(0.0f, 1.0f, 0.0f));
 }

@@ -1,17 +1,18 @@
-#ifndef LIGHTS_H
-#define LIGHTS_H
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include<qvector3d.h>
 #include<QMatrix4x4>
 
-class Lights
+class Light
 {
 public:
-    Lights();
+    Light();
 
     int type;
 
     QMatrix4x4 projection;
+    QMatrix4x4 view;
     QVector3D position;
     QVector3D direction;
     float  intensity;
@@ -25,7 +26,8 @@ public:
 
     float bias=0.005;
 
+    void setViewMatrix();
 
 };
 
-#endif // LIGHTS_H
+#endif // LIGHT_H

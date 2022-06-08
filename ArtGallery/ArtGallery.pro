@@ -18,7 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     functions.cpp \
-    lights.cpp \
+    light.cpp \
     main.cpp \
     mainwindow.cpp \
     object.cpp \
@@ -26,7 +26,7 @@ SOURCES += \
 
 HEADERS += \
     functions.h \
-    lights.h \
+    light.h \
     mainwindow.h \
     object.h \
 
@@ -44,9 +44,13 @@ INCLUDEPATH += $$PWD/assimp/include
 DEPENDPATH += $$PWD/assimp/include
 
 DISTFILES += \
+    shaders/cubemapEnv.frag \
+    shaders/cubemapEnv.vert \
     shaders/depthMap.frag \
     shaders/depthMap.vert \
     shaders/depthMap_quad.frag \
     shaders/depthMap_quad.vert \
+    shaders/reflection.frag \
+    shaders/reflection.vert \
     shaders/shader.frag \
     shaders/shader.vert

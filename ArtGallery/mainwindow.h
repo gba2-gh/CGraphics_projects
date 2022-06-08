@@ -8,7 +8,7 @@
 #include <QtOpenGL>
 #include <GL/glu.h>>
 #include"object.h"
-#include"lights.h"
+#include"light.h"
 
 #include "QOpenGLExtraFunctions"
 
@@ -29,16 +29,18 @@ public:
     float yaw =0;
     float pitch=0;
 
-    std::vector<Lights *> all_lights;
-    Lights *sun_light;
-    Lights *spotLight_1_1;
-    Lights *spotLight_1_2;
-    Lights *spotLight_2_1;
-    Lights *spotLight_2_2;
+    std::vector<Light *> all_lights;
+    Light *sun_light;
+    Light *spotLight_1_1;
+    Light *spotLight_1_2;
+    Light *spotLight_2_1;
+    Light *spotLight_2_2;
 
     unsigned int depthMap1;
     unsigned int depthMap2;
     unsigned int frameBuffer ;
+
+    unsigned int skyCubeTexture;
 
 
 protected:
@@ -50,15 +52,20 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent * event);
 
+    void renderScene();
+    void renderShadowMapDebug();
+
     void setShaderValues(Object *object, QMatrix4x4 proj, QMatrix4x4 view);
     void setScene();
     void setLights();
     void genDepthMap();
+    void renderEnviroment();
 
 public slots:
 
 
 private:
+    QTimer *timer;
     QOpenGLContext *context;
     QOpenGLExtraFunctions *f;
 
@@ -69,8 +76,11 @@ private:
     QOpenGLBuffer *vbo;
     QOpenGLVertexArrayObject *vao;
     QOpenGLShaderProgram *program;
+    QOpenGLShaderProgram *cubemapEnv_shader;
     QOpenGLShaderProgram *depthMap_shader;
     QOpenGLShaderProgram *depthMap_shader_quad;
+    QOpenGLShaderProgram *reflection_shader;
+
 
     unsigned int VBO, VAO, EBO;
 

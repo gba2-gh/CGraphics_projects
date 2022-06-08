@@ -9,8 +9,8 @@ uniform mat4 view;
 uniform mat4 proj;
 uniform mat4 normalMat;
 
-uniform mat4 view_light;
-uniform mat4 proj_light;
+//uniform mat4 view_light;
+//uniform mat4 proj_light;
 
 out vec3 p;
 out vec3 Normals;
@@ -29,6 +29,6 @@ void main(){
         gl_Position = proj * view * model *vec4(inPos, 1.0) ;
 
         //POINT PROJECTION FROM LIGHT POSITION
-        pos_lightProj =proj_light * view_light * model *vec4(inPos, 1.0);
+        //pos_lightProj =proj_light * view_light * model *vec4(inPos, 1.0);
 
         };

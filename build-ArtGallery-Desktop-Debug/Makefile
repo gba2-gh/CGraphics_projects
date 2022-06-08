@@ -53,20 +53,24 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../ArtGallery/functions.cpp \
-		../ArtGallery/lights.cpp \
+		../ArtGallery/light.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
 		../ArtGallery/object.cpp moc_mainwindow.cpp
 OBJECTS       = functions.o \
-		lights.o \
+		light.o \
 		main.o \
 		mainwindow.o \
 		object.o \
 		moc_mainwindow.o
-DIST          = ../ArtGallery/shaders/depthMap.frag \
+DIST          = ../ArtGallery/shaders/cubemapEnv.frag \
+		../ArtGallery/shaders/cubemapEnv.vert \
+		../ArtGallery/shaders/depthMap.frag \
 		../ArtGallery/shaders/depthMap.vert \
 		../ArtGallery/shaders/depthMap_quad.frag \
 		../ArtGallery/shaders/depthMap_quad.vert \
+		../ArtGallery/shaders/reflection.frag \
+		../ArtGallery/shaders/reflection.vert \
 		../ArtGallery/shaders/shader.frag \
 		../ArtGallery/shaders/shader.vert \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -125,6 +129,7 @@ DIST          = ../ArtGallery/shaders/depthMap.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../ArtGallery/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -145,10 +150,10 @@ DIST          = ../ArtGallery/shaders/depthMap.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../ArtGallery/ArtGallery.pro ../ArtGallery/functions.h \
-		../ArtGallery/lights.h \
+		../ArtGallery/light.h \
 		../ArtGallery/mainwindow.h \
 		../ArtGallery/object.h ../ArtGallery/functions.cpp \
-		../ArtGallery/lights.cpp \
+		../ArtGallery/light.cpp \
 		../ArtGallery/main.cpp \
 		../ArtGallery/mainwindow.cpp \
 		../ArtGallery/object.cpp
@@ -219,6 +224,7 @@ Makefile: ../ArtGallery/ArtGallery.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/lin
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -296,6 +302,7 @@ Makefile: ../ArtGallery/ArtGallery.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/lin
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -331,8 +338,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArtGallery/functions.h ../ArtGallery/lights.h ../ArtGallery/mainwindow.h ../ArtGallery/object.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/lights.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/object.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArtGallery/functions.h ../ArtGallery/light.h ../ArtGallery/mainwindow.h ../ArtGallery/object.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../ArtGallery/functions.cpp ../ArtGallery/light.cpp ../ArtGallery/main.cpp ../ArtGallery/mainwindow.cpp ../ArtGallery/object.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -369,7 +376,7 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../ArtGallery/mainwindow.h \
 		../ArtGallery/object.h \
-		../ArtGallery/lights.h \
+		../ArtGallery/light.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/gba/Documents/qtProject/CGraphics_projects/build-ArtGallery-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/gba/Documents/qtProject/CGraphics_projects/ArtGallery -I/home/gba/Documents/qtProject/CGraphics_projects/ArtGallery/assimp/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../ArtGallery/mainwindow.h -o moc_mainwindow.cpp
@@ -424,17 +431,17 @@ functions.o: ../ArtGallery/functions.cpp ../ArtGallery/assimp/include/assimp/Imp
 		../ArtGallery/object.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o functions.o ../ArtGallery/functions.cpp
 
-lights.o: ../ArtGallery/lights.cpp ../ArtGallery/lights.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lights.o ../ArtGallery/lights.cpp
+light.o: ../ArtGallery/light.cpp ../ArtGallery/light.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o light.o ../ArtGallery/light.cpp
 
 main.o: ../ArtGallery/main.cpp ../ArtGallery/mainwindow.h \
 		../ArtGallery/object.h \
-		../ArtGallery/lights.h
+		../ArtGallery/light.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../ArtGallery/main.cpp
 
 mainwindow.o: ../ArtGallery/mainwindow.cpp ../ArtGallery/mainwindow.h \
 		../ArtGallery/object.h \
-		../ArtGallery/lights.h \
+		../ArtGallery/light.h \
 		../ArtGallery/functions.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../ArtGallery/mainwindow.cpp
 

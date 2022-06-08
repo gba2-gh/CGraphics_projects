@@ -1,7 +1,9 @@
 #version 450 core
 
+///LIGHTS !!
 struct Light{
-    vec3 pos;
+    int type;
+    vec3 position;
     vec3 color;
     vec3 direction;
     float intensity;
@@ -9,11 +11,18 @@ struct Light{
     float attFactor_k;
     float attFactor_l;
     float attFactor_q;
+
+    float cut_angle;
+
+    mat4 view;
+    mat4 projection;
+
+
 };
-uniform Light light;
-uniform Light sun_light;
-uniform float cut_spot;
-uniform vec3 spotlightDir;
+int numL=3;
+uniform Light lights[3];
+vec4 pos_lightProj;
+
 
 ///OUT
 out vec4 FragColor;
@@ -22,7 +31,7 @@ out vec4 FragColor;
 in vec3 Normals;
 in vec3 p;
 in vec2 UVcoords;
-in vec4 pos_lightProj;
+//in vec4 pos_lightProj;
 
 //material
 uniform vec3 ka;
@@ -34,80 +43,92 @@ uniform vec3 eyePos;
 uniform sampler2D textImage;
 uniform sampler2D shadowMap;
 
-float calculateShadow(vec4 pos_lightProj){
+float calculateShadow(vec4 pos_lightProj, int i){
 
-   float  shadowV = 1.0;
-   //proyectar pos_lightProj, posiciondel fragmento desde la cámara
-   vec3 lightProy =  pos_lightProj.xyz / pos_lightProj.w;
-   //coordenas de textura 0 a 1
+           float  shadowV = 1.0;
+           //proyectar pos_lightProj, posiciondel fragmento desde la cámara
+           vec3 lightProy =  pos_lightProj.xyz / pos_lightProj.w;
+           //coordenas de textura 0 a 1
 
-   float u= lightProy.x;
-   float v= lightProy.y;
+           float u= lightProy.x;
+           float v= lightProy.y;
+           float z= lightProy.z * 0.5 +0.5;
 
-   lightProy =  lightProy.xyz * 0.5 +0.5;
+           float offset = i*0.25;
+            u= u*0.125+0.125 +offset;
+            v= v*0.125+0.125 ;
 
-    u= u*0.25+0.25;
-    v= v*0.25+0.25;
+           //profundidad desde el mapa de sombras //buffer de profundidad
+           float shadowMapDepth = texture(shadowMap, vec2(u,v)).r;
 
-   //profundidad desde el mapa de sombras //buffer de profundidad
-   float shadowMapDepth = texture(shadowMap, vec2(u,v)).r;
+           float bias=0.005;
+           if(shadowMapDepth < z-bias){ //cuando buffer de profundidad es menor a la posicion, está en la sombra
+                 shadowV = 0.0;}
 
-   float bias=0.005;
-   if(shadowMapDepth < lightProy.z -bias){ //cuando buffer de profundidad es menor a la posicion, está en la sombra
-         shadowV = 0.0;}
-
-    return shadowV;
+            return shadowV;
 }
 
 
 void main(){
 
-    float distance = length(light.pos - p);
-    float att = 1.0 / (light.attFactor_k + light.attFactor_l * distance + light.attFactor_q * (distance * distance));
+    //luz punto
+    float distance;
+
+    float att;
+
 
     //ambiente
     vec3 I = 1.0 * ka;
-
+    vec3 L;
   //L1
-    vec3 L = normalize(light.pos - p);
-    float dp = max(dot(L,Normals), 0.0);
-    //DIFFUSE
-    vec3 Idiff = dp * kd;
-    Idiff = clamp(Idiff, 0.0, 1.0);  
+    for(int i=0; i<3; i++){
 
-    //SPECULAR
-    vec3 R = normalize(-reflect(L,Normals));
-    vec3 E = normalize(eyePos-p);
-    float dp2 = max(dot(R,E),0.0);
-    vec3 Ispec = ke * pow(dp2, shininess);
-    Ispec = clamp(Ispec, 0.0, 1.0);
+        pos_lightProj = lights[i].projection * lights[i].view * vec4(p, 1.0f);
 
-    float cos_spot = dot(L, normalize(-spotlightDir));
-    if (cos_spot > cut_spot){
-            I +=  I + (Idiff + Ispec)* light.color ;    //* light.intensity
+        distance= length(lights[i].position - p);
+        att = 1.0 / (lights[i].attFactor_k + lights[i].attFactor_l * distance + lights[i].attFactor_q * (distance * distance));
+
+
+        if(lights[i].type == 0){
+            L = normalize(lights[i].position); //para sun
+        }else if(lights[i].type == 1){
+            L = normalize(lights[i].position - p); //para spotlights
+        }
+
+        //DIFFUSE
+        float dp = max(dot(L,Normals), 0.0);
+        vec3 Idiff = dp * kd;
+        Idiff = clamp(Idiff, 0.0, 1.0);
+
+        //SPECULAR
+        vec3 R = normalize(-reflect(L,Normals));
+        vec3 E = normalize(eyePos-p);
+        float dp2 = max(dot(R,E),0.0);
+        vec3 Ispec = ke * pow(dp2, shininess);
+        Ispec = clamp(Ispec, 0.0, 1.0) ;
+
+        //SHADOW
+        float shadow = calculateShadow(pos_lightProj, i);
+
+        if(lights[i].type == 0){
+            I = I + (Idiff +Ispec)* lights[i].color *lights[i].intensity *shadow;
+        }else if(lights[i].type == 1){
+            float cos_spot = dot(L, normalize(-lights[i].direction)); //para spotlight
+            if (lights[i].cut_angle < cos_spot){
+
+                    Idiff *=att;
+                    Ispec *=att;
+                    I +=  I + (Idiff + Ispec)* lights[i].color *lights[i].intensity *shadow;    //* light.intensity
+                }
+        }
+
     }
 
-  //L2
-    L = normalize(sun_light.pos);
-    dp = max(dot(L,Normals), 0.0);
 
-    Idiff = dp * kd;
-    Idiff = clamp(Idiff, 0.0, 1.0);
+       // FragColor = texture(textImage, UVcoords) *vec4(I, 1.0f);
+       FragColor = vec4(I, 1.0f);
 
-    R = normalize(-reflect(L,Normals));
-    E = normalize(eyePos-p);
-    dp2 = max(dot(R,E),0.0);
-
-    Ispec = ke * pow(dp2, shininess);
-    Ispec = clamp(Ispec, 0.0, 1.0);
-
-    float shadow = calculateShadow(pos_lightProj);
-     I = I + (Idiff +Ispec)* sun_light.color *3 *(shadow) ;
-
-     FragColor = texture(textImage, UVcoords) *vec4(I, 1.0f);
-      // FragColor = vec4(I, 1.0f);
-
-        };
+ };
 
 
 
