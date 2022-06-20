@@ -26,21 +26,65 @@ public:
     QVector3D camPos;
     QVector3D camFront;
     QVector3D camUp;
-    float yaw =0;
-    float pitch=0;
+///OBJECTS
+///
+    std::vector<Object *> all_objects;
+    Object *bunnyObject;
+    Object *venusObj;
+    Object *scholarObj;
+    Object *nude;
+    Object *roosterObj;
+    Object *cuadro;
+    Object *vivi;
+    Object *estela;
 
+
+    Object *boxObj_1;
+    Object *boxObj_2;
+    Object *boxObj_3;
+    Object *boxObj_4;
+    Object *boxObj_5;
+    Object *boxObj_6;
+    Object *boxObj_7;
+
+    Object *wallObj_1;
+    Object *wallObj_2;
+
+    Object *floorObj;
+    Object *ceilObj;
+
+///LIGHTS
     std::vector<Light *> all_lights;
     Light *sun_light;
     Light *spotLight_1_1;
     Light *spotLight_1_2;
     Light *spotLight_2_1;
     Light *spotLight_2_2;
+    Light *spotLight_3_1;
+    Light *spotLight_3_2;
+    Light *spotLight_4_1;
+    Light *spotLight_4_2;
+    Light *spotLight_5_1;
+    Light *spotLight_5_2;
+    Light *spotLight_6_1;
+    Light *spotLight_6_2;
+    Light *spotLight_7_1;
+    Light *spotLight_7_2;
+    Light *spotLight_8_1;
+    Light *spotLight_8_2;
+
+    unsigned int woodTexture;
+    unsigned int fabricTexture;
+    unsigned int roosterTexture;
+    unsigned int scholarTexture;
 
     unsigned int depthMap1;
     unsigned int depthMap2;
     unsigned int frameBuffer ;
 
     unsigned int skyCubeTexture;
+    unsigned int t1;
+
 
 
 protected:
@@ -55,13 +99,19 @@ protected:
     void renderScene();
     void renderShadowMapDebug();
 
-    void setShaderValues(Object *object, QMatrix4x4 proj, QMatrix4x4 view);
+    void setShaderValues(Object *object);
     void setScene();
     void setLights();
     void genDepthMap();
     void renderEnviroment();
     void setCubeTexture();
     void compileShaders();
+    void setMovementShader(Object *object);
+    void setToonShader(Object *object);
+
+    void setTextures(QString path);
+
+    float movement_time=0.0;
 
 public slots:
 
@@ -77,11 +127,14 @@ private:
     QOpenGLBuffer *ibo;
     QOpenGLBuffer *vbo;
     QOpenGLVertexArrayObject *vao;
-    QOpenGLShaderProgram *program;
+    QOpenGLShaderProgram *phong;
+    QOpenGLShaderProgram *phong_texture;
     QOpenGLShaderProgram *cubemapEnv_shader;
     QOpenGLShaderProgram *depthMap_shader;
     QOpenGLShaderProgram *depthMap_shader_quad;
     QOpenGLShaderProgram *reflection_shader;
+    QOpenGLShaderProgram *movement_shader;
+    QOpenGLShaderProgram *toon_shader;
 
 
     unsigned int VBO, VAO, EBO;
@@ -93,12 +146,9 @@ private:
     int curr_mat= 0;
 
     bool shaderPhong = true;
-
-    Object *bunnyObject;
-    Object *box_obj;
-    Object *wall_obj;
-    Object *floor_obj;
-
+    bool toon =true;
+    bool movement=true;
+    bool reflec=true;
 
     QImage texture_img;
 

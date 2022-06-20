@@ -7,9 +7,6 @@
 
 #include <QOpenGLFunctions_4_5_Core>
 
-
-
-
 #include <QtOpenGL>
 
 
@@ -28,10 +25,11 @@ public:
 
         std::vector<double> O;
 
-        QString url;
+        QString path;
         QImage texture;
     };
 
+    bool use_texture = false;
     material mat1, mat2;
     std::vector<material> all_mat;
     int curr_mat=0;
@@ -61,7 +59,7 @@ public:
     void rotateX(double angleD);
     void rotateY(double angleD);
 
-    void render(QOpenGLShaderProgram *shader);
+    void render();
 
     //QOpenGLShaderProgram *program;
        QOpenGLExtraFunctions *f;

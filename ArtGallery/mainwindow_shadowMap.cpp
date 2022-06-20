@@ -12,7 +12,6 @@
 void MainWindow::genDepthMap()
 {
 
-
     f->glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -32,19 +31,10 @@ void MainWindow::genDepthMap()
         depthMap_shader->setUniformValue("view", all_lights[i]->view);
 
         //render
-        depthMap_shader->setUniformValue(model_loc, floor_obj->model);
-        floor_obj->render(depthMap_shader);
-
-        depthMap_shader->setUniformValue(model_loc, wall_obj->model);
-        wall_obj->render(depthMap_shader);
-
-        depthMap_shader->setUniformValue(model_loc, box_obj->model);
-        box_obj->render(depthMap_shader);
-
-        depthMap_shader->setUniformValue(model_loc, bunnyObject->model);
-        bunnyObject->render(depthMap_shader);
-
-
+        for(int k=0; k<all_objects.size(); ++k){
+            depthMap_shader->setUniformValue(model_loc, all_objects[k]->model);
+            all_objects[k]->render();
+        }
 
         if(xVP<=2){
             xVP+=1;
@@ -69,7 +59,7 @@ void MainWindow::renderShadowMapDebug()
     float near_plane = 1.0f, far_plane = 30.0f;
 
     glViewport(0,0, 240 , 194);
-     //glViewport(0,0, this->width() , this->height());
+    //glViewport(0,0, this->width() , this->height());
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     depthMap_shader_quad->bind();

@@ -14,7 +14,6 @@ out vec3 Normals;
 void main(){ 
 
         Normals = normalize( mat3(normalMat) * inNormal);
-
         p = vec3(model * vec4(inPos, 1.0));
         gl_Position = proj * view *model *vec4(inPos, 1.0) ;
 

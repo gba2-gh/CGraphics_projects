@@ -15,13 +15,17 @@ Object::Object()
 
         for(int i=0; i<=2; ++i){
             mat1.ka[i]=0.0;
-            mat1.kd[i]=0.5;
             mat1.ke[i]=0.7;
 
             mat2.ka[i]=0.23125;
             mat2.kd[i]=0.2775;
             mat2.ke[i]=0.773911;
         }
+
+
+        mat1.kd[0]=0.5;
+        mat1.kd[1]=0.5;
+        mat1.kd[2]=0.5;
 
 
 //        mat1.ka[0]=0.2f; mat1.ka[1]=0.2f; mat1.ka[2]=0.2f;
@@ -33,9 +37,6 @@ Object::Object()
 
         mat1.O.insert(mat1.O.end(), {40, 0 ,40 });
         mat2.O.insert(mat2.O.end(), {0, 0 ,40 });
-
-        mat1.url = R"(../OpenGLRendering/check.png)";
-        mat2.url = R"(../OpenGLRendering/texture.jpg)";
 
 
         QString url = R"(../ArtGallery/cont.png)";
@@ -172,7 +173,7 @@ std::vector<double> Object::calcFaceNormal(std::vector<std::vector<double> > fac
 
 
 
-void Object::render(QOpenGLShaderProgram *shader){
+void Object::render(){
         //shader->bind();
 
         f = QOpenGLContext::currentContext()->extraFunctions();

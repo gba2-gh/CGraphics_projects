@@ -75,10 +75,14 @@ DIST          = ../ArtGallery/shaders/cubemapEnv.frag \
 		../ArtGallery/shaders/depthMap.vert \
 		../ArtGallery/shaders/depthMap_quad.frag \
 		../ArtGallery/shaders/depthMap_quad.vert \
+		../ArtGallery/shaders/movement.frag \
+		../ArtGallery/shaders/movement.vert \
+		../ArtGallery/shaders/phong.frag \
+		../ArtGallery/shaders/phong.vert \
 		../ArtGallery/shaders/reflection.frag \
 		../ArtGallery/shaders/reflection.vert \
-		../ArtGallery/shaders/shader.frag \
-		../ArtGallery/shaders/shader.vert \
+		../ArtGallery/shaders/toon_shader.frag \
+		../ArtGallery/shaders/toon_shader.vert \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \

@@ -32,13 +32,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     setLights();
 
-    camPos.setX(0.0f); camPos.setY(5.0f); camPos.setZ(10.0f);
+    camPos.setX(0.0f); camPos.setY(5.0f); camPos.setZ(20.0f);
     camFront.setX(0.0f); camFront.setY(0.0f); camFront.setZ(-1.0f);
     camUp.setX(0.0f); camUp.setY(1.0f); camUp.setZ(0.0f);
 
-    timer= new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(30);
+//    timer= new QTimer(this);
+//    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+//    timer->start(300);
     
 
 
@@ -85,13 +85,10 @@ void MainWindow::initializeGL()
 
     f->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
-
     //RENDER SHADOW MAP
     genDepthMap();
 
     setCubeTexture();
-
 
 
 }
@@ -103,158 +100,170 @@ void MainWindow::resizeGL(int w, int h)
 
 void MainWindow::paintGL()
 {
-     float ar = (float)this->width()/(float)this->height();
-     float near_plane = 1.0f, far_plane = 30.0f;
 
 //regresar buffer original
     f->glBindFramebuffer(GL_FRAMEBUFFER, 0);
     ////RENDERING CALLBACK
-        glViewport(0,0, this->width() , this->height());
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        renderEnviroment();
+    glViewport(0,0, this->width() , this->height());
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
-        //CAMERAS
+    renderEnviroment();
+    renderScene();
+    //renderShadowMapDebug();
 
-                QMatrix4x4 proj;
-                QMatrix4x4 view;
-                //proj.frustum(-1.0f*ar, 1.0f*ar, -1.0f, 1.0f, near_plane, far_plane);
-                proj.perspective(90.0f, ar  , 0.1f, 100.0f);
-                view.lookAt(camPos, camPos+ camFront, camUp);
-
-        reflection_shader->bind();
-        QMatrix4x4 model_r;
-        QMatrix4x4 normalMat;
-
-        model_r.translate(0.0f, 5.0f, 0.0f);
-        normalMat = model_r.transposed();
-        normalMat = normalMat.inverted();
-        reflection_shader->setUniformValue("normalMat", normalMat);
-
-        reflection_shader->setUniformValue("proj", proj);
-        reflection_shader->setUniformValue("view", view);
-        reflection_shader->setUniformValue("model", model_r);
-        reflection_shader->setUniformValue("eyePos", camPos);
-
-     /// DRAW
-//         f->glBindVertexArray(VAO);
-//         glActiveTexture(GL_TEXTURE0);
-//         glBindTexture(GL_TEXTURE_CUBE_MAP, skyCubeTexture);
-
-//          glDrawArrays(GL_TRIANGLES, 0, 36);
-//          f->glBindVertexArray(0);
-
-
-
-            program->bind();
-
-            int projLocation = program->uniformLocation("proj");
-            int viewLocation = program->uniformLocation("view");
-            program->setUniformValue(projLocation, proj);
-            program->setUniformValue(viewLocation, view);
-//RENDER SCENE
-
-        /// TEXTURE PARAMETERS
-               QImage texture_img = bunnyObject->all_mat[curr_mat].texture;
-
-               texture_img=texture_img.convertToFormat(QImage::Format_RGB888);
-               uint t1;
-               glGenTextures(1, &t1); // generate a unique ID for this texture
-               glBindTexture(GL_TEXTURE_2D, t1); // create texture d
-
-               // interpolacion, wrapping
-               glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-               glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-               glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_img.height(), texture_img.width(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture_img.bits());
-                //target, level, internalFormat, width, height, border, format, type, pointer to texels
-
-               program->setUniformValue("textImage", 0);
-               glActiveTexture(GL_TEXTURE0);
-               glBindTexture(GL_TEXTURE_2D, t1);
-
-                int shadowMapLoc= program->uniformLocation("shadowMap");
-                program->setUniformValue( shadowMapLoc, 1);
-                glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, depthMap1);
-
-        setShaderValues(floor_obj, proj, view);
-        floor_obj->render(program);
-
-        setShaderValues(wall_obj, proj, view);
-        wall_obj->render(program);
-
-        setShaderValues(box_obj, proj, view);
-        box_obj->render(program);
-
-        setShaderValues(bunnyObject, proj, view);
-        bunnyObject->render(program);
-
-
-////quad
-        renderShadowMapDebug();
 
 
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    resizeGL(this->width(), this->height());
 
-    this->update();
-
-}
-
-void MainWindow::paintEvent(QPaintEvent *event)
-{
-    paintGL();
-
-}
 
 
 void MainWindow::renderScene()
-{
+{    
+///CAMERAS
+///
+    float ar = (float)this->width()/(float)this->height();
 
+    QMatrix4x4 proj;
+    QMatrix4x4 view;
+
+    proj.perspective(45.0f, ar  , 0.1f, 100.0f);
+    view.lookAt(camPos, camPos+ camFront, camUp);
+///
+    phong->bind();
+
+    int projLocation = phong->uniformLocation("proj");
+    int viewLocation = phong->uniformLocation("view");
+    phong->setUniformValue(projLocation, proj);
+    phong->setUniformValue(viewLocation, view);
+
+///TEXTURE
+    phong->setUniformValue("textImage", 0);
+
+    int shadowMapLoc= phong->uniformLocation("shadowMap");
+    phong->setUniformValue( shadowMapLoc, 1);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, depthMap1);
+
+///RENDER
+    setTextures(floorObj->mat1.path);
+    setShaderValues(floorObj);
+    floorObj->render();
+
+    setTextures(wallObj_1->mat1.path);
+    setShaderValues(wallObj_1);
+    wallObj_1->render();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthMap1);
+
+    setShaderValues(boxObj_1);
+    boxObj_1->render();
+    setShaderValues(boxObj_2);
+    boxObj_2->render();
+    setShaderValues(boxObj_3);
+    boxObj_3->render();
+    setShaderValues(boxObj_4);
+    boxObj_4->render();
+    setShaderValues(boxObj_5);
+    boxObj_5->render();
+    setShaderValues(boxObj_6);
+    boxObj_6->render();
+    setShaderValues(boxObj_7);
+    boxObj_7->render();
+
+    setShaderValues(venusObj);
+    venusObj->render();
+
+    setTextures(scholarObj->mat1.path);
+    setShaderValues(scholarObj);
+    scholarObj->render();
+
+    setShaderValues(nude);
+    nude->render();
+
+    setTextures(roosterObj->mat1.path);
+    setShaderValues(roosterObj);
+    roosterObj->render();
+
+    setTextures(estela->mat1.path);
+    setShaderValues(estela);
+    estela->render();
+
+    QMatrix4x4 normalMat;
+    if(reflec){
+        reflection_shader->bind();
+
+        normalMat = bunnyObject->model.transposed();
+        normalMat = normalMat.inverted();
+        reflection_shader->setUniformValue("normalMat", normalMat);
+        reflection_shader->setUniformValue("proj", proj);
+        reflection_shader->setUniformValue("view", view);
+        reflection_shader->setUniformValue("model", bunnyObject->model);
+        reflection_shader->setUniformValue("eyePos", camPos);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyCubeTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMap1);
+
+        bunnyObject->render();
+    }else{
+        phong->bind();
+        setShaderValues(bunnyObject);
+        bunnyObject->render();
+
+    }
+
+
+    if(movement){
+        movement_shader->bind();
+
+        movement_time +=0.05;
+        movement_shader->setUniformValue("Time", movement_time);
+
+        normalMat = cuadro->model.transposed();
+        normalMat = normalMat.inverted();
+        movement_shader->setUniformValue("normalMat", normalMat);
+
+        movement_shader->setUniformValue("proj", proj);
+        movement_shader->setUniformValue("view", view);
+        movement_shader->setUniformValue("model", cuadro->model);
+        movement_shader->setUniformValue("eyePos", camPos);
+        setTextures(cuadro->mat1.path);
+        setMovementShader(cuadro);
+        cuadro->render();
+    }else{
+        phong->bind();
+        setTextures(cuadro->mat1.path);
+        setShaderValues(cuadro);
+        cuadro->render();
+    }
+
+    if(toon){
+        toon_shader->bind();
+        normalMat = vivi->model.transposed();
+        normalMat = normalMat.inverted();
+        toon_shader->setUniformValue("normalMat", normalMat);
+
+        toon_shader->setUniformValue("proj", proj);
+        toon_shader->setUniformValue("view", view);
+        toon_shader->setUniformValue("model", vivi->model);
+        toon_shader->setUniformValue("eyePos", camPos);
+
+        setTextures(vivi->mat1.path);
+        setToonShader(vivi);
+        vivi->render();
+    }else{
+        phong->bind();
+        setTextures(vivi->mat1.path);
+        setShaderValues(vivi);
+        vivi->render();
+    }
 }
-
-
-
-void MainWindow::compileShaders()
-{
-
-    program = new QOpenGLShaderProgram();
-    program->addShaderFromSourceFile(QOpenGLShader::Vertex, "../ArtGallery/shaders/shader.vert");
-    program->addShaderFromSourceFile(QOpenGLShader::Fragment, "../ArtGallery/shaders/shader.frag");
-    program->link();
-
-    depthMap_shader= new QOpenGLShaderProgram();
-    depthMap_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../ArtGallery/shaders/depthMap.vert");
-    depthMap_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../ArtGallery/shaders/depthMap.frag");
-    depthMap_shader->link();
-
-    depthMap_shader_quad = new QOpenGLShaderProgram();
-    depthMap_shader_quad->addShaderFromSourceFile(QOpenGLShader::Vertex, "../ArtGallery/shaders/depthMap_quad.vert");
-    depthMap_shader_quad->addShaderFromSourceFile(QOpenGLShader::Fragment, "../ArtGallery/shaders/depthMap_quad.frag");
-    depthMap_shader_quad->link();
-
-    cubemapEnv_shader = new QOpenGLShaderProgram();
-    cubemapEnv_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../ArtGallery/shaders/cubemapEnv.vert");
-    cubemapEnv_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../ArtGallery/shaders/cubemapEnv.frag");
-    cubemapEnv_shader->link();
-
-    reflection_shader = new QOpenGLShaderProgram();
-    reflection_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, "../ArtGallery/shaders/reflection.vert");
-    reflection_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, "../ArtGallery/shaders/reflection.frag");
-    reflection_shader->link();
-
-
-}
-
 
 
 
@@ -269,15 +278,27 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 ///
     float inc=0.5;
 
-    if(event->key()==Qt::Key_N){
+    if(event->key()==Qt::Key_J){
         camFront.setX(camFront.x()-0.1);
          camFront.normalize();
          qDebug() << camFront;
 
     }
 
-    if(event->key()==Qt::Key_M){
+    if(event->key()==Qt::Key_L){
         camFront.setX(camFront.x()+0.1);
+        camFront.normalize();
+        qDebug() << camFront;
+    }
+
+    if(event->key()==Qt::Key_I){
+        camFront.setY(camFront.y()+0.1);
+        camFront.normalize();
+        qDebug() << camFront;
+    }
+
+    if(event->key()==Qt::Key_K){
+        camFront.setY(camFront.y()-0.1);
         camFront.normalize();
         qDebug() << camFront;
     }
@@ -312,53 +333,103 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
     }
 
-
- ////
+////// LIGHTS
+///
     if(event->key()==Qt::Key_1){
-        camSelect=0;
-        qDebug() << "camara 1";
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_1_2) != all_lights.end()){
+        all_lights.erase(all_lights.begin() + 2);
+        }else{
+            all_lights.insert(all_lights.begin() + 2, spotLight_1_2);
+        }
+        genDepthMap();
     }
-
     if(event->key()==Qt::Key_2){
-        camSelect=1;
-        qDebug() << "camara 2";
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_2_2) != all_lights.end()){
+        all_lights.erase(all_lights.begin() + 4);
+        }else{
+            all_lights.insert(all_lights.begin() + 4, spotLight_2_2);
+        }
+        genDepthMap();
     }
-
     if(event->key()==Qt::Key_3){
-        camSelect=2;
-        qDebug() << "camara 3";
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_3_2) != all_lights.end()){
+        all_lights.erase(all_lights.begin() + 6);
+        }else{
+            all_lights.insert(all_lights.begin() + 6, spotLight_3_2);
+        }
+        genDepthMap();
     }
-
     if(event->key()==Qt::Key_4){
-        camSelect=3;
-        qDebug() << "camara 4";
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_4_2) != all_lights.end()){
+        all_lights.erase(all_lights.begin() + 8);
+        }else{
+            all_lights.insert(all_lights.begin() + 8, spotLight_4_2);
+        }
+        genDepthMap();
     }
 
-
-    if(event->key()==Qt::Key_L){
-        luzOnOff= !luzOnOff;
-        qDebug() << "LUZ";
+    if(event->key()==Qt::Key_5){
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_5_2) != all_lights.end()){
+            all_lights.erase(all_lights.begin() + 10);
+            }else{
+                all_lights.insert(all_lights.begin() + 10, spotLight_5_2);
+        }
+        genDepthMap();
     }
 
-    if(event->key()==Qt::Key_P){
-        shaderPhong = !shaderPhong;
-        qDebug() << "phong";
+    if(event->key()==Qt::Key_6){
+        if(std::find(all_lights.begin(), all_lights.end(), spotLight_6_2) != all_lights.end()){
+            all_lights.erase(all_lights.begin() + 12);
+            }else{
+                all_lights.insert(all_lights.begin() + 12, spotLight_6_2);
+        }
+        genDepthMap();
     }
 
-    if(event->key()==Qt::Key_8){
-        curr_mat = 0;
-        qDebug() << "Material 1";
-    }
+        if(event->key()==Qt::Key_7){
+            if(std::find(all_lights.begin(), all_lights.end(), spotLight_7_2) != all_lights.end()){
+                all_lights.pop_back();
+                }else{
+                    all_lights.insert(all_lights.end(), spotLight_7_2);
+            }
+            genDepthMap();
+        }
 
-    if(event->key()==Qt::Key_9){
-        curr_mat = 1;
-        qDebug() << "Material 2";
-    }
+
+
+        if(event->key()==Qt::Key_B){
+            reflec = !reflec;
+        }
+
+        if(event->key()==Qt::Key_N){
+            toon = !toon;
+        }
+        if(event->key()==Qt::Key_M){
+            movement = !movement;
+        }
+
+
+
+
 
     this->update();
 }
 
 
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    resizeGL(this->width(), this->height());
+
+    this->update();
+
+}
+
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+    paintGL();
+
+}
 
 
 

@@ -53,7 +53,11 @@ DISTFILES += \
     shaders/depthMap.vert \
     shaders/depthMap_quad.frag \
     shaders/depthMap_quad.vert \
+    shaders/movement.frag \
+    shaders/movement.vert \
+    shaders/phong.frag \
+    shaders/phong.vert \
     shaders/reflection.frag \
     shaders/reflection.vert \
-    shaders/shader.frag \
-    shaders/shader.vert
+    shaders/toon_shader.frag \
+    shaders/toon_shader.vert
