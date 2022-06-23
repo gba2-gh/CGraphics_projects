@@ -7,7 +7,7 @@
 *.core
 *.moc
 *.o
-*.obj
+
 *.orig
 *.rej
 *.so
@@ -61,13 +61,13 @@ Thumbs.db
 
 # MinGW generated files
 *.Debug
-*.Release
+e *.Release
 
 # Python byte code
 *.pyc
 
 # Binaries
 # --------
-*.dll
-*.exe
+*sll
+*.
 
